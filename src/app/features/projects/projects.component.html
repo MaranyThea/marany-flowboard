@@ -7,11 +7,120 @@
       <p>Manage your projects in FlowBoard.</p>
     </div>
 
-    <button type="button">
-      + New Project
-    </button>
+<button
+  type="button"
+  (click)="openCreateForm()">
+  + New Project
+</button>
 
   </header>
+
+
+  @if (showForm) {
+
+    <section class="project-form">
+
+      <div class="form-header">
+<h2>
+  {{ editingProjectId === null ? 'New Project' : 'Edit Project' }}
+</h2>
+        <button
+          type="button"
+          (click)="closeForm()">
+          Cancel
+        </button>
+      </div>
+
+
+      <form
+        [formGroup]="projectForm"
+        (ngSubmit)="saveProject()">
+
+        <div class="form-group">
+
+          <label for="name">
+            Project Name
+          </label>
+
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Enter project name">
+
+          @if (
+            projectForm.controls.name.touched &&
+            projectForm.controls.name.invalid
+          ) {
+            <small>
+              Project name is required and must be at least 3 characters.
+            </small>
+          }
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="description">
+            Description
+          </label>
+
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Enter project description">
+          </textarea>
+
+          @if (
+            projectForm.controls.description.touched &&
+            projectForm.controls.description.invalid
+          ) {
+            <small>
+              Description is required.
+            </small>
+          }
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="status">
+            Status
+          </label>
+
+          <select
+            id="status"
+            formControlName="status">
+
+            <option value="planning">
+              Planning
+            </option>
+
+            <option value="in-progress">
+              In Progress
+            </option>
+
+            <option value="completed">
+              Completed
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <button
+          type="submit">
+          {{ editingProjectId === null ? 'Create Project' : 'Save Changes' }}
+        </button>
+
+      </form>
+
+    </section>
+
+  }
 
 
   <section class="project-list">
@@ -22,9 +131,13 @@
 
         <div class="project-info">
 
-          <h2>{{ project.name }}</h2>
+          <h2>
+            {{ project.name }}
+          </h2>
 
-          <p>{{ project.description }}</p>
+          <p>
+            {{ project.description }}
+          </p>
 
           <small>
             Created: {{ project.createdAt }}
@@ -32,6 +145,25 @@
 
         </div>
 
+        <div class="project-actions">
+
+  <span
+    class="status"
+    [class.in-progress]="project.status === 'in-progress'"
+    [class.completed]="project.status === 'completed'"
+    [class.planning]="project.status === 'planning'">
+
+    {{ project.status }}
+
+  </span>
+
+  <button
+    type="button"
+    (click)="openEditForm(project)">
+    Edit
+  </button>
+
+</div>
 
         <span
           class="status"

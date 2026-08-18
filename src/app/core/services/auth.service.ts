@@ -12,7 +12,7 @@ export class AuthService {
   login(email: string, password: string): boolean {
     const isValid =
       email === 'demo@flowboard.com' &&
-      password === 'password123';
+      password === '123123';
 
     if (isValid) {
       this.authenticated.set(true);
