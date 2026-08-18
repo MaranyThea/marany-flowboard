@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+
 import { AuthService } from '../../core/services/auth.service';
 import { ProjectService } from '../../services/project.service';
 import { Project } from '../../models/project';
@@ -8,9 +9,10 @@ import { Project } from '../../models/project';
   selector: 'app-dashboard',
   imports: [RouterLink],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+  styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
+
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly projectService = inject(ProjectService);
@@ -24,7 +26,7 @@ export class DashboardComponent implements OnInit {
   planningProjects = 0;
 
   ngOnInit(): void {
-    this.projectService.projects$.subscribe((projects) => {
+    this.projectService.projects$.subscribe(projects => {
       this.projects = projects;
       this.recentProjects = projects.slice(0, 3);
 
@@ -36,15 +38,15 @@ export class DashboardComponent implements OnInit {
     this.totalProjects = this.projects.length;
 
     this.completedProjects = this.projects.filter(
-      (project) => project.status === 'completed',
+      project => project.status === 'completed'
     ).length;
 
     this.inProgressProjects = this.projects.filter(
-      (project) => project.status === 'in-progress',
+      project => project.status === 'in-progress'
     ).length;
 
     this.planningProjects = this.projects.filter(
-      (project) => project.status === 'planning',
+      project => project.status === 'planning'
     ).length;
   }
 
