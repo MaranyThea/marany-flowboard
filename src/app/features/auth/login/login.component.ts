@@ -1,5 +1,11 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -8,6 +14,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+
+  private readonly authService = inject(AuthService);
 
   loginForm = new FormGroup({
     email: new FormControl('', [
@@ -26,6 +34,14 @@ export class LoginComponent {
       return;
     }
 
-    console.log(this.loginForm.value);
+    const { email, password } = this.loginForm.getRawValue();
+
+    const success = this.authService.login(email!, password!);
+
+    if (success) {
+      console.log('Login successful');
+    } else {
+      console.log('Invalid email or password');
+    }
   }
 }
