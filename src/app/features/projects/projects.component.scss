@@ -1,0 +1,70 @@
+.projects-page {
+  padding: 32px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.page-header p {
+  margin-top: 8px;
+  opacity: 0.7;
+}
+
+.page-header button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.project-list {
+  display: grid;
+  gap: 16px;
+}
+
+.project-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.project-info h2 {
+  margin: 0 0 8px;
+}
+
+.project-info p {
+  margin: 0 0 8px;
+}
+
+.project-info small {
+  opacity: 0.6;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.in-progress {
+  background: #fff3cd;
+}
+
+.completed {
+  background: #d1e7dd;
+}
+
+.planning {
+  background: #cfe2ff;
+}

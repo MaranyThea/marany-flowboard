@@ -1,1 +1,52 @@
-<p>projects works!</p>
+<div class="projects-page">
+
+  <header class="page-header">
+
+    <div>
+      <h1>Projects</h1>
+      <p>Manage your projects in FlowBoard.</p>
+    </div>
+
+    <button type="button">
+      + New Project
+    </button>
+
+  </header>
+
+
+  <section class="project-list">
+
+    @for (project of projects; track project.id) {
+
+      <article class="project-card">
+
+        <div class="project-info">
+
+          <h2>{{ project.name }}</h2>
+
+          <p>{{ project.description }}</p>
+
+          <small>
+            Created: {{ project.createdAt }}
+          </small>
+
+        </div>
+
+
+        <span
+          class="status"
+          [class.in-progress]="project.status === 'in-progress'"
+          [class.completed]="project.status === 'completed'"
+          [class.planning]="project.status === 'planning'">
+
+          {{ project.status }}
+
+        </span>
+
+      </article>
+
+    }
+
+  </section>
+
+</div>
