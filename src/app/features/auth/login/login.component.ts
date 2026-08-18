@@ -6,6 +6,7 @@ import {
   Validators
 } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,8 @@ export class LoginComponent {
     ])
   });
 
+  private readonly router = inject(Router);
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -38,10 +41,10 @@ export class LoginComponent {
 
     const success = this.authService.login(email!, password!);
 
-    if (success) {
-      console.log('Login successful');
-    } else {
-      console.log('Invalid email or password');
-    }
+if (success) {
+  this.router.navigate(['/dashboard']);
+} else {
+  console.log('Invalid email or password');
+}
   }
 }
