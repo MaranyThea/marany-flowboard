@@ -1,40 +1,62 @@
 <div class="dashboard">
+
   <aside class="sidebar">
+
     <div class="logo">
       <h2>FlowBoard</h2>
     </div>
 
     <nav class="navigation">
-      <a class="nav-item active" href="/dashboard">
+
+      <a
+        class="nav-item active"
+        routerLink="/dashboard">
         Dashboard
       </a>
 
-      <a class="nav-item" href="#">
+      <a
+        class="nav-item"
+        routerLink="/projects">
         Projects
       </a>
 
-      <a class="nav-item" href="#">
+      <a
+        class="nav-item"
+        routerLink="/issues">
         Issues
       </a>
 
-      <a class="nav-item" href="#">
+      <a
+        class="nav-item"
+        routerLink="/users">
         Users
       </a>
 
-      <a class="nav-item" href="#">
+      <a
+        class="nav-item"
+        routerLink="/settings">
         Settings
       </a>
+
     </nav>
 
     <div class="sidebar-bottom">
-<button type="button" (click)="logout()">
-  Logout
-</button>
+
+      <button
+        type="button"
+        (click)="logout()">
+        Logout
+      </button>
+
     </div>
+
   </aside>
 
+
   <main class="main-content">
+
     <header class="topbar">
+
       <div>
         <h1>Dashboard</h1>
         <p>Welcome back to FlowBoard.</p>
@@ -43,70 +65,118 @@
       <div class="user-profile">
         <span>Marany</span>
       </div>
+
     </header>
 
+
     <section class="stats">
-      <div class="stat-card">
-        <span class="stat-label">Projects</span>
-        <strong>12</strong>
-      </div>
 
       <div class="stat-card">
-        <span class="stat-label">Open Issues</span>
-        <strong>24</strong>
+
+        <span class="stat-label">
+          Projects
+        </span>
+
+        <strong>
+          {{ totalProjects }}
+        </strong>
+
       </div>
 
-      <div class="stat-card">
-        <span class="stat-label">Completed</span>
-        <strong>48</strong>
-      </div>
 
       <div class="stat-card">
-        <span class="stat-label">Team Members</span>
-        <strong>8</strong>
+
+        <span class="stat-label">
+          In Progress
+        </span>
+
+        <strong>
+          {{ inProgressProjects }}
+        </strong>
+
       </div>
+
+
+      <div class="stat-card">
+
+        <span class="stat-label">
+          Completed
+        </span>
+
+        <strong>
+          {{ completedProjects }}
+        </strong>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span class="stat-label">
+          Planning
+        </span>
+
+        <strong>
+          {{ planningProjects }}
+        </strong>
+
+      </div>
+
     </section>
+
 
     <section class="dashboard-section">
+
       <div class="section-header">
-        <h2>Recent Projects</h2>
-        <button type="button">View all</button>
+
+        <h2>
+          Recent Projects
+        </h2>
+
+        <button type="button">
+          View all
+        </button>
+
       </div>
+
 
       <div class="project-list">
-        <div class="project-card">
-          <div>
-            <h3>FlowBoard</h3>
-            <p>Project management platform</p>
+
+        @for (project of recentProjects; track project.id) {
+
+          <div class="project-card">
+
+            <div>
+
+              <h3>
+                {{ project.name }}
+              </h3>
+
+              <p>
+                {{ project.description }}
+              </p>
+
+            </div>
+
+
+            <span
+              class="status"
+              [class.in-progress]="project.status === 'in-progress'"
+              [class.completed]="project.status === 'completed'"
+              [class.planning]="project.status === 'planning'">
+
+              {{ project.status }}
+
+            </span>
+
           </div>
 
-          <span class="status in-progress">
-            In Progress
-          </span>
-        </div>
+        }
 
-        <div class="project-card">
-          <div>
-            <h3>Portfolio</h3>
-            <p>Personal developer portfolio</p>
-          </div>
-
-          <span class="status completed">
-            Completed
-          </span>
-        </div>
-
-        <div class="project-card">
-          <div>
-            <h3>Expense Tracker</h3>
-            <p>Personal finance application</p>
-          </div>
-
-          <span class="status in-progress">
-            In Progress
-          </span>
-        </div>
       </div>
+
     </section>
+
   </main>
+
 </div>
