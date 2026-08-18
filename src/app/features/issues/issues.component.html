@@ -1,1 +1,71 @@
-<p>issues works!</p>
+<div class="issues-page">
+
+  <header class="page-header">
+
+    <div>
+      <h1>Issues</h1>
+      <p>Track and manage issues across your projects.</p>
+    </div>
+
+    <button type="button">
+      + New Issue
+    </button>
+
+  </header>
+
+
+  <section class="issue-list">
+
+    @for (issue of issues; track issue.id) {
+
+      <article class="issue-card">
+
+        <div class="issue-info">
+
+          <h2>
+            {{ issue.title }}
+          </h2>
+
+          <p>
+            {{ issue.description }}
+          </p>
+
+          <small>
+            Created: {{ issue.createdAt }}
+          </small>
+
+        </div>
+
+
+        <div class="issue-meta">
+
+          <span
+            class="priority"
+            [class.low]="issue.priority === 'low'"
+            [class.medium]="issue.priority === 'medium'"
+            [class.high]="issue.priority === 'high'">
+
+            {{ issue.priority }}
+
+          </span>
+
+
+          <span
+            class="status"
+            [class.open]="issue.status === 'open'"
+            [class.in-progress]="issue.status === 'in-progress'"
+            [class.resolved]="issue.status === 'resolved'">
+
+            {{ issue.status }}
+
+          </span>
+
+        </div>
+
+      </article>
+
+    }
+
+  </section>
+
+</div>
