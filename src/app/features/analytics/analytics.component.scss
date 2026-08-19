@@ -1,0 +1,168 @@
+.analytics-page {
+  padding: 32px;
+}
+
+/* Header */
+
+.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: #666;
+  }
+}
+
+/* Date Filter */
+
+.date-filter {
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+
+  form {
+    display: flex;
+    gap: 20px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  input {
+    padding: 9px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    color: #222;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+
+    &:focus {
+      border-color: #2563eb;
+    }
+  }
+}
+
+/* Statistics */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+
+  span {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  strong {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  small {
+    display: block;
+    margin-top: 6px;
+    color: #999;
+    font-size: 12px;
+  }
+}
+
+/* Analytics Cards */
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.large-card {
+  grid-column: 1 / -1;
+}
+
+.analytics-card {
+  min-height: 280px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+
+  h2 {
+    margin: 0 0 20px;
+    font-size: 17px;
+    font-weight: 600;
+  }
+}
+
+.chart-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  color: #999;
+  font-size: 14px;
+}
+
+.chart-container {
+  position: relative;
+  height: 320px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .analytics-page {
+    padding: 20px;
+  }
+
+  .date-filter form {
+    flex-direction: column;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

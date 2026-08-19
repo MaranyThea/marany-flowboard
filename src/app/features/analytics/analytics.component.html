@@ -1,95 +1,94 @@
 <div class="analytics-page">
-
   <header class="page-header">
-
     <div>
       <h1>Analytics</h1>
       <p>Claims and transaction overview.</p>
     </div>
-
   </header>
 
+  <!-- Date Filter -->
 
   <section class="date-filter">
+    <form [formGroup]="filterForm">
+      <div class="form-group">
+        <label for="startDate"> Start Date </label>
 
-    <div class="form-group">
+        <input id="startDate" type="date" formControlName="startDate" />
+      </div>
 
-      <label for="startDate">
-        Start Date
-      </label>
+      <div class="form-group">
+        <label for="endDate"> End Date </label>
 
-      <input
-        id="startDate"
-        type="date">
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label for="endDate">
-        End Date
-      </label>
-
-      <input
-        id="endDate"
-        type="date">
-
-    </div>
-
+        <input id="endDate" type="date" formControlName="endDate" />
+      </div>
+    </form>
   </section>
 
+  <!-- Status Statistics -->
 
   <section class="stats-grid">
-
     <div class="stat-card">
       <span>NEW</span>
-      <strong>0</strong>
+
+      <strong>
+        {{ newCount }}
+      </strong>
+
+      <small> Recently submitted </small>
     </div>
 
     <div class="stat-card">
       <span>REJECT</span>
-      <strong>0</strong>
+
+      <strong>
+        {{ rejectCount }}
+      </strong>
+
+      <small> Denied claims </small>
     </div>
 
     <div class="stat-card">
       <span>RETURN</span>
-      <strong>0</strong>
+
+      <strong>
+        {{ returnCount }}
+      </strong>
+
+      <small> Sent back for correction </small>
     </div>
 
     <div class="stat-card">
       <span>APPROVED</span>
-      <strong>0</strong>
-    </div>
 
+      <strong>
+        {{ approveCount }}
+      </strong>
+
+      <small> Approved claims </small>
+    </div>
   </section>
 
+  <!-- Charts -->
 
   <section class="analytics-grid">
-
-    <div class="analytics-card">
+    <div class="analytics-card large-card">
       <h2>Claims Received Per Day</h2>
-      <div class="chart-placeholder">
-        Chart coming next
+
+      <div class="chart-container">
+        <canvas #claimsPerDayChart></canvas>
       </div>
     </div>
-
 
     <div class="analytics-card">
       <h2>Claims by Type</h2>
-      <div class="chart-placeholder">
-        Chart coming next
-      </div>
-    </div>
 
+      <div class="chart-placeholder">Chart coming next</div>
+    </div>
 
     <div class="analytics-card">
       <h2>Amount by Branch</h2>
-      <div class="chart-placeholder">
-        Chart coming next
-      </div>
+
+      <div class="chart-placeholder">Chart coming next</div>
     </div>
-
   </section>
-
 </div>
