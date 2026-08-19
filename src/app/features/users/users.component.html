@@ -1,1 +1,152 @@
-<p>users works!</p>
+<div class="users-page">
+  <header class="page-header">
+    <div>
+      <h1>Users</h1>
+      <p>Manage users and their access to FlowBoard.</p>
+    </div>
+
+    <button type="button" (click)="openCreateForm()">+ New User</button>
+  </header>
+
+  @if (showForm) {
+    <section class="user-form">
+      <div class="form-header">
+        <h2>
+          {{ editingUserId === null ? "New User" : "Edit User" }}
+        </h2>
+        <button type="button" (click)="closeForm()">Cancel</button>
+      </div>
+
+      <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+        <!-- Name -->
+
+        <div class="form-group">
+          <label for="name"> Full Name </label>
+
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Enter full name"
+          />
+
+          @if (
+            userForm.controls.name.touched && userForm.controls.name.invalid
+          ) {
+            <small> Name is required and must be at least 3 characters. </small>
+          }
+        </div>
+
+        <!-- Email -->
+
+        <div class="form-group">
+          <label for="email"> Email </label>
+
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Enter email address"
+          />
+
+          @if (
+            userForm.controls.email.touched && userForm.controls.email.invalid
+          ) {
+            <small> Please enter a valid email address. </small>
+          }
+        </div>
+
+        <!-- Role -->
+
+        <div class="form-group">
+          <label for="role"> Role </label>
+
+          <select id="role" formControlName="role">
+            <option value="admin">Admin</option>
+
+            <option value="manager">Manager</option>
+
+            <option value="member">Member</option>
+          </select>
+        </div>
+
+        <!-- Status -->
+
+        <div class="form-group">
+          <label for="status"> Status </label>
+
+          <select id="status" formControlName="status">
+            <option value="active">Active</option>
+
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <button type="submit">
+          {{ editingUserId === null ? "Create User" : "Save Changes" }}
+        </button>
+      </form>
+    </section>
+  }
+
+  <!-- User List -->
+
+  <section class="user-list">
+    @for (user of users; track user.id) {
+      <article class="user-card">
+        <div class="user-info">
+          <div class="user-avatar">
+            {{ user.name.charAt(0) }}
+          </div>
+
+          <div>
+            <h2>
+              {{ user.name }}
+            </h2>
+
+            <p>
+              {{ user.email }}
+            </p>
+
+            <small> Joined: {{ user.createdAt }} </small>
+          </div>
+        </div>
+
+        <div class="user-meta">
+          <span
+            class="role"
+            [class.admin]="user.role === 'admin'"
+            [class.manager]="user.role === 'manager'"
+            [class.member]="user.role === 'member'"
+          >
+            {{ user.role }}
+          </span>
+
+          <span
+            class="status"
+            [class.active]="user.status === 'active'"
+            [class.inactive]="user.status === 'inactive'"
+          >
+            {{ user.status }}
+          </span>
+
+          <button
+            type="button"
+            class="edit-button"
+            (click)="openEditForm(user)"
+          >
+            Edit
+          </button>
+
+          <button
+            type="button"
+            class="delete-button"
+            (click)="deleteUser(user.id)"
+          >
+            Delete
+          </button>
+        </div>
+      </article>
+    }
+  </section>
+</div>
