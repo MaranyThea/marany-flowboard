@@ -1,45 +1,65 @@
 import { Routes } from '@angular/router';
+
+import { authGuard } from './core/guards/auth.guard';
+
 import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
-import { authGuard } from './core/guards/auth.guard';
 import { ProjectsComponent } from './features/projects/projects.component';
 import { IssuesComponent } from './features/issues/issues.component';
 import { UsersComponent } from './features/users/users.component';
 import { SettingsComponent } from './features/settings/settings.component';
+import { LayoutComponent } from './shared/layout/layout.component';
 
 export const routes: Routes = [
+
   {
     path: 'login',
-    component: LoginComponent,
+    component: LoginComponent
   },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [authGuard],
-  },
+
   {
     path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-  {
-    path: 'projects',
-    component: ProjectsComponent,
+    component: LayoutComponent,
     canActivate: [authGuard],
+    children: [
+
+      {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
+
+      {
+        path: 'projects',
+        component: ProjectsComponent
+      },
+
+      {
+        path: 'issues',
+        component: IssuesComponent
+      },
+
+      {
+        path: 'users',
+        component: UsersComponent
+      },
+
+      {
+        path: 'settings',
+        component: SettingsComponent
+      },
+
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+
+    ]
   },
+
   {
-    path: 'issues',
-    component: IssuesComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'users',
-    component: UsersComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'settings',
-    component: SettingsComponent,
-    canActivate: [authGuard],
+    path: '**',
+    redirectTo: 'dashboard'
   }
+
 ];
