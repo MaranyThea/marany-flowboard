@@ -1,1 +1,196 @@
-<p>settings works!</p>
+<div class="settings-page">
+
+  <header class="page-header">
+
+    <div>
+      <h1>Settings</h1>
+      <p>Manage your FlowBoard preferences and account settings.</p>
+    </div>
+
+  </header>
+
+
+  <!-- Profile -->
+
+  <section class="settings-section">
+
+    <div class="section-header">
+
+      <div>
+        <h2>Profile</h2>
+        <p>Update your personal information.</p>
+      </div>
+
+    </div>
+
+
+    <form
+      [formGroup]="profileForm"
+      (ngSubmit)="saveProfile()">
+
+      <div class="form-group">
+
+        <label for="name">
+          Full Name
+        </label>
+
+        <input
+          id="name"
+          type="text"
+          formControlName="name">
+
+        @if (
+          profileForm.controls.name.touched &&
+          profileForm.controls.name.invalid
+        ) {
+
+          <small>
+            Name is required.
+          </small>
+
+        }
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          formControlName="email">
+
+        @if (
+          profileForm.controls.email.touched &&
+          profileForm.controls.email.invalid
+        ) {
+
+          <small>
+            Please enter a valid email.
+          </small>
+
+        }
+
+      </div>
+
+
+      <button type="submit">
+        Save Profile
+      </button>
+
+    </form>
+
+  </section>
+
+
+  <!-- Notifications -->
+
+  <section class="settings-section">
+
+    <div class="section-header">
+
+      <div>
+        <h2>Notifications</h2>
+        <p>Choose which notifications you want to receive.</p>
+      </div>
+
+    </div>
+
+
+    <form
+      [formGroup]="notificationForm"
+      (ngSubmit)="saveNotifications()">
+
+      <label class="setting-option">
+
+        <div>
+          <strong>Email Notifications</strong>
+
+          <p>
+            Receive important FlowBoard notifications by email.
+          </p>
+        </div>
+
+        <input
+          type="checkbox"
+          formControlName="emailNotifications">
+
+      </label>
+
+
+      <label class="setting-option">
+
+        <div>
+          <strong>Issue Updates</strong>
+
+          <p>
+            Get notified when an issue is created or updated.
+          </p>
+        </div>
+
+        <input
+          type="checkbox"
+          formControlName="issueUpdates">
+
+      </label>
+
+
+      <label class="setting-option">
+
+        <div>
+          <strong>Project Updates</strong>
+
+          <p>
+            Get notified about changes to your projects.
+          </p>
+        </div>
+
+        <input
+          type="checkbox"
+          formControlName="projectUpdates">
+
+      </label>
+
+
+      <button type="submit">
+        Save Notifications
+      </button>
+
+    </form>
+
+  </section>
+
+
+  <!-- Account -->
+
+  <section class="settings-section">
+
+    <div class="section-header">
+
+      <div>
+        <h2>Account</h2>
+        <p>Manage your account.</p>
+      </div>
+
+    </div>
+
+
+    <div class="account-actions">
+
+      <button
+        type="button"
+        class="danger-button">
+
+        Delete Account
+
+      </button>
+
+    </div>
+
+  </section>
+
+</div>

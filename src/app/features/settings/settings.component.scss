@@ -1,0 +1,177 @@
+.settings-page {
+  padding: 32px;
+}
+
+/* Header */
+
+.page-header {
+  margin-bottom: 32px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: #666;
+  }
+}
+
+/* Sections */
+
+.settings-section {
+  margin-bottom: 24px;
+  padding: 24px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.section-header {
+  margin-bottom: 24px;
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+/* Forms */
+
+.settings-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    color: #222;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+
+    &:focus {
+      border-color: #2563eb;
+    }
+  }
+
+  small {
+    color: #dc2626;
+    font-size: 12px;
+  }
+}
+
+/* Buttons */
+
+.settings-section form > button {
+  width: fit-content;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: #1d4ed8;
+  }
+}
+
+/* Notification Options */
+
+.setting-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+    font-size: 13px;
+  }
+
+  input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
+/* Account */
+
+.account-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.danger-button {
+  padding: 10px 16px;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  background: #fff;
+  color: #dc2626;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: #fef2f2;
+    border-color: #f87171;
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+
+  .settings-page {
+    padding: 20px;
+  }
+
+  .settings-section {
+    padding: 20px;
+  }
+
+  .setting-option {
+    align-items: flex-start;
+  }
+}
