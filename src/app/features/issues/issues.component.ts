@@ -128,4 +128,16 @@ export class IssuesComponent implements OnInit {
 
     this.closeForm();
   }
+
+  deleteIssue(id: number): void {
+  const confirmed = window.confirm(
+    'Are you sure you want to delete this issue?'
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  this.issueService.deleteIssue(id);
+}
 }
