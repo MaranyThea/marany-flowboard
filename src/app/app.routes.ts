@@ -9,6 +9,7 @@ import { IssuesComponent } from './features/issues/issues.component';
 import { UsersComponent } from './features/users/users.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { LayoutComponent } from './shared/layout/layout.component';
+import { AnalyticsComponent } from './features/analytics/analytics.component';
 
 export const routes: Routes = [
 
@@ -42,6 +43,10 @@ export const routes: Routes = [
         path: 'users',
         component: UsersComponent
       },
+      {
+  path: 'analytics',
+  component: AnalyticsComponent
+},
 
       {
         path: 'settings',
@@ -56,7 +61,6 @@ export const routes: Routes = [
 
     ]
   },
-
   {
     path: '**',
     redirectTo: 'dashboard'
