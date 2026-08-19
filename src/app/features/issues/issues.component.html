@@ -7,12 +7,192 @@
       <p>Track and manage issues across your projects.</p>
     </div>
 
-    <button type="button">
+    <button
+      type="button"
+      (click)="openCreateForm()">
       + New Issue
     </button>
 
   </header>
 
+
+  @if (showForm) {
+
+    <section class="issue-form">
+
+      <div class="form-header">
+
+        <h2>New Issue</h2>
+
+        <button
+          type="button"
+          (click)="closeForm()">
+          Cancel
+        </button>
+
+      </div>
+
+
+      <form
+        [formGroup]="issueForm"
+        (ngSubmit)="createIssue()">
+
+
+        <!-- Title -->
+
+        <div class="form-group">
+
+          <label for="title">
+            Issue Title
+          </label>
+
+          <input
+            id="title"
+            type="text"
+            formControlName="title"
+            placeholder="Enter issue title">
+
+          @if (
+            issueForm.controls.title.touched &&
+            issueForm.controls.title.invalid
+          ) {
+
+            <small>
+              Title is required and must be at least 3 characters.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Description -->
+
+        <div class="form-group">
+
+          <label for="description">
+            Description
+          </label>
+
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Describe the issue">
+          </textarea>
+
+          @if (
+            issueForm.controls.description.touched &&
+            issueForm.controls.description.invalid
+          ) {
+
+            <small>
+              Description is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Project -->
+
+        <div class="form-group">
+
+          <label for="project">
+            Project
+          </label>
+
+          <select
+            id="project"
+            formControlName="projectId">
+
+            <option [value]="1">
+              FlowBoard
+            </option>
+
+            <option [value]="2">
+              Portfolio
+            </option>
+
+            <option [value]="3">
+              Expense Tracker
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- Priority -->
+
+        <div class="form-group">
+
+          <label for="priority">
+            Priority
+          </label>
+
+          <select
+            id="priority"
+            formControlName="priority">
+
+            <option value="low">
+              Low
+            </option>
+
+            <option value="medium">
+              Medium
+            </option>
+
+            <option value="high">
+              High
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- Status -->
+
+        <div class="form-group">
+
+          <label for="status">
+            Status
+          </label>
+
+          <select
+            id="status"
+            formControlName="status">
+
+            <option value="open">
+              Open
+            </option>
+
+            <option value="in-progress">
+              In Progress
+            </option>
+
+            <option value="resolved">
+              Resolved
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <button type="submit">
+          Create Issue
+        </button>
+
+      </form>
+
+    </section>
+
+  }
+
+
+  <!-- Issue List -->
 
   <section class="issue-list">
 
