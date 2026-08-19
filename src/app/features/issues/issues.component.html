@@ -22,8 +22,9 @@
 
       <div class="form-header">
 
-        <h2>New Issue</h2>
-
+<h2>
+  {{ editingIssueId === null ? 'New Issue' : 'Edit Issue' }}
+</h2>
         <button
           type="button"
           (click)="closeForm()">
@@ -33,9 +34,9 @@
       </div>
 
 
-      <form
-        [formGroup]="issueForm"
-        (ngSubmit)="createIssue()">
+<form
+  [formGroup]="issueForm"
+  (ngSubmit)="saveIssue()">
 
 
         <!-- Title -->
@@ -181,9 +182,9 @@
         </div>
 
 
-        <button type="submit">
-          Create Issue
-        </button>
+<button type="submit">
+  {{ editingIssueId === null ? 'Create Issue' : 'Save Changes' }}
+</button>
 
       </form>
 
@@ -217,30 +218,36 @@
         </div>
 
 
-        <div class="issue-meta">
+<div class="issue-meta">
 
-          <span
-            class="priority"
-            [class.low]="issue.priority === 'low'"
-            [class.medium]="issue.priority === 'medium'"
-            [class.high]="issue.priority === 'high'">
+  <span
+    class="priority"
+    [class.low]="issue.priority === 'low'"
+    [class.medium]="issue.priority === 'medium'"
+    [class.high]="issue.priority === 'high'">
 
-            {{ issue.priority }}
+    {{ issue.priority }}
 
-          </span>
+  </span>
 
+  <span
+    class="status"
+    [class.open]="issue.status === 'open'"
+    [class.in-progress]="issue.status === 'in-progress'"
+    [class.resolved]="issue.status === 'resolved'">
 
-          <span
-            class="status"
-            [class.open]="issue.status === 'open'"
-            [class.in-progress]="issue.status === 'in-progress'"
-            [class.resolved]="issue.status === 'resolved'">
+    {{ issue.status }}
 
-            {{ issue.status }}
+  </span>
 
-          </span>
+  <button
+    type="button"
+    class="edit-button"
+    (click)="openEditForm(issue)">
+    Edit
+  </button>
 
-        </div>
+</div>
 
       </article>
 

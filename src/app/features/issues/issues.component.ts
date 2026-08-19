@@ -23,6 +23,7 @@ export class IssuesComponent implements OnInit {
   issues: Issue[] = [];
 
   showForm = false;
+  editingIssueId: number | null = null;
 
   issueForm = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -39,6 +40,8 @@ export class IssuesComponent implements OnInit {
   }
 
   openCreateForm(): void {
+    this.editingIssueId = null;
+
     this.issueForm.reset({
       title: '',
       description: '',
@@ -50,8 +53,23 @@ export class IssuesComponent implements OnInit {
     this.showForm = true;
   }
 
+  openEditForm(issue: Issue): void {
+    this.editingIssueId = issue.id;
+
+    this.issueForm.setValue({
+      title: issue.title,
+      description: issue.description,
+      status: issue.status,
+      priority: issue.priority,
+      projectId: issue.projectId
+    });
+
+    this.showForm = true;
+  }
+
   closeForm(): void {
     this.showForm = false;
+    this.editingIssueId = null;
 
     this.issueForm.reset({
       title: '',
@@ -62,7 +80,7 @@ export class IssuesComponent implements OnInit {
     });
   }
 
-  createIssue(): void {
+  saveIssue(): void {
     if (this.issueForm.invalid) {
       this.issueForm.markAllAsTouched();
       return;
@@ -70,17 +88,43 @@ export class IssuesComponent implements OnInit {
 
     const formValue = this.issueForm.getRawValue();
 
-    const newIssue: Issue = {
-      id: Date.now(),
-      title: formValue.title,
-      description: formValue.description,
-      status: formValue.status,
-      priority: formValue.priority,
-      projectId: formValue.projectId,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
+    // CREATE
+    if (this.editingIssueId === null) {
 
-    this.issueService.addIssue(newIssue);
+      const newIssue: Issue = {
+        id: Date.now(),
+        title: formValue.title,
+        description: formValue.description,
+        status: formValue.status,
+        priority: formValue.priority,
+        projectId: formValue.projectId,
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+
+      this.issueService.addIssue(newIssue);
+
+    } else {
+
+      // UPDATE
+      const existingIssue = this.issues.find(
+        issue => issue.id === this.editingIssueId
+      );
+
+      if (!existingIssue) {
+        return;
+      }
+
+      const updatedIssue: Issue = {
+        ...existingIssue,
+        title: formValue.title,
+        description: formValue.description,
+        status: formValue.status,
+        priority: formValue.priority,
+        projectId: formValue.projectId
+      };
+
+      this.issueService.updateIssue(updatedIssue);
+    }
 
     this.closeForm();
   }

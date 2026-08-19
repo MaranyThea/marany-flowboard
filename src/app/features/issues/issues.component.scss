@@ -255,3 +255,18 @@
     background: #1d4ed8;
   }
 }
+
+.edit-button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #444;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background: #f5f5f5;
+    border-color: #aaa;
+  }
+}
