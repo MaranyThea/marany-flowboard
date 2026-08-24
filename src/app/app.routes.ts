@@ -8,7 +8,7 @@ import { ProjectsComponent } from './features/projects/projects.component';
 import { IssuesComponent } from './features/issues/issues.component';
 import { UsersComponent } from './features/users/users.component';
 import { SettingsComponent } from './features/settings/settings.component';
-import { LayoutComponent } from './shared/layout/layout.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { AnalyticsComponent } from './features/analytics/analytics.component';
 
 export const routes: Routes = [
@@ -20,7 +20,7 @@ export const routes: Routes = [
 
   {
     path: '',
-    component: LayoutComponent,
+    component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
 

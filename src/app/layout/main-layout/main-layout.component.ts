@@ -4,16 +4,16 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
-  selector: 'app-layout',
+  selector: 'app-main-layout',
   imports: [
     RouterLink,
     RouterLinkActive,
     RouterOutlet
   ],
-  templateUrl: './layout.component.html',
-  styleUrl: './layout.component.scss'
+  templateUrl: './main-layout.component.html',
+  styleUrl: './main-layout.component.scss'
 })
-export class LayoutComponent {
+export class MainLayoutComponent {
 
   private readonly authService = inject(AuthService);
 
