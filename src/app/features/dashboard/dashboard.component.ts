@@ -2,8 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
-import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project';
+import { ProjectService } from '../projects/services/project.service';
+import { Project } from '../projects/models/project';
 
 @Component({
   selector: 'app-dashboard',

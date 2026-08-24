@@ -44,7 +44,7 @@ export class TaskService {
       dueDate: '2026-08-18',
       createdAt: '2026-08-17'
     },
-        {
+    {
       id: 5,
       title: 'Setup Authentication',
       description: 'Implement login and route protection',

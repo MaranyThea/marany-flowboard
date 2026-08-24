@@ -6,8 +6,8 @@ import {
   Validators
 } from '@angular/forms';
 
-import { IssueService } from '../../services/issue.service';
-import { Issue } from '../../models/issue';
+import { IssueService } from './services/issue.service';
+import { Issue } from './models/issue';
 
 @Component({
   selector: 'app-issues',

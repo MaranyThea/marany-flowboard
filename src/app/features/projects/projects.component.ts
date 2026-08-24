@@ -6,8 +6,8 @@ import {
   Validators
 } from '@angular/forms';
 
-import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project';
+import { ProjectService } from './services/project.service';
+import { Project } from './models/project';
 
 @Component({
   selector: 'app-projects',

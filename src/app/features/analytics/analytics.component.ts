@@ -18,8 +18,8 @@ import {
   registerables,
 } from 'chart.js';
 
-import { ClaimService } from '../../services/claim.service';
-import { Claim } from '../../models/claim';
+import { ClaimService } from '../claims/services/claim.service';
+import { Claim } from '../claims/models/claim';
 
 Chart.register(...registerables);
 
