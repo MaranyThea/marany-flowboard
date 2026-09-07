@@ -47,10 +47,50 @@
 .topbar-left {
   display: flex;
   align-items: center;
+  gap: 8px; // Small space between logo and toggle
+}
 
-  gap: 14px;
+.logo {
+  display: flex;
+  align-items: center;
+}
 
-  flex-shrink: 0;
+.logo-image {
+  display: block;
+  height: 36px;
+  width: auto;
+}
+
+.sidebar-toggle {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #64748b;
+
+  font-size: 22px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 /* =========================
@@ -524,4 +564,115 @@
 
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+/* =========================
+   LIGHT MODE
+   ========================= */
+
+.app-layout {
+  min-height: 100vh;
+
+  background: #f5f9fa;
+  color: #0f172a;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+
+/* =========================
+   DARK MODE
+   ========================= */
+
+.app-layout.dark {
+  border-color: #1d3a42;
+  color: #f1f5f9;
+}
+
+/* =========================
+   DARK MODE ELEMENTS
+   ========================= */
+
+.app-layout.dark .topbar,
+.app-layout.dark .sidebar,
+.app-layout.dark .navigation,
+.app-layout.dark .profile-dropdown {
+  background: #1d3a42;
+  border-color: #283340;
+}
+
+/* Topbar buttons dark */
+.app-layout.dark .sidebar-toggle,
+.app-layout.dark .icon-button {
+  color: #94a3b8;
+}
+
+.app-layout.dark .sidebar-toggle:hover,
+.app-layout.dark .icon-button:hover {
+  background: #16202e;
+  color: #f1f5f9;
+}
+
+/* Search container dark */
+.app-layout.dark .search-container {
+  background: #16202e;
+  border-color: #283340;
+}
+
+.app-layout.dark .search-container:focus-within {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+.app-layout.dark .search-container input::placeholder {
+  color: #64748b;
+}
+
+/* Navigation items dark */
+.app-layout.dark .nav-item {
+  color: #94a3b8;
+}
+
+.app-layout.dark .nav-item:hover {
+  background: #16202e;
+  color: #10b9f1;
+}
+
+.app-layout.dark .nav-item.active {
+  background: #1e293b;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+/* Profile dropdown dark */
+.app-layout.dark .profile-info .profile-label {
+  color: #64748b;
+}
+
+.app-layout.dark .profile-info .profile-name,
+.app-layout.dark .profile-info .profile-email,
+.app-layout.dark .sign-out-button {
+  color: #f1f5f9;
+}
+
+/* Profile avatar background dark */
+.app-layout.dark .user-avatar {
+  background: #0f172a;
+}
+
+/* Sidebar bottom dark */
+.app-layout.dark .sidebar-bottom {
+  border-top-color: #283340;
+}
+
+.app-layout.dark .sidebar-bottom button {
+  background: #16202e;
+  border-color: #283340;
+}
+
+.app-layout.dark .sidebar-bottom button:hover {
+  background: #1e293b;
+  border-color: #3b82f6;
 }

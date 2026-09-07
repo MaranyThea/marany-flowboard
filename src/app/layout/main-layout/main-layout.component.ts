@@ -24,6 +24,7 @@ export class MainLayoutComponent {
 
   isSidebarCollapsed = false;
   isProfileMenuOpen = false;
+  isDarkMode = false;
 
   get userInitial(): string {
     return this.authService.user()?.name?.charAt(0).toUpperCase() ?? '?';
@@ -35,6 +36,10 @@ export class MainLayoutComponent {
 
   toggleProfileMenu(): void {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
   }
 
   goToSettings(): void {

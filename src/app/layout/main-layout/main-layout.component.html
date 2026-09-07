@@ -1,12 +1,30 @@
-<div class="app-layout">
-
+<div class="app-layout" [class.sidebar-collapsed]="isSidebarCollapsed" [class.dark]="isDarkMode">
   <!-- Topbar -->
   <header class="topbar">
 
-    <!-- Logo -->
-    <div class="logo">
-      <img src="assets/images/flowboard-logo-02.PNG" alt="Apex" class="logo-image" />
+    <!-- Logo + Sidebar Toggle -->
+
+    <div class="topbar-left">
+
+      <!-- Hide / Show Sidebar -->
+
+      <button type="button" class="sidebar-toggle" (click)="toggleSidebar()"
+        [attr.aria-label]="isSidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'">
+
+        @if (isSidebarCollapsed) {
+
+        <span>☰</span>
+        } @else {
+        <span>‹</span>
+        }
+
+      </button>
+      <div class="logo">
+        <img src="assets/images/flowboard-logo-02.PNG" alt="FlowBoard" class="logo-image" />
+      </div>
+
     </div>
+
 
 
     <!-- Center Search -->
@@ -22,8 +40,14 @@
     <!-- Topbar Actions -->
     <div class="topbar-actions">
       <!-- Dark / Light Mode -->
-      <button type="button" class="icon-button" aria-label="Toggle dark mode">
-        ☀
+      <!-- Dark / Light Mode -->
+      <button type="button" class="icon-button" (click)="toggleTheme()"
+        [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+        @if (isDarkMode) {
+        <span>🌙</span>
+        } @else {
+        <span>☀️</span>
+        }
       </button>
       <!-- Notifications -->
       <button type="button" class="icon-button" aria-label="Notifications">
