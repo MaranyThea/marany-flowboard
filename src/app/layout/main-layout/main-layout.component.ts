@@ -1,5 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet
+} from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
 
@@ -14,11 +19,29 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './main-layout.component.scss'
 })
 export class MainLayoutComponent {
+  readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  private readonly authService = inject(AuthService);
+  isSidebarCollapsed = false;
+  isProfileMenuOpen = false;
+
+  get userInitial(): string {
+    return this.authService.user()?.name?.charAt(0).toUpperCase() ?? '?';
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
+  toggleProfileMenu(): void {
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  goToSettings(): void {
+    this.router.navigate(['/settings']);
+  }
 
   logout(): void {
     this.authService.logout();
   }
-
 }

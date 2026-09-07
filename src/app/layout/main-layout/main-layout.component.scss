@@ -16,28 +16,42 @@
   background: #f5f7fa;
 }
 
-
 /* =========================
    Topbar
    ========================= */
 
 .topbar {
-  height: 72px;
+  position: relative;
 
+  height: 72px;
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
 
-  padding: 0 38px;
+  padding: 0 32px;
 
   background: #ffffff;
 
   border-bottom: 1px solid #e5e7eb;
 
+  box-sizing: border-box;
+
   z-index: 100;
 }
 
+/* =========================
+   Topbar Left
+   ========================= */
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  flex-shrink: 0;
+}
 
 /* =========================
    Logo
@@ -53,24 +67,28 @@
     width: 150px;
     height: auto;
 
-    object-fit: contain;
     display: block;
+
+    object-fit: contain;
   }
 }
-
 
 /* =========================
    Search
    ========================= */
 
 .search-container {
-  width: 320px;
+  position: absolute;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 360px;
   height: 40px;
 
   display: flex;
   align-items: center;
 
-  margin-left: 48px;
   padding: 0 14px;
 
   background: #f5f7fa;
@@ -78,10 +96,26 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
 
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
   &:focus-within {
     background: #ffffff;
     border-color: #2563eb;
   }
+}
+
+.search-icon {
+  flex-shrink: 0;
+
+  margin-right: 8px;
+
+  font-size: 20px;
+
+  color: #6b7280;
 }
 
 .search-container input {
@@ -92,9 +126,14 @@
 
   background: transparent;
 
-  font-size: 14px;
-}
+  color: #111827;
 
+  font-size: 14px;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
 
 /* =========================
    Topbar Actions
@@ -104,15 +143,80 @@
   display: flex;
   align-items: center;
 
-  gap: 20px;
+  gap: 8px;
 
   margin-left: auto;
 }
 
+/* =========================
+   Icon Buttons
+   ========================= */
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #374151;
+
+  font-size: 17px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: #f3f6fb;
+
+    border-color: #e5e7eb;
+
+    color: #111827;
+  }
+}
 
 /* =========================
-   User Avatar
+   Profile Container
    ========================= */
+
+.profile-container {
+  position: relative;
+
+  margin-left: 8px;
+}
+
+/* =========================
+   User Profile Button
+   ========================= */
+
+.user-profile {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+}
 
 .user-avatar {
   width: 36px;
@@ -132,6 +236,111 @@
   font-weight: 600;
 }
 
+/* =========================
+   Profile Dropdown
+   ========================= */
+
+.profile-dropdown {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 260px;
+
+  padding: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.04);
+
+  z-index: 200;
+}
+
+/* =========================
+   Profile Information
+   ========================= */
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.profile-label {
+  font-size: 12px;
+
+  color: #9ca3af;
+}
+
+.profile-name {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.profile-email {
+  font-size: 13px;
+
+  color: #6b7280;
+
+  word-break: break-word;
+}
+
+/* =========================
+   Profile Divider
+   ========================= */
+
+.profile-divider {
+  height: 1px;
+
+  margin: 14px 0;
+
+  background: #e5e7eb;
+}
+
+/* =========================
+   Sign Out
+   ========================= */
+
+.sign-out-button {
+  width: 100%;
+
+  padding: 9px 12px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-size: 14px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: #f9fafb;
+
+    border-color: #d1d5db;
+
+    color: #111827;
+  }
+}
 
 /* =========================
    Body
@@ -163,8 +372,13 @@
   background: #ffffff;
 
   border-right: 1px solid #e5e7eb;
-}
 
+  overflow: hidden;
+
+  transition:
+    width 0.25s ease,
+    border-color 0.25s ease;
+}
 
 /* =========================
    Navigation
@@ -177,8 +391,10 @@
   gap: 4px;
 
   padding: 24px 18px;
-}
 
+  transition:
+    opacity 0.2s ease;
+}
 
 /* =========================
    Navigation Items
@@ -209,6 +425,7 @@
 
   &:hover {
     background: #f3f6fb;
+
     color: #2563eb;
   }
 
@@ -221,7 +438,6 @@
   }
 }
 
-
 /* =========================
    Sidebar Bottom
    ========================= */
@@ -232,6 +448,9 @@
   padding: 20px 18px;
 
   border-top: 1px solid #e5e7eb;
+
+  transition:
+    opacity 0.2s ease;
 
   button {
     width: 100%;
@@ -255,8 +474,28 @@
 
     &:hover {
       background: #f9fafb;
+
       border-color: #d1d5db;
     }
+  }
+}
+
+/* =========================
+   Sidebar Collapsed
+   ========================= */
+
+.app-layout.sidebar-collapsed {
+  .sidebar {
+    width: 0;
+
+    border-right: none;
+  }
+
+  .navigation,
+  .sidebar-bottom {
+    opacity: 0;
+
+    pointer-events: none;
   }
 }
 
@@ -273,7 +512,6 @@
   display: flex;
   flex-direction: column;
 }
-
 
 /* =========================
    Page Content

@@ -3,24 +3,73 @@
   <!-- Topbar -->
   <header class="topbar">
 
+    <!-- Logo -->
     <div class="logo">
       <img src="assets/images/flowboard-logo-02.PNG" alt="Apex" class="logo-image" />
     </div>
 
+
+    <!-- Center Search -->
+    <div class="profile-container">
+
+      <!-- Profile Button -->
+      <button type="button" class="user-profile" aria-label="Open user profile" (click)="toggleProfileMenu()">
+        <div class="user-avatar">
+          {{ userInitial }}
+        </div>
+      </button>
+
+      <!-- Profile Dropdown -->
+      @if (isProfileMenuOpen) {
+      <div class="profile-dropdown">
+
+        <div class="profile-info">
+          <span class="profile-label">Signed in as</span>
+
+          <span class="profile-name">
+            {{ authService.user()?.name }}
+          </span>
+
+          <span class="profile-email">
+            {{ authService.user()?.email }}
+          </span>
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <button type="button" class="sign-out-button" (click)="logout()">
+          Sign out
+        </button>
+
+      </div>
+      }
+
+    </div>
     <div class="search-container">
+
       <span class="search-icon">⌕</span>
 
       <input type="search" placeholder="Search..." aria-label="Search" />
+
     </div>
 
-    <div class="topbar-actions">
 
+    <!-- Topbar Actions -->
+    <div class="topbar-actions">
+      <!-- Dark / Light Mode -->
       <button type="button" class="icon-button" aria-label="Toggle dark mode">
         ☀
       </button>
+      <!-- Notifications -->
+      <button type="button" class="icon-button" aria-label="Notifications">
+        🔔
+      </button>
 
-      <div class="user-profile">
-        <div class="user-avatar">M</div>
+      <!-- User Profile -->
+      <div class="user-profile" aria-label="User profile">
+        <div class="user-avatar">
+          {{ userInitial }}
+        </div>
       </div>
 
     </div>
@@ -63,6 +112,7 @@
 
       </nav>
 
+
       <div class="sidebar-bottom">
 
         <button type="button" (click)="logout()">
@@ -78,7 +128,9 @@
     <main class="main-content">
 
       <section class="page-content">
+
         <router-outlet></router-outlet>
+
       </section>
 
     </main>
