@@ -35,8 +35,13 @@
 }
 
 
+
+/* =========================
+   Brand Logo
+   ========================= */
+
 .logo {
-  height: 96px;
+  height: 72px;
 
   display: flex;
   align-items: center;
@@ -45,15 +50,17 @@
 
   border-bottom: 1px solid #e5e7eb;
 
-  h2 {
-    margin: 0;
+  .logo-image {
+    width: 120px;
+    height: auto;
 
-    font-size: 24px;
-    font-weight: 700;
+    object-fit: contain;
 
-    color: #111827;
+    display: block;
   }
 }
+
+
 
 
 /* =========================

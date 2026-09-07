@@ -1,72 +1,43 @@
 <div class="app-layout">
 
   <!-- Sidebar -->
-
   <aside class="sidebar">
 
     <div class="logo">
-      <h2>FlowBoard</h2>
+      <img src="assets/images/apex-logo-06.PNG" alt="Apex" class="logo-image" />
     </div>
-
 
     <nav class="navigation">
 
-      <a
-        routerLink="/dashboard"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-item">
+      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
         Dashboard
       </a>
 
-
-      <a
-        routerLink="/projects"
-        routerLinkActive="active"
-        class="nav-item">
+      <a routerLink="/projects" routerLinkActive="active" class="nav-item">
         Projects
       </a>
 
-
-      <a
-        routerLink="/issues"
-        routerLinkActive="active"
-        class="nav-item">
+      <a routerLink="/issues" routerLinkActive="active" class="nav-item">
         Issues
       </a>
 
-
-      <a
-        routerLink="/users"
-        routerLinkActive="active"
-        class="nav-item">
+      <a routerLink="/users" routerLinkActive="active" class="nav-item">
         Users
       </a>
 
-
-      <a
-        routerLink="/analytics"
-        routerLinkActive="active"
-        class="nav-item">
+      <a routerLink="/analytics" routerLinkActive="active" class="nav-item">
         Analytics
       </a>
 
-
-      <a
-        routerLink="/settings"
-        routerLinkActive="active"
-        class="nav-item">
+      <a routerLink="/settings" routerLinkActive="active" class="nav-item">
         Settings
       </a>
 
     </nav>
 
-
     <div class="sidebar-bottom">
 
-      <button
-        type="button"
-        (click)="logout()">
+      <button type="button" (click)="logout()">
         Logout
       </button>
 
@@ -74,9 +45,7 @@
 
   </aside>
 
-
   <!-- Main Area -->
-
   <main class="main-content">
 
     <header class="topbar">
@@ -85,16 +54,13 @@
         <h1>Welcome Back!</h1>
       </div>
 
-
       <div class="user-profile">
         <span>Marany</span>
       </div>
 
     </header>
 
-
     <!-- Current page appears here -->
-
     <section class="page-content">
 
       <router-outlet></router-outlet>
