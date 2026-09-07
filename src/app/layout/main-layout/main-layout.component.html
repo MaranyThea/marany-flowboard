@@ -10,41 +10,6 @@
 
 
     <!-- Center Search -->
-    <div class="profile-container">
-
-      <!-- Profile Button -->
-      <button type="button" class="user-profile" aria-label="Open user profile" (click)="toggleProfileMenu()">
-        <div class="user-avatar">
-          {{ userInitial }}
-        </div>
-      </button>
-
-      <!-- Profile Dropdown -->
-      @if (isProfileMenuOpen) {
-      <div class="profile-dropdown">
-
-        <div class="profile-info">
-          <span class="profile-label">Signed in as</span>
-
-          <span class="profile-name">
-            {{ authService.user()?.name }}
-          </span>
-
-          <span class="profile-email">
-            {{ authService.user()?.email }}
-          </span>
-        </div>
-
-        <div class="profile-divider"></div>
-
-        <button type="button" class="sign-out-button" (click)="logout()">
-          Sign out
-        </button>
-
-      </div>
-      }
-
-    </div>
     <div class="search-container">
 
       <span class="search-icon">⌕</span>
@@ -66,10 +31,40 @@
       </button>
 
       <!-- User Profile -->
-      <div class="user-profile" aria-label="User profile">
-        <div class="user-avatar">
-          {{ userInitial }}
+      <div class="profile-container">
+
+        <!-- Profile Button -->
+        <button type="button" class="user-profile" aria-label="Open user profile" (click)="toggleProfileMenu()">
+          <div class="user-avatar">
+            {{ userInitial }}
+          </div>
+        </button>
+
+        <!-- Profile Dropdown -->
+        @if (isProfileMenuOpen) {
+        <div class="profile-dropdown">
+
+          <div class="profile-info">
+            <span class="profile-label">Signed in as</span>
+
+            <span class="profile-name">
+              {{ authService.user()?.name }}
+            </span>
+
+            <span class="profile-email">
+              {{ authService.user()?.email }}
+            </span>
+          </div>
+
+          <div class="profile-divider"></div>
+
+          <button type="button" class="sign-out-button" (click)="logout()">
+            Sign out
+          </button>
+
         </div>
+        }
+
       </div>
 
     </div>
@@ -111,15 +106,6 @@
         </a>
 
       </nav>
-
-
-      <div class="sidebar-bottom">
-
-        <button type="button" (click)="logout()">
-          Logout
-        </button>
-
-      </div>
 
     </aside>
 

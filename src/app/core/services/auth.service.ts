@@ -15,6 +15,7 @@ export class AuthService {
   private readonly currentUser = signal<User | null>(null);
 
   readonly isAuthenticated = this.authenticated.asReadonly();
+
   readonly user = this.currentUser.asReadonly();
 
   login(email: string, password: string): boolean {
@@ -26,7 +27,7 @@ export class AuthService {
       this.authenticated.set(true);
 
       this.currentUser.set({
-        name: 'Marany Thea',
+        name: 'Nyx',
         email: email
       });
 
