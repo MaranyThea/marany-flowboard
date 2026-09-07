@@ -1,54 +1,85 @@
-<div class="login-page">
+<div class="login-page" [class.dark]="isDarkMode">
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" type="button" (click)="toggleTheme()" [attr.aria-label]="
+isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+
+    @if (isDarkMode) {
+
+    <span>🌙</span>
+    } @else {
+    <span>☀️</span>
+    }
+
+  </button>
+
   <div class="login-card">
+
     <div class="login-brand">
       <img src="assets/images/flowboard-icon-01.PNG" alt="Flowboard icon" class="login-logo" />
       <img src="assets/images/flowboard-word.PNG" alt="Flowboard word" class="login-word" />
 
-      <p>Your tasks, calendar, habits and money, in one place.</p>
+      <p>
+        Your tasks, calendar, habits and money, in one place.
+      </p>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
       <div class="form-group">
         <label for="email">Email</label>
+
         <input id="email" type="email" formControlName="email" placeholder="Enter your email" />
 
         @if (
         loginForm.controls.email.touched &&
         loginForm.controls.email.hasError("required")
         ) {
-        <small class="error">Email is required.</small>
+        <small class="error">
+          Email is required.
+        </small>
         }
 
         @if (
         loginForm.controls.email.touched &&
         loginForm.controls.email.hasError("email")
         ) {
-        <small class="error">Please enter a valid email.</small>
+        <small class="error">
+          Please enter a valid email.
+        </small>
         }
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
+
         <input id="password" type="password" formControlName="password" placeholder="Enter your password" />
 
         @if (
         loginForm.controls.password.touched &&
         loginForm.controls.password.hasError("required")
         ) {
-        <small class="error">Password is required.</small>
+        <small class="error">
+          Password is required.
+        </small>
         }
 
         @if (
         loginForm.controls.password.touched &&
         loginForm.controls.password.hasError("minlength")
         ) {
-        <small class="error">Password must be at least 6 characters.</small>
+        <small class="error">
+          Password must be at least 6 characters.
+        </small>
         }
       </div>
 
       <button type="submit" [disabled]="loginForm.invalid">
         Sign In
       </button>
+
     </form>
+
   </div>
+
 </div>

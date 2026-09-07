@@ -16,6 +16,12 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
 
+  isDarkMode = false;
+
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+  }
+
   private readonly authService = inject(AuthService);
 
   loginForm = new FormGroup({
@@ -41,10 +47,10 @@ export class LoginComponent {
 
     const success = this.authService.login(email!, password!);
 
-if (success) {
-  this.router.navigate(['/dashboard']);
-} else {
-  console.log('Invalid email or password');
-}
+    if (success) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      console.log('Invalid email or password');
+    }
   }
 }
