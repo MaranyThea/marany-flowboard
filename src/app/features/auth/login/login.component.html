@@ -1,39 +1,52 @@
-<div class="login-page" [class.dark]="isDarkMode">
+<div class="login-page">
 
   <!-- Theme Toggle -->
-  <button class="theme-toggle" type="button" (click)="toggleTheme()" [attr.aria-label]="
-isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
-
-    @if (isDarkMode) {
-
+  <button type="button" class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="
+      isDarkMode()
+        ? 'Switch to light mode'
+        : 'Switch to dark mode'
+    ">
+    @if (isDarkMode()) {
     <span>🌙</span>
     } @else {
     <span>☀️</span>
     }
-
   </button>
 
+
+  <!-- Login Card -->
   <div class="login-card">
 
+    <!-- Brand -->
     <div class="login-brand">
-      <img src="assets/images/flowboard-icon-01.PNG" alt="Flowboard icon" class="login-logo" />
-      <img src="assets/images/flowboard-word.PNG" alt="Flowboard word" class="login-word" />
 
+      <img src="assets/images/flowboard-icon-01.PNG" alt="Flowboard icon" class="login-logo" />
+
+      <img [src]="isDarkMode()
+      ? 'assets/images/flowboard-word-light.PNG'
+      : 'assets/images/flowboard-word-dark.PNG'" alt="Flowboard" class="login-word" />
       <p>
         Build the work. Track the board. Get the bag.
       </p>
+
     </div>
 
+
+    <!-- Login Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
+      <!-- Email -->
       <div class="form-group">
-        <label for="email">Email</label>
+
+        <label for="email">
+          Email
+        </label>
 
         <input id="email" type="email" formControlName="email" placeholder="Enter your email" />
 
         @if (
         loginForm.controls.email.touched &&
-        loginForm.controls.email.hasError("required")
+        loginForm.controls.email.hasError('required')
         ) {
         <small class="error">
           Email is required.
@@ -42,22 +55,28 @@ isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
 
         @if (
         loginForm.controls.email.touched &&
-        loginForm.controls.email.hasError("email")
+        loginForm.controls.email.hasError('email')
         ) {
         <small class="error">
           Please enter a valid email.
         </small>
         }
+
       </div>
 
+
+      <!-- Password -->
       <div class="form-group">
-        <label for="password">Password</label>
+
+        <label for="password">
+          Password
+        </label>
 
         <input id="password" type="password" formControlName="password" placeholder="Enter your password" />
 
         @if (
         loginForm.controls.password.touched &&
-        loginForm.controls.password.hasError("required")
+        loginForm.controls.password.hasError('required')
         ) {
         <small class="error">
           Password is required.
@@ -66,14 +85,17 @@ isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
 
         @if (
         loginForm.controls.password.touched &&
-        loginForm.controls.password.hasError("minlength")
+        loginForm.controls.password.hasError('minlength')
         ) {
         <small class="error">
           Password must be at least 6 characters.
         </small>
         }
+
       </div>
 
+
+      <!-- Submit -->
       <button type="submit" [disabled]="loginForm.invalid">
         Sign In
       </button>

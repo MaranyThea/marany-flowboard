@@ -5,8 +5,10 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
+
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-login',
@@ -16,13 +18,11 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
 
-  isDarkMode = false;
-
-  toggleTheme(): void {
-    this.isDarkMode = !this.isDarkMode;
-  }
-
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
+
+  readonly isDarkMode = this.themeService.isDarkMode;
 
   loginForm = new FormGroup({
     email: new FormControl('', [
@@ -35,7 +35,9 @@ export class LoginComponent {
     ])
   });
 
-  private readonly router = inject(Router);
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {

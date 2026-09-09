@@ -7,6 +7,7 @@ import {
 } from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -19,12 +20,17 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './main-layout.component.scss'
 })
 export class MainLayoutComponent {
+
   readonly authService = inject(AuthService);
+
   private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
+
+  readonly isDarkMode = this.themeService.isDarkMode;
 
   isSidebarCollapsed = false;
   isProfileMenuOpen = false;
-  isDarkMode = false;
+  isNotificationMenuOpen = false;
 
   get userInitial(): string {
     return this.authService.user()?.name?.charAt(0).toUpperCase() ?? '?';
@@ -36,10 +42,22 @@ export class MainLayoutComponent {
 
   toggleProfileMenu(): void {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
+
+    if (this.isProfileMenuOpen) {
+      this.isNotificationMenuOpen = false;
+    }
+  }
+
+  toggleNotificationMenu(): void {
+    this.isNotificationMenuOpen = !this.isNotificationMenuOpen;
+
+    if (this.isNotificationMenuOpen) {
+      this.isProfileMenuOpen = false;
+    }
   }
 
   toggleTheme(): void {
-    this.isDarkMode = !this.isDarkMode;
+    this.themeService.toggleTheme();
   }
 
   goToSettings(): void {
