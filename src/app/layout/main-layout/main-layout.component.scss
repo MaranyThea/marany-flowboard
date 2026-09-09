@@ -1,8 +1,17 @@
+/* =========================================================
+   HOST
+   ========================================================= */
+
 :host {
   display: block;
   width: 100%;
   height: 100vh;
 }
+
+
+/* =========================================================
+   APP LAYOUT
+   ========================================================= */
 
 .app-layout {
   width: 100%;
@@ -21,9 +30,10 @@
     color 0.3s ease;
 }
 
-/* =========================
-   Topbar
-   ========================= */
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
 
 .topbar {
   position: relative;
@@ -36,35 +46,35 @@
 
   padding: 0 32px;
 
-  background: #ffffff;
+  background: var(--card);
 
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--divider);
 
   box-sizing: border-box;
 
   z-index: 100;
+
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 
-/* =========================
-   Topbar Left
-   ========================= */
+
+/* =========================================================
+   TOPBAR LEFT
+   ========================================================= */
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 8px; // Small space between logo and toggle
+
+  gap: 8px;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-}
 
-.logo-image {
-  display: block;
-  height: 36px;
-  width: auto;
-}
+/* =========================================================
+   SIDEBAR TOGGLE
+   ========================================================= */
 
 .sidebar-toggle {
   width: 32px;
@@ -81,7 +91,8 @@
   border-radius: 8px;
 
   background: transparent;
-  color: #64748b;
+
+  color: var(--muted);
 
   font-size: 22px;
   line-height: 1;
@@ -89,43 +100,46 @@
   cursor: pointer;
 
   transition:
-    background 0.2s ease,
+    background-color 0.2s ease,
     color 0.2s ease;
 }
 
 .sidebar-toggle:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--well-2);
+  color: var(--ink);
 }
 
-/* =========================
-   Logo
-   ========================= */
+
+/* =========================================================
+   LOGO
+   ========================================================= */
 
 .logo {
   display: flex;
   align-items: center;
 
   flex-shrink: 0;
-
-  .logo-image {
-    width: 150px;
-    height: auto;
-
-    display: block;
-
-    object-fit: contain;
-  }
 }
 
-/* =========================
-   Search
-   ========================= */
+.logo-image {
+  display: block;
+
+  width: 150px;
+  height: auto;
+
+  object-fit: contain;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
 .search-container {
   position: absolute;
 
   left: 50%;
+
   transform: translateX(-50%);
 
   width: 360px;
@@ -136,20 +150,26 @@
 
   padding: 0 14px;
 
-  background: #f5f7fa;
+  background: var(--well);
 
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-soft);
+
   border-radius: 8px;
 
   box-sizing: border-box;
 
   transition:
     border-color 0.2s ease,
-    background-color 0.2s ease;
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:focus-within {
-    background: #ffffff;
-    border-color: #2563eb;
+    background: var(--card);
+
+    border-color: var(--accent);
+
+    box-shadow:
+      0 0 0 3px var(--focus-ring);
   }
 }
 
@@ -160,7 +180,7 @@
 
   font-size: 20px;
 
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .search-container input {
@@ -171,18 +191,20 @@
 
   background: transparent;
 
-  color: #111827;
+  color: var(--ink);
 
+  font-family: inherit;
   font-size: 14px;
 
   &::placeholder {
-    color: #9ca3af;
+    color: var(--muted-soft);
   }
 }
 
-/* =========================
-   Topbar Actions
-   ========================= */
+
+/* =========================================================
+   TOPBAR ACTIONS
+   ========================================================= */
 
 .topbar-actions {
   display: flex;
@@ -193,9 +215,10 @@
   margin-left: auto;
 }
 
-/* =========================
-   Icon Buttons
-   ========================= */
+
+/* =========================================================
+   ICON BUTTONS
+   ========================================================= */
 
 .icon-button {
   width: 40px;
@@ -212,7 +235,7 @@
 
   background: transparent;
 
-  color: #374151;
+  color: var(--muted);
 
   font-size: 17px;
 
@@ -224,17 +247,18 @@
     color 0.2s ease;
 
   &:hover {
-    background: #f3f6fb;
+    background: var(--well-2);
 
-    border-color: #e5e7eb;
+    border-color: var(--border-soft);
 
-    color: #111827;
+    color: var(--ink);
   }
 }
 
-/* =========================
-   Profile Container
-   ========================= */
+
+/* =========================================================
+   PROFILE CONTAINER
+   ========================================================= */
 
 .profile-container {
   position: relative;
@@ -242,9 +266,10 @@
   margin-left: 8px;
 }
 
-/* =========================
-   User Profile Button
-   ========================= */
+
+/* =========================================================
+   USER PROFILE BUTTON
+   ========================================================= */
 
 .user-profile {
   width: 40px;
@@ -273,17 +298,22 @@
 
   border-radius: 50%;
 
-  background: #eff6ff;
+  background: rgba(0, 180, 216, 0.12);
 
-  color: #2563eb;
+  color: var(--accent);
 
   font-size: 15px;
   font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-/* =========================
-   Profile Dropdown
-   ========================= */
+
+/* =========================================================
+   PROFILE DROPDOWN
+   ========================================================= */
 
 .profile-dropdown {
   position: absolute;
@@ -295,21 +325,26 @@
 
   padding: 16px;
 
-  background: #ffffff;
+  background: var(--card);
 
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-soft);
+
   border-radius: 10px;
 
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.08),
-    0 4px 10px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--card-shadow);
 
   z-index: 200;
+
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-/* =========================
-   Profile Information
-   ========================= */
+
+/* =========================================================
+   PROFILE INFORMATION
+   ========================================================= */
 
 .profile-info {
   display: flex;
@@ -321,52 +356,56 @@
 .profile-label {
   font-size: 12px;
 
-  color: #9ca3af;
+  color: var(--muted-soft);
 }
 
 .profile-name {
   font-size: 14px;
   font-weight: 600;
 
-  color: #111827;
+  color: var(--ink);
 }
 
 .profile-email {
   font-size: 13px;
 
-  color: #6b7280;
+  color: var(--muted);
 
   word-break: break-word;
 }
 
-/* =========================
-   Profile Divider
-   ========================= */
+
+/* =========================================================
+   PROFILE DIVIDER
+   ========================================================= */
 
 .profile-divider {
   height: 1px;
 
   margin: 14px 0;
 
-  background: #e5e7eb;
+  background: var(--divider);
 }
 
-/* =========================
-   Sign Out
-   ========================= */
+
+/* =========================================================
+   SIGN OUT
+   ========================================================= */
 
 .sign-out-button {
   width: 100%;
 
   padding: 9px 12px;
 
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-soft);
+
   border-radius: 7px;
 
-  background: #ffffff;
+  background: var(--well);
 
-  color: #374151;
+  color: var(--text-2);
 
+  font-family: inherit;
   font-size: 14px;
 
   text-align: left;
@@ -379,17 +418,18 @@
     color 0.2s ease;
 
   &:hover {
-    background: #f9fafb;
+    background: var(--well-2);
 
-    border-color: #d1d5db;
+    border-color: var(--border);
 
-    color: #111827;
+    color: var(--ink);
   }
 }
 
-/* =========================
-   Body
-   ========================= */
+
+/* =========================================================
+   APP BODY
+   ========================================================= */
 
 .app-body {
   flex: 1;
@@ -401,9 +441,10 @@
   overflow: hidden;
 }
 
-/* =========================
-   Sidebar
-   ========================= */
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 .sidebar {
   width: 288px;
@@ -414,20 +455,22 @@
   display: flex;
   flex-direction: column;
 
-  background: #ffffff;
+  background: var(--card);
 
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid var(--rail-border);
 
   overflow: hidden;
 
   transition:
     width 0.25s ease,
+    background 0.3s ease,
     border-color 0.25s ease;
 }
 
-/* =========================
-   Navigation
-   ========================= */
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 .navigation {
   display: flex;
@@ -441,9 +484,10 @@
     opacity 0.2s ease;
 }
 
-/* =========================
-   Navigation Items
-   ========================= */
+
+/* =========================================================
+   NAVIGATION ITEMS
+   ========================================================= */
 
 .nav-item {
   display: flex;
@@ -454,9 +498,10 @@
   padding: 0 16px;
 
   border: 1px solid transparent;
+
   border-radius: 8px;
 
-  color: #374151;
+  color: var(--text-2);
 
   text-decoration: none;
 
@@ -469,30 +514,31 @@
     border-color 0.2s ease;
 
   &:hover {
-    background: #f3f6fb;
+    background: var(--well-2);
 
-    color: #2563eb;
+    color: var(--accent);
   }
 
   &.active {
-    background: #eff6ff;
+    background: rgba(0, 180, 216, 0.1);
 
-    border-color: #111827;
+    border-color: rgba(0, 180, 216, 0.25);
 
-    color: #2563eb;
+    color: var(--accent);
   }
 }
 
-/* =========================
-   Sidebar Bottom
-   ========================= */
+
+/* =========================================================
+   SIDEBAR BOTTOM
+   ========================================================= */
 
 .sidebar-bottom {
   margin-top: auto;
 
   padding: 20px 18px;
 
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--divider);
 
   transition:
     opacity 0.2s ease;
@@ -502,32 +548,38 @@
 
     padding: 11px 16px;
 
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-soft);
+
     border-radius: 8px;
 
-    background: #ffffff;
+    background: var(--well);
 
-    color: #374151;
+    color: var(--text-2);
 
+    font-family: inherit;
     font-size: 14px;
 
     cursor: pointer;
 
     transition:
       background-color 0.2s ease,
-      border-color 0.2s ease;
+      border-color 0.2s ease,
+      color 0.2s ease;
 
     &:hover {
-      background: #f9fafb;
+      background: var(--well-2);
 
-      border-color: #d1d5db;
+      border-color: var(--border);
+
+      color: var(--ink);
     }
   }
 }
 
-/* =========================
-   Sidebar Collapsed
-   ========================= */
+
+/* =========================================================
+   SIDEBAR COLLAPSED
+   ========================================================= */
 
 .app-layout.sidebar-collapsed {
   .sidebar {
@@ -544,9 +596,10 @@
   }
 }
 
-/* =========================
-   Main
-   ========================= */
+
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 .main-content {
   flex: 1;
@@ -556,11 +609,17 @@
 
   display: flex;
   flex-direction: column;
+
+  background: var(--app-bg);
+
+  transition:
+    background 0.3s ease;
 }
 
-/* =========================
-   Page Content
-   ========================= */
+
+/* =========================================================
+   PAGE CONTENT
+   ========================================================= */
 
 .page-content {
   flex: 1;
@@ -569,138 +628,35 @@
 
   overflow-y: auto;
   overflow-x: hidden;
-}
 
-/* =========================
-   LIGHT MODE
-   ========================= */
-
-.app-layout {
-  min-height: 100vh;
-
-  background: #f5f9fa;
-  color: #0f172a;
+  background: var(--app-bg);
 
   transition:
-    background 0.3s ease,
-    color 0.3s ease;
+    background 0.3s ease;
 }
 
 
-/* =========================
-   DARK MODE
-   ========================= */
-
-.app-layout.dark {
-  border-color: #2a2c2d;
-  color: #f1f5f9;
-}
-
-/* =========================
-   DARK MODE ELEMENTS
-   ========================= */
-
-.app-layout.dark .topbar,
-.app-layout.dark .sidebar,
-.app-layout.dark .navigation,
-.app-layout.dark .profile-dropdown {
-  background: #131316;
-  border-color: #b9b9b9;
-}
-
-/* Topbar buttons dark */
-.app-layout.dark .sidebar-toggle,
-.app-layout.dark .icon-button {
-  color: #94a3b8;
-}
-
-.app-layout.dark .sidebar-toggle:hover,
-.app-layout.dark .icon-button:hover {
-  background: rgba(24, 24, 29, .82);
-  color: #f1f5f9;
-}
-
-/* Search container dark */
-.app-layout.dark .search-container {
-  background: #16202e;
-  border-color: #283340;
-}
-
-.app-layout.dark .search-container:focus-within {
-  background: #1e293b;
-  border-color: #3b82f6;
-}
-
-.app-layout.dark .search-container input::placeholder {
-  color: #64748b;
-}
-
-/* Navigation items dark */
-.app-layout.dark .nav-item {
-  color: #94a3b8;
-}
-
-.app-layout.dark .nav-item:hover {
-  background: #16202e;
-  color: #10b9f1;
-}
-
-.app-layout.dark .nav-item.active {
-  background: #1e293b;
-  border-color: #3b82f6;
-  color: #3b82f6;
-}
-
-/* Profile dropdown dark */
-.app-layout.dark .profile-info .profile-label {
-  color: #64748b;
-}
-
-.app-layout.dark .profile-info .profile-name,
-.app-layout.dark .profile-info .profile-email,
-.app-layout.dark .sign-out-button {
-  color: #f1f5f9;
-}
-
-/* Profile avatar background dark */
-.app-layout.dark .user-avatar {
-  background: #0f172a;
-}
-
-/* Sidebar bottom dark */
-.app-layout.dark .sidebar-bottom {
-  border-top-color: #283340;
-}
-
-.app-layout.dark .sidebar-bottom button {
-  background: #16202e;
-  border-color: #283340;
-}
-
-.app-layout.dark .sidebar-bottom button:hover {
-  background: #1e293b;
-  border-color: #3b82f6;
-}
-
-/* =========================
-   Notification Container
-   ========================= */
+/* =========================================================
+   NOTIFICATION CONTAINER
+   ========================================================= */
 
 .notification-container {
   position: relative;
 }
 
-/* =========================
-   Notification Button
-   ========================= */
+
+/* =========================================================
+   NOTIFICATION BUTTON
+   ========================================================= */
 
 .notification-button {
   position: relative;
 }
 
-/* =========================
-   Notification Badge
-   ========================= */
+
+/* =========================================================
+   NOTIFICATION BADGE
+   ========================================================= */
 
 .notification-badge {
   position: absolute;
@@ -719,7 +675,8 @@
 
   border-radius: 999px;
 
-  background: #2563eb;
+  background: var(--accent);
+
   color: #ffffff;
 
   font-size: 10px;
@@ -728,9 +685,10 @@
   line-height: 1;
 }
 
-/* =========================
-   Notification Dropdown
-   ========================= */
+
+/* =========================================================
+   NOTIFICATION DROPDOWN
+   ========================================================= */
 
 .notification-dropdown {
   position: absolute;
@@ -740,23 +698,28 @@
 
   width: 360px;
 
-  background: #ffffff;
+  background: var(--card);
 
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-soft);
+
   border-radius: 10px;
 
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.08),
-    0 4px 10px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--card-shadow);
 
   overflow: hidden;
 
   z-index: 200;
+
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-/* =========================
-   Notification Header
-   ========================= */
+
+/* =========================================================
+   NOTIFICATION HEADER
+   ========================================================= */
 
 .notification-header {
   display: flex;
@@ -765,7 +728,7 @@
 
   padding: 16px;
 
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--divider);
 
   h3 {
     margin: 0;
@@ -773,7 +736,7 @@
     font-size: 15px;
     font-weight: 600;
 
-    color: #111827;
+    color: var(--ink);
   }
 }
 
@@ -784,29 +747,32 @@
 
   background: transparent;
 
-  color: #2563eb;
+  color: var(--accent);
 
+  font-family: inherit;
   font-size: 12px;
 
   cursor: pointer;
 
   &:hover {
-    color: #1d4ed8;
+    color: var(--accent-strong);
   }
 }
 
-/* =========================
-   Notification List
-   ========================= */
+
+/* =========================================================
+   NOTIFICATION LIST
+   ========================================================= */
 
 .notification-list {
   display: flex;
   flex-direction: column;
 }
 
-/* =========================
-   Notification Item
-   ========================= */
+
+/* =========================================================
+   NOTIFICATION ITEM
+   ========================================================= */
 
 .notification-item {
   display: flex;
@@ -816,18 +782,24 @@
 
   padding: 14px 16px;
 
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--divider);
 
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.2s ease;
 
   &:hover {
-    background: #f9fafb;
+    background: var(--well);
   }
 
   &.unread {
-    background: #f8fbff;
+    background: rgba(0, 180, 216, 0.06);
   }
 }
+
+
+/* =========================================================
+   NOTIFICATION DOT
+   ========================================================= */
 
 .notification-dot {
   width: 7px;
@@ -839,7 +811,7 @@
 
   border-radius: 50%;
 
-  background: #2563eb;
+  background: var(--accent);
 
   opacity: 0;
 }
@@ -847,6 +819,11 @@
 .notification-item.unread .notification-dot {
   opacity: 1;
 }
+
+
+/* =========================================================
+   NOTIFICATION CONTENT
+   ========================================================= */
 
 .notification-content {
   display: flex;
@@ -860,26 +837,27 @@
     font-size: 13px;
     line-height: 1.4;
 
-    color: #374151;
+    color: var(--text-2);
   }
 
   span {
     font-size: 12px;
 
-    color: #9ca3af;
+    color: var(--muted-soft);
   }
 }
 
-/* =========================
-   Notification Footer
-   ========================= */
+
+/* =========================================================
+   NOTIFICATION FOOTER
+   ========================================================= */
 
 .notification-footer {
   padding: 12px 16px;
 
   text-align: center;
 
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--divider);
 
   button {
     padding: 0;
@@ -888,14 +866,66 @@
 
     background: transparent;
 
-    color: #2563eb;
+    color: var(--accent);
 
+    font-family: inherit;
     font-size: 13px;
 
     cursor: pointer;
 
     &:hover {
-      color: #1d4ed8;
+      color: var(--accent-strong);
     }
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .search-container {
+    width: 280px;
+  }
+
+  .sidebar {
+    width: 240px;
+  }
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .search-container {
+    display: none;
+  }
+
+  .sidebar {
+    width: 220px;
+  }
+
+  .notification-dropdown {
+    width: min(360px, calc(100vw - 32px));
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    height: 64px;
+  }
+
+  .logo-image {
+    width: 120px;
+  }
+
+  .sidebar {
+    width: 200px;
+  }
+
+  .profile-dropdown {
+    width: 240px;
   }
 }

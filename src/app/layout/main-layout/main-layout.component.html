@@ -20,7 +20,9 @@
 
       </button>
       <div class="logo">
-        <img src="assets/images/flowboard-logo-04.PNG" alt="FlowBoard" class="logo-image" />
+        <img [src]="isDarkMode()
+        ? 'assets/images/flowboard-logo-light.PNG'
+        : 'assets/images/flowboard-logo-dark.PNG'" alt="Flowboard" class="logo-image" />
       </div>
 
     </div>
