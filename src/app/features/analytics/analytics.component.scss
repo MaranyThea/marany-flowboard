@@ -1,38 +1,72 @@
 .analytics-page {
-  padding: 32px;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+
+  color: var(--ink);
 }
 
-/* Header */
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
 
 .page-header {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 
   h1 {
     margin: 0;
+
+    color: var(--ink);
+
     font-size: 28px;
-    font-weight: 600;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   p {
-    margin: 8px 0 0;
-    color: #666;
+    margin: 6px 0 0;
+
+    color: var(--muted);
+
+    font-size: 14px;
+    line-height: 1.5;
   }
 }
 
-/* Date Filter */
+
+/* =========================================================
+   DATE FILTER
+   ========================================================= */
 
 .date-filter {
   margin-bottom: 24px;
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
+
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+
+  box-shadow: var(--card-shadow);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   form {
     display: flex;
-    gap: 20px;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 }
+
+
+/* =========================================================
+   FORM GROUP
+   ========================================================= */
 
 .form-group {
   display: flex;
@@ -40,129 +74,296 @@
   gap: 7px;
 
   label {
+    color: var(--text-2);
+
     font-size: 13px;
     font-weight: 500;
   }
 
   input {
-    padding: 9px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: #fff;
-    color: #222;
+    min-width: 170px;
+    box-sizing: border-box;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    background: var(--well);
+    color: var(--ink);
+
     font-family: inherit;
     font-size: 14px;
+
     outline: none;
 
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      color 0.2s ease;
+
+    &:hover {
+      border-color: var(--border-2);
+    }
+
     &:focus {
-      border-color: #2563eb;
+      background: var(--card);
+      border-color: var(--accent);
+
+      box-shadow: 0 0 0 3px var(--focus-ring);
     }
   }
 }
 
-/* Statistics */
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+
   margin-bottom: 24px;
 }
 
+
+/* Statistic Card */
+
 .stat-card {
+  min-width: 0;
+
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
+
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+
+  box-shadow: var(--card-shadow);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: var(--border);
+
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-1px);
+  }
 
   span {
     display: block;
+
     margin-bottom: 8px;
-    color: #666;
+
+    color: var(--muted);
+
     font-size: 13px;
     font-weight: 500;
   }
 
   strong {
     display: block;
-    font-size: 28px;
-    font-weight: 600;
+
+    color: var(--ink);
+
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
   }
 
   small {
     display: block;
+
     margin-top: 6px;
-    color: #999;
+
+    color: var(--muted-soft);
+
     font-size: 12px;
+    line-height: 1.4;
   }
 }
 
-/* Analytics Cards */
+
+/* =========================================================
+   ANALYTICS GRID
+   ========================================================= */
 
 .analytics-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
+
+
+/* Full-width analytics card */
 
 .large-card {
   grid-column: 1 / -1;
 }
 
+
+/* =========================================================
+   ANALYTICS CARD
+   ========================================================= */
+
 .analytics-card {
+  min-width: 0;
   min-height: 280px;
+
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
+
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+
+  box-shadow: var(--card-shadow);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   h2 {
     margin: 0 0 20px;
+
+    color: var(--ink);
+
     font-size: 17px;
     font-weight: 600;
+    line-height: 1.3;
   }
 }
 
+
+/* =========================================================
+   CHART PLACEHOLDER
+   ========================================================= */
+
 .chart-placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 200px;
-  border: 1px dashed #ccc;
-  border-radius: 6px;
-  color: #999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dashed var(--border-2);
+  border-radius: 8px;
+
+  background: var(--well);
+
+  color: var(--muted-soft);
+
   font-size: 14px;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
+
+
+/* =========================================================
+   CHART CONTAINER
+   ========================================================= */
 
 .chart-container {
   position: relative;
+
+  width: 100%;
   height: 320px;
 }
 
-/* Responsive */
 
-@media (max-width: 900px) {
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
+@media (max-width: 1100px) {
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .analytics-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 600px) {
 
-  .analytics-page {
-    padding: 20px;
+@media (max-width: 900px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
   }
 
-  .date-filter form {
-    flex-direction: column;
+  .large-card {
+    grid-column: auto;
+  }
+}
+
+
+@media (max-width: 700px) {
+  .date-filter {
+    padding: 16px;
+
+    form {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 14px;
+    }
   }
 
+  .form-group input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .analytics-card {
+    padding: 16px;
+  }
+
+  .chart-container {
+    height: 280px;
+  }
+
+  .page-header {
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+}
+
+
+@media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+
+    strong {
+      font-size: 26px;
+    }
+  }
+
+  .analytics-grid {
+    gap: 12px;
+  }
+
+  .analytics-card {
+    min-height: 240px;
+  }
+
+  .chart-container {
+    height: 240px;
+  }
+
+  .chart-placeholder {
+    min-height: 180px;
   }
 }
