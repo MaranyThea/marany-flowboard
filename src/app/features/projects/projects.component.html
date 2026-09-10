@@ -1,152 +1,683 @@
 <div class="projects-page">
 
-  <header class="page-header">
+  <!-- =========================================================
+       VIEW 1: PROJECTS LIST VIEW
+       ========================================================= -->
+  @if (!selectedProject()) {
 
-    <div>
-      <h1>Projects</h1>
-      <p>Manage your projects in FlowBoard.</p>
+    <!-- PAGE HEADER -->
+    <header class="page-header">
+      <div class="header-titles">
+        <h1 class="page-title">Projects</h1>
+        <p class="page-subtitle">
+          {{ activeProjectsCount() }} active · {{ archivedProjectsCount() }} archived
+        </p>
+      </div>
+
+      <button type="button" class="btn-new-project" (click)="openCreateForm()">
+        + New project
+      </button>
+    </header>
+
+    <!-- METRICS / STATS PILLS BAR -->
+    <section class="stats-pills-bar" aria-label="Project Statistics">
+      <div class="stat-pill">
+        <span class="pill-number">{{ activeProjectsCount() }}</span>
+        <span class="pill-label">active projects</span>
+      </div>
+
+      <div class="stat-pill">
+        <span class="pill-number">{{ atRiskCount() }}</span>
+        <span class="pill-label">at risk</span>
+      </div>
+
+      <div class="stat-pill">
+        <span class="pill-number">{{ dueWithin7dCount() }}</span>
+        <span class="pill-label">due within 7d</span>
+      </div>
+
+      <div class="stat-pill highlight-pill">
+        <span class="pill-number">{{ avgProgress() }}%</span>
+        <span class="pill-label">avg progress</span>
+      </div>
+    </section>
+
+    <!-- SEARCH & FILTER CONTROLS TOOLBAR -->
+    <section class="toolbar-section">
+      <!-- Left: Search Box -->
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input
+          type="search"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+          placeholder="Search projects..."
+          aria-label="Search projects"
+        />
+      </div>
+
+      <!-- Middle: Domain Filter Pills -->
+      <div class="filter-pills-group">
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="selectedDomain() === 'all'"
+          (click)="setDomain('all')"
+        >
+          <span class="dot dot-all">●</span> All
+        </button>
+
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="selectedDomain() === 'work'"
+          (click)="setDomain('work')"
+        >
+          <span class="dot dot-work">●</span> Work
+        </button>
+
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="selectedDomain() === 'side-project'"
+          (click)="setDomain('side-project')"
+        >
+          <span class="dot dot-side-project">●</span> Side Project
+        </button>
+
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="selectedDomain() === 'school'"
+          (click)="setDomain('school')"
+        >
+          <span class="dot dot-school">●</span> School
+        </button>
+
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="selectedDomain() === 'personal'"
+          (click)="setDomain('personal')"
+        >
+          <span class="dot dot-personal">●</span> Personal
+        </button>
+
+        <!-- Sort Dropdown -->
+        <div class="sort-dropdown-container">
+          <button
+            type="button"
+            class="sort-btn"
+            (click)="toggleSortDropdown()"
+            aria-haspopup="true"
+            [attr.aria-expanded]="sortDropdownOpen"
+          >
+            <span>{{ getSortLabel() }}</span>
+            <span class="chevron">▾</span>
+          </button>
+
+          @if (sortDropdownOpen) {
+            <div class="sort-menu" (click)="$event.stopPropagation()">
+              <button type="button" (click)="setSort('due-soonest')" [class.selected]="sortBy() === 'due-soonest'">
+                Due soonest
+              </button>
+              <button type="button" (click)="setSort('alphabetical')" [class.selected]="sortBy() === 'alphabetical'">
+                Alphabetical
+              </button>
+              <button type="button" (click)="setSort('recent')" [class.selected]="sortBy() === 'recent'">
+                Recently added
+              </button>
+              <button type="button" (click)="setSort('progress')" [class.selected]="sortBy() === 'progress'">
+                Highest progress
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Right: Active / Archived View Toggle -->
+      <div class="view-toggle-capsule">
+        <button
+          type="button"
+          class="toggle-tab"
+          [class.active]="activeTab() === 'active'"
+          (click)="setTab('active')"
+        >
+          Active
+        </button>
+        <button
+          type="button"
+          class="toggle-tab"
+          [class.active]="activeTab() === 'archived'"
+          (click)="setTab('archived')"
+        >
+          Archived · {{ archivedProjectsCount() }}
+        </button>
+      </div>
+    </section>
+
+    <!-- GROUPED PROJECTS LIST -->
+    <div class="projects-groups-container">
+      @for (group of groupedProjects(); track group.id) {
+        <section class="domain-group-section">
+          <!-- Section Header -->
+          <div class="group-header">
+            <span class="group-dot" [style.background-color]="group.dotColor"></span>
+            <h2 class="group-title">{{ group.label }} · {{ group.count }}</h2>
+          </div>
+
+          <!-- Cards Grid -->
+          <div class="cards-grid">
+            @for (project of group.projects; track project.id) {
+              <article
+                class="project-card"
+                [class.is-completed]="project.status === 'completed'"
+                (click)="openProjectDetails(project, $event)"
+              >
+                <!-- Card Header -->
+                <div class="card-header">
+                  <div class="card-title-wrap">
+                    <span class="domain-badge-square" [style.background-color]="group.dotColor"></span>
+                    <h3 class="card-title">{{ project.name }}</h3>
+
+                    <span
+                      class="status-badge"
+                      [class.on-track]="project.status === 'on-track' || project.status === 'in-progress' || project.status === 'planning'"
+                      [class.at-risk]="project.status === 'at-risk'"
+                      [class.completed]="project.status === 'completed'"
+                    >
+                      {{ project.status === 'on-track' ? 'On track' : project.status === 'at-risk' ? 'At risk' : project.status === 'completed' ? 'Completed' : (project.status | titlecase) }}
+                    </span>
+                  </div>
+
+                  <div class="card-header-actions">
+                    @if (project.due) {
+                      <span class="due-text">due {{ project.due }}</span>
+                    }
+                    <button
+                      type="button"
+                      class="btn-icon-edit"
+                      title="Edit project"
+                      (click)="openEditForm(project, $event)"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                  <div class="progress-track">
+                    <div
+                      class="progress-fill"
+                      [style.width.%]="project.progress || 0"
+                      [style.background-color]="group.dotColor"
+                    ></div>
+                  </div>
+                  <span class="progress-label">{{ project.progress || 0 }}%</span>
+                </div>
+
+                <!-- Open Tasks / Sub-projects Counter -->
+                <div class="stats-counter-line">
+                  <span class="counter-bullet">○</span>
+                  <span>
+                    {{ project.openTasks || 0 }} open · {{ project.totalTasks || 0 }} tasks
+                    @if (project.subProjects && project.subProjects.length > 0) {
+                      · {{ project.subProjects.length }} sub-projects
+                    }
+                  </span>
+                </div>
+
+                <!-- Next Action Item -->
+                @if (project.nextTask) {
+                  <div class="next-task-line">
+                    <span class="next-label">Next:</span>
+                    <span class="next-value">{{ project.nextTask }}</span>
+                  </div>
+                }
+
+                <!-- Sub-projects Hierarchy Tree -->
+                @if (project.subProjects && project.subProjects.length > 0) {
+                  <div class="sub-projects-tree">
+                    @for (sub of project.subProjects; track sub.id) {
+                      <div class="tree-item">
+                        <div class="tree-item-name">
+                          <span class="tree-branch">└</span>
+                          <span class="sub-name">{{ sub.name }}</span>
+                        </div>
+                        <span class="sub-progress">{{ sub.progress || 0 }}%</span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Card Footer Actions -->
+                <div class="card-footer">
+                  <button
+                    type="button"
+                    class="btn-subproject"
+                    (click)="$event.stopPropagation(); openCreateForm(project.id, project.domain)"
+                  >
+                    + Sub-project
+                  </button>
+
+                  <div class="card-footer-right">
+                    <button
+                      type="button"
+                      class="btn-complete"
+                      [class.completed]="project.status === 'completed'"
+                      (click)="toggleComplete(project, $event)"
+                    >
+                      ✓ Complete
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-open"
+                      (click)="openProjectDetails(project, $event)"
+                    >
+                      Open →
+                    </button>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Empty State -->
+      @if (groupedProjects().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">📁</div>
+          <h3>No projects found</h3>
+          <p>No projects match your current search or filters.</p>
+          <button type="button" class="btn-new-project" (click)="openCreateForm()">
+            + Create a Project
+          </button>
+        </div>
+      }
     </div>
 
-    <button type="button" (click)="openCreateForm()">
-      + New Project
-    </button>
+  } @else {
 
-  </header>
+    <!-- =========================================================
+         VIEW 2: PROJECT DETAILS DRILLDOWN VIEW
+         ========================================================= -->
+    @let p = selectedProject()!;
+    <div class="project-details-view">
 
-
-  @if (showForm) {
-
-  <section class="project-form">
-
-    <div class="form-header">
-      <h2>
-        {{ editingProjectId === null ? 'New Project' : 'Edit Project' }}
-      </h2>
-
-      <button type="button" (click)="closeForm()">
-        Cancel
-      </button>
-    </div>
-
-
-    <form [formGroup]="projectForm" (ngSubmit)="saveProject()">
-
-      <div class="form-group">
-
-        <label for="name">
-          Project Name
-        </label>
-
-        <input id="name" type="text" formControlName="name" placeholder="Enter project name">
-
-        @if (
-        projectForm.controls.name.touched &&
-        projectForm.controls.name.invalid
-        ) {
-        <small>
-          Project name is required and must be at least 3 characters.
-        </small>
-        }
-
+      <!-- Back Breadcrumb Link -->
+      <div class="details-top-nav">
+        <button type="button" class="btn-back-link" (click)="backToProjectList()">
+          <span class="back-arrow">←</span> Projects
+        </button>
       </div>
 
+      <!-- Project Header -->
+      <header class="details-header">
+        <div class="details-title-row">
+          <span
+            class="project-square-badge"
+            [style.background-color]="getDomainDotColor(p.domain)"
+          ></span>
 
-      <div class="form-group">
+          <h1 class="project-headline">{{ p.name }}</h1>
 
-        <label for="description">
-          Description
-        </label>
+          <span class="domain-tag-badge">
+            {{ getDomainLabel(p.domain) }}
+          </span>
 
-        <textarea id="description" formControlName="description" placeholder="Enter project description">
-          </textarea>
+          <span
+            class="status-badge"
+            [class.on-track]="p.status === 'on-track' || p.status === 'in-progress' || p.status === 'planning'"
+            [class.at-risk]="p.status === 'at-risk'"
+            [class.completed]="p.status === 'completed'"
+          >
+            {{ p.status === 'on-track' ? 'On track' : p.status === 'at-risk' ? 'At risk' : p.status === 'completed' ? 'Completed' : (p.status | titlecase) }}
+          </span>
 
-        @if (
-        projectForm.controls.description.touched &&
-        projectForm.controls.description.invalid
-        ) {
-        <small>
-          Description is required.
-        </small>
-        }
+          @if (p.due) {
+            <span class="details-due-date">due {{ p.due }}</span>
+          }
+        </div>
 
-      </div>
+        <div class="details-header-actions">
+          <button
+            type="button"
+            class="btn-mark-complete"
+            [class.completed]="p.status === 'completed'"
+            (click)="toggleComplete(p, $event)"
+          >
+            <span class="check-icon">✓</span> Mark complete
+          </button>
 
+          <button
+            type="button"
+            class="btn-edit-project"
+            (click)="openEditForm(p, $event)"
+          >
+            <span class="edit-icon">✎</span> Edit project
+          </button>
+        </div>
+      </header>
 
-      <div class="form-group">
+      <!-- 4-Column Stat Cards -->
+      <section class="details-stats-grid">
+        <!-- Card 1: Progress -->
+        <div class="detail-stat-card card-progress">
+          <div class="stat-card-title">
+            PROGRESS · INCL. {{ p.subProjects?.length || 0 }} SUB-PROJECTS
+          </div>
+          <div class="stat-card-subtitle">
+            0 of {{ p.totalTasks || 4 }} tasks done · {{ p.progress || 0 }}%
+          </div>
+          <div class="detail-progress-track">
+            <div
+              class="detail-progress-fill"
+              [style.width.%]="p.progress || 0"
+              [style.background-color]="getDomainDotColor(p.domain)"
+            ></div>
+          </div>
+        </div>
 
-        <label for="status">
-          Status
-        </label>
+        <!-- Card 2: To Do -->
+        <div class="detail-stat-card card-task-count">
+          <div class="stat-card-title">TO DO</div>
+          <div class="digit-box digit-todo">
+            {{ p.tasksSummary?.todo || 0 }}
+          </div>
+        </div>
 
-        <select id="status" formControlName="status">
+        <!-- Card 3: In Progress -->
+        <div class="detail-stat-card card-task-count">
+          <div class="stat-card-title">IN PROGRESS</div>
+          <div class="digit-box digit-inprogress">
+            {{ p.tasksSummary?.inProgress || 0 }}
+          </div>
+        </div>
 
-          <option value="planning">
-            Planning
-          </option>
+        <!-- Card 4: Done -->
+        <div class="detail-stat-card card-task-count">
+          <div class="stat-card-title">DONE</div>
+          <div class="digit-box digit-done">
+            {{ p.tasksSummary?.done || 0 }}
+          </div>
+        </div>
+      </section>
 
-          <option value="in-progress">
-            In Progress
-          </option>
-
-          <option value="completed">
-            Completed
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <button type="submit">
-        {{ editingProjectId === null ? 'Create Project' : 'Save Changes' }}
-      </button>
-
-    </form>
-
-  </section>
-
-  }
-
-
-  <section class="project-list">
-
-    @for (project of projects; track project.id) {
-
-    <article class="project-card" role="button" tabindex="0" (click)="openEditForm(project)"
-      (keydown.enter)="openEditForm(project)" (keydown.space)="openEditForm(project)">
-
-      <div class="project-info">
-
-        <h2>
-          {{ project.name }}
-        </h2>
-
-        <p>
-          {{ project.description }}
+      <!-- Milestones Section -->
+      <section class="detail-section milestones-section">
+        <div class="section-title-wrap">
+          <h2 class="section-title">MILESTONES</h2>
+        </div>
+        <p class="section-empty-hint">
+          No milestones yet — mark the big checkpoints so progress is visible at a glance.
         </p>
 
-        <small>
-          Created: {{ project.createdAt }}
-        </small>
+        <!-- Add Milestone Input Bar -->
+        <div class="add-milestone-bar">
+          <input
+            type="text"
+            class="milestone-title-input"
+            [(ngModel)]="newMilestoneTitle"
+            placeholder="New milestone..."
+            (keydown.enter)="addMilestone()"
+          />
+          <input
+            type="text"
+            class="milestone-due-input"
+            [(ngModel)]="newMilestoneDue"
+            placeholder="Due (e.g. Aug 15)"
+            (keydown.enter)="addMilestone()"
+          />
+          <button
+            type="button"
+            class="btn-add-milestone"
+            (click)="addMilestone()"
+            [disabled]="!newMilestoneTitle.trim()"
+          >
+            Add
+          </button>
+        </div>
 
-      </div>
+        <!-- Milestone List (if any) -->
+        @if (p.milestones && p.milestones.length > 0) {
+          <div class="milestones-list">
+            @for (m of p.milestones; track m.id) {
+              <div class="milestone-item" [class.completed]="m.completed">
+                <input
+                  type="checkbox"
+                  [checked]="m.completed"
+                  (change)="toggleMilestone(m.id)"
+                />
+                <span class="milestone-text">{{ m.title }}</span>
+                @if (m.due) {
+                  <span class="milestone-due">{{ m.due }}</span>
+                }
+                <button
+                  type="button"
+                  class="btn-delete-milestone"
+                  (click)="deleteMilestone(m.id, $event)"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </section>
 
+      <!-- Sub-Projects Section -->
+      <section class="detail-section subprojects-section">
+        <div class="subprojects-header">
+          <h2 class="section-title">
+            SUB-PROJECTS · {{ p.subProjects?.length || 0 }}
+          </h2>
+          <button
+            type="button"
+            class="btn-new-subproject-accent"
+            (click)="openCreateForm(p.id, p.domain)"
+          >
+            + New sub-project
+          </button>
+        </div>
 
-      <div class="project-actions">
+        <!-- Sub-Projects Detailed Rows -->
+        <div class="subprojects-rows-list">
+          @for (sub of p.subProjects || []; track sub.id) {
+            <div class="subproject-row-item">
+              <div class="subproject-left">
+                <span
+                  class="subproject-dot"
+                  [style.background-color]="getDomainDotColor(p.domain)"
+                ></span>
+                <span class="subproject-title">{{ sub.name }}</span>
+                <span class="status-badge on-track">On track</span>
+              </div>
 
-        <span class="status" [class.in-progress]="project.status === 'in-progress'"
-          [class.completed]="project.status === 'completed'" [class.planning]="project.status === 'planning'">
+              <div class="subproject-center-track">
+                <div class="subproject-track">
+                  <div
+                    class="subproject-fill"
+                    [style.width.%]="sub.progress || 0"
+                    [style.background-color]="getDomainDotColor(p.domain)"
+                  ></div>
+                </div>
+              </div>
 
-          {{ project.status }}
+              <div class="subproject-right">
+                <span class="sub-pct">{{ sub.progress || 0 }}%</span>
+                <span class="sub-open-tasks">{{ sub.openTasks || 0 }} open</span>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
 
-        </span>
-
-      </div>
-
-    </article>
-
-    }
-
-  </section>
+    </div>
+  }
 
 </div>
+
+<!-- =========================================================
+     PROJECT MODAL (ADD / EDIT)
+     ========================================================= -->
+@if (showForm) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <section
+      class="project-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="project-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- MODAL HEADER -->
+      <header class="modal-header">
+        <h2 id="project-modal-title">
+          {{ editingProjectId === null ? 'ADD PROJECT' : 'EDIT PROJECT' }}
+        </h2>
+        <button
+          type="button"
+          class="close-btn"
+          aria-label="Close"
+          (click)="closeForm()"
+        >
+          ×
+        </button>
+      </header>
+
+      <!-- SCROLLABLE CONTENT -->
+      <div class="modal-content">
+        <form [formGroup]="projectForm" (ngSubmit)="saveProject()">
+          <!-- NAME -->
+          <div class="form-group">
+            <label for="name">NAME</label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="Enter project name"
+            />
+            @if (projectForm.controls.name.touched && projectForm.controls.name.invalid) {
+              <small>Project name is required (min 2 characters).</small>
+            }
+          </div>
+
+          <!-- DOMAIN -->
+          <div class="form-group">
+            <label for="domain">DOMAIN</label>
+            <select id="domain" formControlName="domain">
+              <option value="side-project">Side Project</option>
+              <option value="work">Work</option>
+              <option value="school">School</option>
+              <option value="personal">Personal</option>
+            </select>
+          </div>
+
+          <!-- PARENT PROJECT -->
+          <div class="form-group">
+            <label for="parentProject">PARENT PROJECT (OPTIONAL)</label>
+            <select id="parentProject" formControlName="parentProject">
+              <option value="">None (top-level project)</option>
+              @for (proj of projects(); track proj.id) {
+                <option [value]="proj.id">{{ proj.name }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- DUE -->
+          <div class="form-group">
+            <label for="due">DUE</label>
+            <input
+              id="due"
+              type="text"
+              formControlName="due"
+              placeholder="e.g. 30 Sep 2026"
+            />
+          </div>
+
+          <!-- NOTES -->
+          <div class="form-group">
+            <label for="notes">NOTES</label>
+            <div class="notes-editor">
+              <div class="editor-toolbar">
+                <button type="button"><strong>B</strong></button>
+                <button type="button"><em>I</em></button>
+                <button type="button">H</button>
+                <span class="toolbar-divider"></span>
+                <button type="button">• Bullet</button>
+                <button type="button">☑ Checklist</button>
+                <button type="button">Highlight</button>
+              </div>
+              <textarea
+                id="notes"
+                formControlName="notes"
+                placeholder="What is this project about? What does done look like?"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- FLAG IDLE TASKS -->
+          <div class="form-group">
+            <label for="idleDays">FLAG IDLE TASKS RED AFTER (DAYS)</label>
+            <input
+              id="idleDays"
+              type="number"
+              formControlName="idleDays"
+              placeholder="Blank = off"
+            />
+          </div>
+
+          <!-- GOAL -->
+          <div class="form-group">
+            <label for="goal">GOAL (OPTIONAL)</label>
+            <select id="goal" formControlName="goal">
+              <option value="">No goal</option>
+              <option value="finish">Finish project</option>
+              <option value="deadline">Meet deadline</option>
+            </select>
+          </div>
+
+          <!-- TAGS -->
+          <div class="form-group">
+            <label for="tags">TAGS</label>
+            <input
+              id="tags"
+              type="text"
+              formControlName="tags"
+              placeholder="Type a tag, press Enter"
+            />
+          </div>
+
+          <!-- REPEATS -->
+          <div class="form-group">
+            <label for="repeats">REPEATS</label>
+            <select id="repeats" formControlName="repeats">
+              <option value="never">Never</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <!-- MODAL FOOTER -->
+      <footer class="modal-footer">
+        <button type="button" class="cancel-btn" (click)="closeForm()">
+          Cancel
+        </button>
+        <button type="button" class="submit-btn" (click)="saveProject()">
+          {{ editingProjectId === null ? 'Add project' : 'Save changes' }}
+        </button>
+      </footer>
+    </section>
+  </div>
+}
