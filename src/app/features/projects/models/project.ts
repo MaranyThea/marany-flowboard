@@ -9,20 +9,44 @@ export interface Milestone {
   completed?: boolean;
 }
 
-export interface SubProjectItem {
+export interface TaskActivity {
+  action: string;
+  timestamp: string;
+}
+
+export interface ProjectTask {
   id: number;
-  name: string;
-  progress: number;
-  status?: ProjectStatus;
-  openTasks?: number;
-  totalTasks?: number;
-  completed?: boolean;
+  title: string;
+  status: 'todo' | 'in-progress' | 'done';
+  description?: string;
+  priority?: 'low' | 'medium' | 'high';
+  due?: string;
+  assignee?: string;
+  notes?: string;
+  createdAt?: string;
+  activity?: TaskActivity[];
 }
 
 export interface TasksSummary {
   todo: number;
   inProgress: number;
   done: number;
+}
+
+export interface SubProjectItem {
+  id: number;
+  name: string;
+  progress: number;
+  status?: ProjectStatus;
+  domain?: ProjectDomain;
+  openTasks?: number;
+  totalTasks?: number;
+  tasksSummary?: TasksSummary;
+  tasks?: ProjectTask[];
+  milestones?: Milestone[];
+  subProjects?: SubProjectItem[];
+  completed?: boolean;
+  createdAt?: string;
 }
 
 export interface Project {
@@ -36,6 +60,7 @@ export interface Project {
   openTasks?: number;
   totalTasks?: number;
   tasksSummary?: TasksSummary;
+  tasks?: ProjectTask[];
   nextTask?: string;
   parentId?: number | null;
   subProjects?: SubProjectItem[];

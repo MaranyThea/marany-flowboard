@@ -3,7 +3,7 @@
   <!-- =========================================================
        VIEW 1: PROJECTS LIST VIEW
        ========================================================= -->
-  @if (!selectedProject()) {
+  @if (!activeItem()) {
 
     <!-- PAGE HEADER -->
     <header class="page-header">
@@ -247,7 +247,10 @@
                 @if (project.subProjects && project.subProjects.length > 0) {
                   <div class="sub-projects-tree">
                     @for (sub of project.subProjects; track sub.id) {
-                      <div class="tree-item">
+                      <div
+                        class="tree-item"
+                        (click)="$event.stopPropagation(); openProjectDetails(project); openSubProjectDetails(sub, $event)"
+                      >
                         <div class="tree-item-name">
                           <span class="tree-branch">└</span>
                           <span class="sub-name">{{ sub.name }}</span>
@@ -308,16 +311,30 @@
   } @else {
 
     <!-- =========================================================
-         VIEW 2: PROJECT DETAILS DRILLDOWN VIEW
+         VIEW 2: PROJECT OR SUB-PROJECT DETAILS DRILLDOWN VIEW
          ========================================================= -->
-    @let p = selectedProject()!;
+    @let item = activeItem()!;
     <div class="project-details-view">
 
-      <!-- Back Breadcrumb Link -->
+      <!-- Breadcrumbs Navigation -->
       <div class="details-top-nav">
-        <button type="button" class="btn-back-link" (click)="backToProjectList()">
-          <span class="back-arrow">←</span> Projects
-        </button>
+        @if (item.isSubProject) {
+          <div class="breadcrumbs-trail">
+            <button type="button" class="btn-breadcrumb-link" (click)="backToProjectList()">
+              — Projects
+            </button>
+            <span class="breadcrumb-separator">/</span>
+            <button type="button" class="btn-breadcrumb-link btn-parent-link" (click)="backToParentProject()">
+              {{ item.parentName }}
+            </button>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">{{ item.name }}</span>
+          </div>
+        } @else {
+          <button type="button" class="btn-breadcrumb-link" (click)="backToProjectList()">
+            — Projects
+          </button>
+        }
       </div>
 
       <!-- Project Header -->
@@ -325,26 +342,26 @@
         <div class="details-title-row">
           <span
             class="project-square-badge"
-            [style.background-color]="getDomainDotColor(p.domain)"
+            [style.background-color]="getDomainDotColor(item.domain)"
           ></span>
 
-          <h1 class="project-headline">{{ p.name }}</h1>
+          <h1 class="project-headline">{{ item.name }}</h1>
 
           <span class="domain-tag-badge">
-            {{ getDomainLabel(p.domain) }}
+            {{ getDomainLabel(item.domain) }}
           </span>
 
           <span
             class="status-badge"
-            [class.on-track]="p.status === 'on-track' || p.status === 'in-progress' || p.status === 'planning'"
-            [class.at-risk]="p.status === 'at-risk'"
-            [class.completed]="p.status === 'completed'"
+            [class.on-track]="item.status === 'on-track' || item.status === 'in-progress' || item.status === 'planning'"
+            [class.at-risk]="item.status === 'at-risk'"
+            [class.completed]="item.status === 'completed'"
           >
-            {{ p.status === 'on-track' ? 'On track' : p.status === 'at-risk' ? 'At risk' : p.status === 'completed' ? 'Completed' : (p.status | titlecase) }}
+            {{ item.status === 'on-track' ? 'On track' : item.status === 'at-risk' ? 'At risk' : item.status === 'completed' ? 'Completed' : (item.status | titlecase) }}
           </span>
 
-          @if (p.due) {
-            <span class="details-due-date">due {{ p.due }}</span>
+          @if (item.due) {
+            <span class="details-due-date">due {{ item.due }}</span>
           }
         </div>
 
@@ -352,8 +369,8 @@
           <button
             type="button"
             class="btn-mark-complete"
-            [class.completed]="p.status === 'completed'"
-            (click)="toggleComplete(p, $event)"
+            [class.completed]="item.status === 'completed'"
+            (click)="toggleComplete(item, $event)"
           >
             <span class="check-icon">✓</span> Mark complete
           </button>
@@ -361,7 +378,7 @@
           <button
             type="button"
             class="btn-edit-project"
-            (click)="openEditForm(p, $event)"
+            (click)="selectedProject() && openEditForm(selectedProject()!, $event)"
           >
             <span class="edit-icon">✎</span> Edit project
           </button>
@@ -373,16 +390,19 @@
         <!-- Card 1: Progress -->
         <div class="detail-stat-card card-progress">
           <div class="stat-card-title">
-            PROGRESS · INCL. {{ p.subProjects?.length || 0 }} SUB-PROJECTS
+            PROGRESS
+            @if (item.subProjects && item.subProjects.length > 0) {
+              · INCL. {{ item.subProjects.length }} SUB-PROJECTS
+            }
           </div>
           <div class="stat-card-subtitle">
-            0 of {{ p.totalTasks || 4 }} tasks done · {{ p.progress || 0 }}%
+            {{ item.tasksSummary.done }} of {{ item.totalTasks }} tasks done · {{ item.progress }}%
           </div>
           <div class="detail-progress-track">
             <div
               class="detail-progress-fill"
-              [style.width.%]="p.progress || 0"
-              [style.background-color]="getDomainDotColor(p.domain)"
+              [style.width.%]="item.progress"
+              [style.background-color]="getDomainDotColor(item.domain)"
             ></div>
           </div>
         </div>
@@ -391,7 +411,7 @@
         <div class="detail-stat-card card-task-count">
           <div class="stat-card-title">TO DO</div>
           <div class="digit-box digit-todo">
-            {{ p.tasksSummary?.todo || 0 }}
+            {{ item.tasksSummary.todo }}
           </div>
         </div>
 
@@ -399,7 +419,7 @@
         <div class="detail-stat-card card-task-count">
           <div class="stat-card-title">IN PROGRESS</div>
           <div class="digit-box digit-inprogress">
-            {{ p.tasksSummary?.inProgress || 0 }}
+            {{ item.tasksSummary.inProgress }}
           </div>
         </div>
 
@@ -407,7 +427,7 @@
         <div class="detail-stat-card card-task-count">
           <div class="stat-card-title">DONE</div>
           <div class="digit-box digit-done">
-            {{ p.tasksSummary?.done || 0 }}
+            {{ item.tasksSummary.done }}
           </div>
         </div>
       </section>
@@ -448,9 +468,9 @@
         </div>
 
         <!-- Milestone List (if any) -->
-        @if (p.milestones && p.milestones.length > 0) {
+        @if (item.milestones && item.milestones.length > 0) {
           <div class="milestones-list">
-            @for (m of p.milestones; track m.id) {
+            @for (m of item.milestones; track m.id) {
               <div class="milestone-item" [class.completed]="m.completed">
                 <input
                   type="checkbox"
@@ -478,46 +498,220 @@
       <section class="detail-section subprojects-section">
         <div class="subprojects-header">
           <h2 class="section-title">
-            SUB-PROJECTS · {{ p.subProjects?.length || 0 }}
+            SUB-PROJECTS
+            @if (item.subProjects && item.subProjects.length > 0) {
+              · {{ item.subProjects.length }}
+            }
           </h2>
           <button
             type="button"
             class="btn-new-subproject-accent"
-            (click)="openCreateForm(p.id, p.domain)"
+            (click)="openCreateForm(item.id, item.domain)"
           >
             + New sub-project
           </button>
         </div>
 
-        <!-- Sub-Projects Detailed Rows -->
-        <div class="subprojects-rows-list">
-          @for (sub of p.subProjects || []; track sub.id) {
-            <div class="subproject-row-item">
-              <div class="subproject-left">
-                <span
-                  class="subproject-dot"
-                  [style.background-color]="getDomainDotColor(p.domain)"
-                ></span>
-                <span class="subproject-title">{{ sub.name }}</span>
-                <span class="status-badge on-track">On track</span>
-              </div>
+        @if (!item.subProjects || item.subProjects.length === 0) {
+          <p class="section-empty-hint">
+            Break this project into smaller projects — their tasks roll up here.
+          </p>
+        } @else {
+          <!-- Sub-Projects Detailed Rows -->
+          <div class="subprojects-rows-list">
+            @for (sub of item.subProjects; track sub.id) {
+              <div
+                class="subproject-row-item clickable-row"
+                (click)="openSubProjectDetails(sub, $event)"
+              >
+                <div class="subproject-left">
+                  <span
+                    class="subproject-dot"
+                    [style.background-color]="getDomainDotColor(item.domain)"
+                  ></span>
+                  <span class="subproject-title">{{ sub.name }}</span>
+                  <span class="status-badge on-track">On track</span>
+                </div>
 
-              <div class="subproject-center-track">
-                <div class="subproject-track">
-                  <div
-                    class="subproject-fill"
-                    [style.width.%]="sub.progress || 0"
-                    [style.background-color]="getDomainDotColor(p.domain)"
-                  ></div>
+                <div class="subproject-center-track">
+                  <div class="subproject-track">
+                    <div
+                      class="subproject-fill"
+                      [style.width.%]="sub.progress || 0"
+                      [style.background-color]="getDomainDotColor(item.domain)"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="subproject-right">
+                  <span class="sub-pct">{{ sub.progress || 0 }}%</span>
+                  <span class="sub-open-tasks">{{ sub.openTasks || 0 }} open</span>
                 </div>
               </div>
+            }
+          </div>
+        }
+      </section>
 
-              <div class="subproject-right">
-                <span class="sub-pct">{{ sub.progress || 0 }}%</span>
-                <span class="sub-open-tasks">{{ sub.openTasks || 0 }} open</span>
+      <!-- Tasks Kanban Section (Bottom Items) -->
+      <section class="detail-section tasks-section">
+        <div class="tasks-header">
+          <h2 class="section-title">TASKS · {{ getActiveTasksTotalCount() }}</h2>
+          <button type="button" class="btn-add-task-header" (click)="openAddTask('todo')">
+            + Add task
+          </button>
+        </div>
+
+        <div class="tasks-columns-grid">
+          <!-- Column 1: TO DO -->
+          <div class="task-column">
+            <div class="column-header">
+              <div class="column-title-wrap">
+                <span class="column-dot dot-todo">●</span>
+                <span class="column-name">TO DO</span>
+                <span class="column-count">{{ getActiveTasksByStatus('todo').length }}</span>
               </div>
+              <button
+                type="button"
+                class="btn-column-plus"
+                title="Add task to To Do"
+                (click)="openAddTask('todo')"
+              >
+                +
+              </button>
             </div>
-          }
+
+            <!-- Inline add input if open -->
+            @if (addingTaskToStatus === 'todo') {
+              <div class="inline-add-task-box">
+                <input
+                  type="text"
+                  [(ngModel)]="newTaskTitle"
+                  placeholder="Task title..."
+                  (keydown.enter)="submitNewTask('todo')"
+                  (keydown.escape)="closeAddTask()"
+                />
+                <div class="inline-add-actions">
+                  <button type="button" class="btn-inline-submit" (click)="submitNewTask('todo')">Add</button>
+                  <button type="button" class="btn-inline-cancel" (click)="closeAddTask()">Cancel</button>
+                </div>
+              </div>
+            }
+
+            <div class="tasks-list">
+              @for (task of getActiveTasksByStatus('todo'); track task.id) {
+                <div class="task-item-card" (click)="openEditTaskModal(task, $event)">
+                  <span class="task-pill-badge">To Do</span>
+                  <h4 class="task-card-title">{{ task.title }}</h4>
+                  <span class="task-card-meta">{{ task.createdAt || 'added Sep 9' }}</span>
+                </div>
+              }
+
+              @if (getActiveTasksByStatus('todo').length === 0 && addingTaskToStatus !== 'todo') {
+                <div class="empty-column-hint">No tasks here</div>
+              }
+            </div>
+          </div>
+
+          <!-- Column 2: IN PROGRESS -->
+          <div class="task-column">
+            <div class="column-header">
+              <div class="column-title-wrap">
+                <span class="column-dot dot-inprogress">●</span>
+                <span class="column-name">IN PROGRESS</span>
+                <span class="column-count">{{ getActiveTasksByStatus('in-progress').length }}</span>
+              </div>
+              <button
+                type="button"
+                class="btn-column-plus"
+                title="Add task to In Progress"
+                (click)="openAddTask('in-progress')"
+              >
+                +
+              </button>
+            </div>
+
+            <!-- Inline add input if open -->
+            @if (addingTaskToStatus === 'in-progress') {
+              <div class="inline-add-task-box">
+                <input
+                  type="text"
+                  [(ngModel)]="newTaskTitle"
+                  placeholder="Task title..."
+                  (keydown.enter)="submitNewTask('in-progress')"
+                  (keydown.escape)="closeAddTask()"
+                />
+                <div class="inline-add-actions">
+                  <button type="button" class="btn-inline-submit" (click)="submitNewTask('in-progress')">Add</button>
+                  <button type="button" class="btn-inline-cancel" (click)="closeAddTask()">Cancel</button>
+                </div>
+              </div>
+            }
+
+            <div class="tasks-list">
+              @for (task of getActiveTasksByStatus('in-progress'); track task.id) {
+                <div class="task-item-card in-progress" (click)="openEditTaskModal(task, $event)">
+                  <span class="task-pill-badge">In Progress</span>
+                  <h4 class="task-card-title">{{ task.title }}</h4>
+                  <span class="task-card-meta">{{ task.createdAt || 'added Sep 9' }}</span>
+                </div>
+              }
+
+              @if (getActiveTasksByStatus('in-progress').length === 0 && addingTaskToStatus !== 'in-progress') {
+                <div class="empty-column-hint">No tasks here</div>
+              }
+            </div>
+          </div>
+
+          <!-- Column 3: DONE -->
+          <div class="task-column">
+            <div class="column-header">
+              <div class="column-title-wrap">
+                <span class="column-dot dot-done">●</span>
+                <span class="column-name">DONE</span>
+                <span class="column-count">{{ getActiveTasksByStatus('done').length }}</span>
+              </div>
+              <button
+                type="button"
+                class="btn-column-plus"
+                title="Add task to Done"
+                (click)="openAddTask('done')"
+              >
+                +
+              </button>
+            </div>
+
+            <!-- Inline add input if open -->
+            @if (addingTaskToStatus === 'done') {
+              <div class="inline-add-task-box">
+                <input
+                  type="text"
+                  [(ngModel)]="newTaskTitle"
+                  placeholder="Task title..."
+                  (keydown.enter)="submitNewTask('done')"
+                  (keydown.escape)="closeAddTask()"
+                />
+                <div class="inline-add-actions">
+                  <button type="button" class="btn-inline-submit" (click)="submitNewTask('done')">Add</button>
+                  <button type="button" class="btn-inline-cancel" (click)="closeAddTask()">Cancel</button>
+                </div>
+              </div>
+            }
+
+            <div class="tasks-list">
+              @for (task of getActiveTasksByStatus('done'); track task.id) {
+                <div class="task-item-card done" (click)="openEditTaskModal(task, $event)">
+                  <span class="task-pill-badge">Done</span>
+                  <h4 class="task-card-title">{{ task.title }}</h4>
+                  <span class="task-card-meta">{{ task.createdAt || 'added Sep 9' }}</span>
+                </div>
+              }
+
+              @if (getActiveTasksByStatus('done').length === 0 && addingTaskToStatus !== 'done') {
+                <div class="empty-column-hint">No tasks here</div>
+              }
+            </div>
+          </div>
         </div>
       </section>
 
@@ -677,6 +871,180 @@
         <button type="button" class="submit-btn" (click)="saveProject()">
           {{ editingProjectId === null ? 'Add project' : 'Save changes' }}
         </button>
+      </footer>
+    </section>
+  </div>
+}
+
+<!-- =========================================================
+     TASK EDIT MODAL
+     ========================================================= -->
+@if (showTaskModal) {
+  <div class="modal-overlay" (click)="closeEditTaskModal()">
+    <section
+      class="task-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="task-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- HEADER -->
+      <header class="task-modal-header">
+        <h2 id="task-modal-title">EDIT TASK</h2>
+        <button
+          type="button"
+          class="task-close-btn"
+          aria-label="Close"
+          (click)="closeEditTaskModal()"
+        >
+          ×
+        </button>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="task-modal-content">
+        <form [formGroup]="taskForm" (ngSubmit)="saveTaskModal()">
+          <!-- TITLE -->
+          <div class="form-group">
+            <label for="task-title">TITLE</label>
+            <input
+              id="task-title"
+              type="text"
+              formControlName="title"
+              placeholder="Task title"
+            />
+          </div>
+
+          <!-- STATUS -->
+          <div class="form-group">
+            <label for="task-status">STATUS</label>
+            <select id="task-status" formControlName="status">
+              <option value="todo">To Do</option>
+              <option value="in-progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="form-group">
+            <label for="task-description">DESCRIPTION</label>
+            <div class="notes-editor">
+              <div class="editor-toolbar">
+                <button type="button"><strong>B</strong></button>
+                <button type="button"><em>I</em></button>
+                <button type="button">H</button>
+                <span class="toolbar-divider"></span>
+                <button type="button">• Bullet</button>
+                <button type="button">☑ Checklist</button>
+                <button type="button">Highlight</button>
+              </div>
+              <textarea
+                id="task-description"
+                formControlName="description"
+                placeholder="Write a note..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- DUE -->
+          <div class="form-group">
+            <label for="task-due">DUE</label>
+            <input
+              id="task-due"
+              type="text"
+              formControlName="due"
+              placeholder="e.g. Aug 31"
+            />
+          </div>
+
+          <!-- HIGH PRIORITY SWITCH -->
+          <div class="priority-switch-row">
+            <label class="switch-container">
+              <input
+                type="checkbox"
+                formControlName="highPriority"
+              />
+              <span class="switch-slider"></span>
+            </label>
+            <span class="switch-label">High priority</span>
+          </div>
+
+          <!-- ASSIGNEE -->
+          <div class="form-group">
+            <label for="task-assignee">ASSIGNEE</label>
+            <input
+              id="task-assignee"
+              type="text"
+              formControlName="assignee"
+              placeholder="Assign to..."
+            />
+          </div>
+
+          <!-- NOTES -->
+          <div class="form-group">
+            <label for="task-notes">NOTES</label>
+            <div class="notes-editor">
+              <div class="editor-toolbar">
+                <button type="button"><strong>B</strong></button>
+                <button type="button"><em>I</em></button>
+                <button type="button">H</button>
+                <span class="toolbar-divider"></span>
+                <button type="button">• Bullet</button>
+                <button type="button">☑ Checklist</button>
+                <button type="button">Highlight</button>
+              </div>
+              <textarea
+                id="task-notes"
+                formControlName="notes"
+                placeholder="Write a note..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- ACTIVITY LOG -->
+          <div class="activity-section">
+            <label class="activity-label">ACTIVITY</label>
+            <div class="activity-log-list">
+              @for (act of currentTaskActivity; track act.timestamp) {
+                <div class="activity-item">
+                  <div class="activity-left">
+                    <span class="activity-dot">●</span>
+                    <span class="activity-action">{{ act.action }}</span>
+                  </div>
+                  <span class="activity-time">{{ act.timestamp }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="task-modal-footer">
+        <button
+          type="button"
+          class="btn-delete-modal"
+          (click)="deleteCurrentTaskModal()"
+        >
+          Delete
+        </button>
+
+        <div class="task-modal-footer-right">
+          <button
+            type="button"
+            class="btn-cancel-modal"
+            (click)="closeEditTaskModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn-save-modal"
+            (click)="saveTaskModal()"
+          >
+            Save
+          </button>
+        </div>
       </footer>
     </section>
   </div>

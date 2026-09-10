@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 
 import { ProjectService } from './services/project.service';
-import { Milestone, Project, ProjectDomain, ProjectStatus, SubProjectItem } from './models/project';
+import { Milestone, Project, ProjectDomain, ProjectStatus, ProjectTask, SubProjectItem, TaskActivity } from './models/project';
 
 export interface DomainGroup {
   id: ProjectDomain;
@@ -30,19 +30,30 @@ export class ProjectsComponent implements OnInit {
 
   projects = signal<Project[]>([]);
   selectedProjectId = signal<number | null>(null);
+  selectedSubProjectId = signal<number | null>(null);
 
   searchQuery = signal<string>('');
   selectedDomain = signal<string>('all');
   activeTab = signal<'active' | 'archived'>('active');
   sortBy = signal<'due-soonest' | 'alphabetical' | 'recent' | 'progress'>('due-soonest');
 
+  // Project Modal State
   showForm = false;
   editingProjectId: number | null = null;
   sortDropdownOpen = false;
 
+  // Task Edit Modal State
+  showTaskModal = false;
+  editingTaskId: number | null = null;
+  currentTaskActivity: TaskActivity[] = [];
+
   // Milestone input form state
   newMilestoneTitle = '';
   newMilestoneDue = '';
+
+  // Task inline add state
+  addingTaskToStatus: 'todo' | 'in-progress' | 'done' | null = null;
+  newTaskTitle = '';
 
   readonly domainConfig: { id: ProjectDomain; label: string; dotColor: string }[] = [
     { id: 'work', label: 'WORK', dotColor: '#4ade80' },
@@ -64,11 +75,75 @@ export class ProjectsComponent implements OnInit {
     status: ['on-track' as ProjectStatus]
   });
 
-  // Selected Project for detail view
+  taskForm = this.fb.group({
+    title: ['', [Validators.required]],
+    status: ['todo' as 'todo' | 'in-progress' | 'done', [Validators.required]],
+    description: [''],
+    due: [''],
+    highPriority: [false],
+    assignee: [''],
+    notes: ['']
+  });
+
+  // Selected Project
   selectedProject = computed<Project | null>(() => {
     const id = this.selectedProjectId();
     if (id === null) return null;
     return this.projects().find(p => p.id === id) || null;
+  });
+
+  // Selected SubProject
+  selectedSubProject = computed<SubProjectItem | null>(() => {
+    const p = this.selectedProject();
+    const subId = this.selectedSubProjectId();
+    if (!p || !subId || !p.subProjects) return null;
+    return p.subProjects.find(s => s.id === subId) || null;
+  });
+
+  // Current active item (either sub-project or project)
+  activeItem = computed(() => {
+    const sub = this.selectedSubProject();
+    if (sub) {
+      const parent = this.selectedProject();
+      return {
+        id: sub.id,
+        name: sub.name,
+        domain: sub.domain || parent?.domain || 'side-project',
+        status: sub.status || 'on-track',
+        progress: sub.progress || 0,
+        due: undefined,
+        totalTasks: sub.totalTasks || sub.tasks?.length || 0,
+        openTasks: sub.openTasks || 0,
+        tasksSummary: sub.tasksSummary || { todo: 0, inProgress: 0, done: 0 },
+        tasks: sub.tasks || [],
+        milestones: sub.milestones || [],
+        subProjects: sub.subProjects || [],
+        isSubProject: true,
+        parentName: parent?.name
+      };
+    }
+
+    const p = this.selectedProject();
+    if (p) {
+      return {
+        id: p.id,
+        name: p.name,
+        domain: p.domain,
+        status: p.status,
+        progress: p.progress || 0,
+        due: p.due,
+        totalTasks: p.totalTasks || 4,
+        openTasks: p.openTasks || 0,
+        tasksSummary: p.tasksSummary || { todo: 0, inProgress: 0, done: 0 },
+        tasks: p.tasks || [],
+        milestones: p.milestones || [],
+        subProjects: p.subProjects || [],
+        isSubProject: false,
+        parentName: undefined
+      };
+    }
+
+    return null;
   });
 
   // KPI Computations
@@ -84,9 +159,7 @@ export class ProjectsComponent implements OnInit {
     this.projects().filter(p => !p.isArchived && p.status === 'at-risk').length
   );
 
-  dueWithin7dCount = computed(() => {
-    return 0;
-  });
+  dueWithin7dCount = computed(() => 0);
 
   avgProgress = computed(() => {
     const active = this.projects().filter(p => !p.isArchived);
@@ -95,7 +168,6 @@ export class ProjectsComponent implements OnInit {
     return Math.round(total / active.length);
   });
 
-  // Domain badge counts
   getDomainCount(domainId: string): number {
     if (domainId === 'all') {
       return this.activeProjectsCount();
@@ -174,10 +246,23 @@ export class ProjectsComponent implements OnInit {
       event.stopPropagation();
     }
     this.selectedProjectId.set(project.id);
+    this.selectedSubProjectId.set(null);
+  }
+
+  openSubProjectDetails(sub: SubProjectItem, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.selectedSubProjectId.set(sub.id);
+  }
+
+  backToParentProject(): void {
+    this.selectedSubProjectId.set(null);
   }
 
   backToProjectList(): void {
     this.selectedProjectId.set(null);
+    this.selectedSubProjectId.set(null);
   }
 
   setDomain(domain: string): void {
@@ -262,6 +347,7 @@ export class ProjectsComponent implements OnInit {
           openTasks: 0,
           totalTasks: 0,
           tasksSummary: { todo: 0, inProgress: 0, done: 0 },
+          tasks: [],
           subProjects: [],
           milestones: [],
           notes: formValue.notes || '',
@@ -296,7 +382,69 @@ export class ProjectsComponent implements OnInit {
     this.closeForm();
   }
 
-  toggleComplete(project: Project, event?: Event): void {
+  // Task Edit Modal Handlers
+  openEditTaskModal(task: ProjectTask, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.editingTaskId = task.id;
+    this.currentTaskActivity = task.activity && task.activity.length > 0
+      ? task.activity
+      : [{ action: 'Created', timestamp: 'Sep 9, 10:43 PM' }];
+
+    this.taskForm.setValue({
+      title: task.title,
+      status: task.status || 'todo',
+      description: task.description || '',
+      due: task.due || '',
+      highPriority: task.priority === 'high',
+      assignee: task.assignee || '',
+      notes: task.notes || ''
+    });
+
+    this.showTaskModal = true;
+  }
+
+  closeEditTaskModal(): void {
+    this.showTaskModal = false;
+    this.editingTaskId = null;
+  }
+
+  saveTaskModal(): void {
+    if (this.taskForm.invalid || !this.editingTaskId) {
+      this.taskForm.markAllAsTouched();
+      return;
+    }
+
+    const proj = this.selectedProject();
+    if (!proj) return;
+
+    const formValue = this.taskForm.getRawValue();
+    const updatedTask: ProjectTask = {
+      id: this.editingTaskId,
+      title: formValue.title!,
+      status: formValue.status as 'todo' | 'in-progress' | 'done',
+      description: formValue.description || '',
+      due: formValue.due || '',
+      priority: formValue.highPriority ? 'high' : 'medium',
+      assignee: formValue.assignee || '',
+      notes: formValue.notes || '',
+      activity: this.currentTaskActivity
+    };
+
+    this.projectService.updateTaskDetails(proj.id, this.selectedSubProjectId(), updatedTask);
+    this.closeEditTaskModal();
+  }
+
+  deleteCurrentTaskModal(): void {
+    const proj = this.selectedProject();
+    if (proj && this.editingTaskId) {
+      this.projectService.deleteTask(proj.id, this.selectedSubProjectId(), this.editingTaskId);
+    }
+    this.closeEditTaskModal();
+  }
+
+  toggleComplete(project: Project | { id: number }, event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
@@ -312,26 +460,71 @@ export class ProjectsComponent implements OnInit {
 
   // Milestones handling
   addMilestone(): void {
-    const current = this.selectedProject();
-    if (!current || !this.newMilestoneTitle.trim()) return;
+    const proj = this.selectedProject();
+    if (!proj || !this.newMilestoneTitle.trim()) return;
 
-    this.projectService.addMilestone(current.id, this.newMilestoneTitle.trim(), this.newMilestoneDue.trim());
+    this.projectService.addMilestone(proj.id, this.selectedSubProjectId(), this.newMilestoneTitle.trim(), this.newMilestoneDue.trim());
     this.newMilestoneTitle = '';
     this.newMilestoneDue = '';
   }
 
   toggleMilestone(milestoneId: number): void {
-    const current = this.selectedProject();
-    if (current) {
-      this.projectService.toggleMilestone(current.id, milestoneId);
+    const proj = this.selectedProject();
+    if (proj) {
+      this.projectService.toggleMilestone(proj.id, this.selectedSubProjectId(), milestoneId);
     }
   }
 
   deleteMilestone(milestoneId: number, event?: Event): void {
     if (event) event.stopPropagation();
-    const current = this.selectedProject();
-    if (current) {
-      this.projectService.deleteMilestone(current.id, milestoneId);
+    const proj = this.selectedProject();
+    if (proj) {
+      this.projectService.deleteMilestone(proj.id, this.selectedSubProjectId(), milestoneId);
+    }
+  }
+
+  // Tasks column handlers
+  getActiveTasksByStatus(status: 'todo' | 'in-progress' | 'done'): ProjectTask[] {
+    const item = this.activeItem();
+    if (!item || !item.tasks) return [];
+    return item.tasks.filter(t => t.status === status);
+  }
+
+  getActiveTasksTotalCount(): number {
+    const item = this.activeItem();
+    return item?.tasks?.length || 0;
+  }
+
+  openAddTask(status: 'todo' | 'in-progress' | 'done' = 'todo'): void {
+    this.addingTaskToStatus = status;
+    this.newTaskTitle = '';
+  }
+
+  closeAddTask(): void {
+    this.addingTaskToStatus = null;
+    this.newTaskTitle = '';
+  }
+
+  submitNewTask(status: 'todo' | 'in-progress' | 'done'): void {
+    const proj = this.selectedProject();
+    if (!proj || !this.newTaskTitle.trim()) return;
+
+    this.projectService.addTask(proj.id, this.selectedSubProjectId(), this.newTaskTitle.trim(), status);
+    this.closeAddTask();
+  }
+
+  updateTaskStatus(taskId: number, newStatus: 'todo' | 'in-progress' | 'done'): void {
+    const proj = this.selectedProject();
+    if (proj) {
+      this.projectService.updateTaskStatus(proj.id, this.selectedSubProjectId(), taskId, newStatus);
+    }
+  }
+
+  deleteTask(taskId: number, event?: Event): void {
+    if (event) event.stopPropagation();
+    const proj = this.selectedProject();
+    if (proj) {
+      this.projectService.deleteTask(proj.id, this.selectedSubProjectId(), taskId);
     }
   }
 
