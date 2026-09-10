@@ -1,53 +1,330 @@
-<div class="dashboard">
-  <main class="main-content">
-    <section class="stats">
-      <div class="stat-card">
-        <span class="stat-label">Projects</span>
-        <strong>{{ totalProjects }}</strong>
+<div class="today-dashboard">
+  <!-- Greeting & Status Banner -->
+  <header class="today-header">
+    <div class="header-left">
+      <div class="date-badge">
+        <span class="pulse-dot"></span>
+        {{ currentDateStr() }}
       </div>
+      <h1 class="greeting-title">
+        Good evening, <span class="gradient-text">{{ userName() }}</span> ✦
+      </h1>
+      <p class="greeting-subtitle">
+        Your focus is calibrated at <strong>{{ focusScore }}%</strong> today. 3 high-leverage milestones queued.
+      </p>
+    </div>
 
-      <div class="stat-card">
-        <span class="stat-label">In Progress</span>
-        <strong>{{ inProgressProjects }}</strong>
+    <div class="header-right">
+      <div class="energy-selector">
+        <span class="energy-label">Energy Level:</span>
+        <button 
+          type="button" 
+          class="energy-btn" 
+          [class.active]="dailyEnergy() === 'high'" 
+          (click)="setEnergy('high')"
+          title="High Energy"
+        >
+          ⚡ High
+        </button>
+        <button 
+          type="button" 
+          class="energy-btn" 
+          [class.active]="dailyEnergy() === 'moderate'" 
+          (click)="setEnergy('moderate')"
+          title="Moderate Energy"
+        >
+          🔋 Balanced
+        </button>
+        <button 
+          type="button" 
+          class="energy-btn" 
+          [class.active]="dailyEnergy() === 'chill'" 
+          (click)="setEnergy('chill')"
+          title="Chill Energy"
+        >
+          🌿 Rest
+        </button>
       </div>
+    </div>
+  </header>
 
-      <div class="stat-card">
-        <span class="stat-label">Completed</span>
-        <strong>{{ completedProjects }}</strong>
+  <!-- Metric Quick Cards -->
+  <section class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon metric-icon-blue">🎯</div>
+      <div class="metric-info">
+        <span class="metric-title">Focus Score</span>
+        <div class="metric-value">{{ focusScore }}%</div>
+        <span class="metric-delta positive">▲ +4% vs yesterday</span>
       </div>
+    </div>
 
-      <div class="stat-card">
-        <span class="stat-label">Planning</span>
-        <strong>{{ planningProjects }}</strong>
+    <div class="metric-card">
+      <div class="metric-icon metric-icon-green">✓</div>
+      <div class="metric-info">
+        <span class="metric-title">Tasks Completed</span>
+        <div class="metric-value">2 / 5</div>
+        <span class="metric-delta">40% completed</span>
       </div>
-    </section>
+    </div>
 
-    <section class="dashboard-section">
-      <div class="section-header">
-        <h2>Recent Projects</h2>
-
-        <button type="button">View all</button>
+    <div class="metric-card">
+      <div class="metric-icon metric-icon-orange">🔥</div>
+      <div class="metric-info">
+        <span class="metric-title">Habit Streak</span>
+        <div class="metric-value">18 Days</div>
+        <span class="metric-delta positive">3/4 done today</span>
       </div>
+    </div>
 
-      <div class="project-list">
-        @for (project of recentProjects; track project.id) {
-          <div class="project-card">
-            <div>
-              <h3>{{ project.name }}</h3>
-              <p>{{ project.description }}</p>
-            </div>
+    <div class="metric-card">
+      <div class="metric-icon metric-icon-purple">📁</div>
+      <div class="metric-info">
+        <span class="metric-title">Active Projects</span>
+        <div class="metric-value">{{ projectsCount || 3 }}</div>
+        <a routerLink="/projects" class="metric-link">Open Projects →</a>
+      </div>
+    </div>
+  </section>
 
-            <span
-              class="status"
-              [class.in-progress]="project.status === 'in-progress'"
-              [class.completed]="project.status === 'completed'"
-              [class.planning]="project.status === 'planning'"
-            >
-              {{ project.status }}
-            </span>
+  <!-- Main Content Layout -->
+  <div class="today-grid">
+    <!-- Left Column: Tasks, Schedule, Habits -->
+    <div class="today-main-col">
+      
+      <!-- Priority Tasks Section -->
+      <div class="card-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Priority Focus</h2>
+            <span class="badge-count">{{ todayTasks.length }}</span>
           </div>
-        }
+          <a routerLink="/tasks" class="panel-link">View All Tasks ↗</a>
+        </div>
+
+        <!-- Quick Task Input -->
+        <div class="quick-add-bar">
+          <input 
+            type="text" 
+            [(ngModel)]="newQuickTaskTitle" 
+            (keydown.enter)="addQuickTask()" 
+            placeholder="Add priority task for today... (Press Enter)" 
+            class="quick-input"
+          />
+          <select [(ngModel)]="newQuickTaskDomain" class="quick-select">
+            <option value="Work">Work</option>
+            <option value="Side Project">Side Project</option>
+            <option value="School">School</option>
+            <option value="Personal">Personal</option>
+          </select>
+          <button type="button" class="quick-submit-btn" (click)="addQuickTask()">
+            + Add
+          </button>
+        </div>
+
+        <!-- Task List -->
+        <div class="tasks-list">
+          @for (task of todayTasks; track task.id) {
+            <div class="task-row" [class.completed]="task.completed">
+              <label class="task-checkbox-wrap">
+                <input 
+                  type="checkbox" 
+                  [checked]="task.completed" 
+                  (change)="toggleTask(task)"
+                  class="custom-checkbox"
+                />
+                <span class="checkmark"></span>
+              </label>
+
+              <div class="task-info">
+                <span class="task-title">{{ task.title }}</span>
+                <div class="task-meta">
+                  <span class="domain-tag" [ngClass]="task.domainClass">
+                    {{ task.domain }}
+                  </span>
+                  <span class="task-time">⏰ {{ task.time }}</span>
+                  <span class="priority-badge" [class]="'priority-' + task.priority">
+                    {{ task.priority | uppercase }}
+                  </span>
+                </div>
+              </div>
+
+              <button type="button" class="task-delete-btn" (click)="deleteTask(task.id)" title="Remove task">
+                ✕
+              </button>
+            </div>
+          }
+        </div>
       </div>
-    </section>
-  </main>
+
+      <!-- Schedule / Timeblocking Timeline -->
+      <div class="card-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Today's Timeline</h2>
+            <span class="badge-sub">Timeblocked Schedule</span>
+          </div>
+          <a routerLink="/calendar" class="panel-link">Open Calendar ↗</a>
+        </div>
+
+        <div class="timeline-blocks">
+          @for (block of scheduleBlocks; track block.id) {
+            <div class="timeline-item" [class]="block.status">
+              <div class="timeline-time-col">
+                <span class="time-text">{{ block.time }}</span>
+                <span class="duration-text">{{ block.duration }}</span>
+              </div>
+              <div class="timeline-divider-col">
+                <div class="timeline-dot"></div>
+                <div class="timeline-line"></div>
+              </div>
+              <div class="timeline-content-card">
+                <div class="timeline-title-row">
+                  <span class="timeline-block-title">{{ block.title }}</span>
+                  <span class="domain-tag" [ngClass]="block.domainClass">{{ block.domain }}</span>
+                </div>
+                @if (block.status === 'current') {
+                  <span class="live-indicator">● Happening Now</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Daily Habits Row -->
+      <div class="card-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Habits Check-in</h2>
+            <span class="badge-count">{{ completedHabitsCount }} / {{ dailyHabits.length }} Done</span>
+          </div>
+          <a routerLink="/habits" class="panel-link">Habit Streaks ↗</a>
+        </div>
+
+        <div class="habits-row">
+          @for (habit of dailyHabits; track habit.id) {
+            <button 
+              type="button" 
+              class="habit-chip" 
+              [class.completed]="habit.completed"
+              (click)="toggleHabit(habit)"
+            >
+              <span class="habit-icon">{{ habit.icon }}</span>
+              <div class="habit-details">
+                <span class="habit-name">{{ habit.name }}</span>
+                <span class="habit-streak">🔥 {{ habit.streak }}d</span>
+              </div>
+              <div class="habit-check-indicator">
+                @if (habit.completed) { ✓ } @else { ○ }
+              </div>
+            </button>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Focus Timer, Scratchpad, Quick Links -->
+    <div class="today-side-col">
+      
+      <!-- Live Focus Timer / Pomodoro Widget -->
+      <div class="card-panel timer-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Focus Engine</h2>
+          <span class="timer-mode-tag">{{ timerMode() }}m Session</span>
+        </div>
+
+        <div class="timer-display-wrap">
+          <div class="timer-digits">{{ formattedTimer }}</div>
+          <div class="timer-sub">Deep work block in progress</div>
+        </div>
+
+        <div class="timer-modes">
+          <button 
+            type="button" 
+            class="mode-btn" 
+            [class.active]="timerMode() === '25'" 
+            (click)="setTimerMode('25')"
+          >
+            25m Focus
+          </button>
+          <button 
+            type="button" 
+            class="mode-btn" 
+            [class.active]="timerMode() === '50'" 
+            (click)="setTimerMode('50')"
+          >
+            50m Deep
+          </button>
+          <button 
+            type="button" 
+            class="mode-btn" 
+            [class.active]="timerMode() === '5'" 
+            (click)="setTimerMode('5')"
+          >
+            5m Rest
+          </button>
+        </div>
+
+        <div class="timer-actions">
+          <button 
+            type="button" 
+            class="btn-primary-glow" 
+            (click)="toggleTimer()"
+          >
+            @if (timerRunning()) { ⏸ Pause } @else { ▶ Start Focus }
+          </button>
+          <button 
+            type="button" 
+            class="btn-secondary-dark" 
+            (click)="resetTimer()"
+          >
+            ↺ Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Scratchpad & Intentions -->
+      <div class="card-panel scratchpad-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Daily Scratchpad</h2>
+          <span class="auto-save-hint">Auto-saved</span>
+        </div>
+
+        <textarea 
+          class="scratchpad-textarea"
+          [(ngModel)]="dailyScratchpad"
+          (ngModelChange)="saveScratchpad()"
+          placeholder="Jot down quick thoughts, links, thoughts for evening review, or ideas..."
+        ></textarea>
+      </div>
+
+      <!-- Quick Navigation Hub -->
+      <div class="card-panel quick-links-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Quick Jump</h2>
+        </div>
+        <div class="quick-links-grid">
+          <a routerLink="/projects" class="jump-card">
+            <span class="jump-icon">📁</span>
+            <span class="jump-label">Projects</span>
+          </a>
+          <a routerLink="/goals" class="jump-card">
+            <span class="jump-icon">🎯</span>
+            <span class="jump-label">Goals</span>
+          </a>
+          <a routerLink="/journal" class="jump-card">
+            <span class="jump-icon">📖</span>
+            <span class="jump-label">Journal</span>
+          </a>
+          <a routerLink="/graph" class="jump-card">
+            <span class="jump-icon">🕸️</span>
+            <span class="jump-label">Graph</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>

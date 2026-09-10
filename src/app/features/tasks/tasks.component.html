@@ -1,1 +1,472 @@
-<p>tasks works!</p>
+<div class="tasks-page">
+  <!-- Tasks Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Tasks</span>
+      </div>
+      <h1 class="page-title">Tasks & Action Items</h1>
+      <p class="page-subtitle">Manage, categorize, and execute actions across all life domains</p>
+    </div>
+
+    <div class="header-actions">
+      <!-- View Switcher -->
+      <div class="view-switcher">
+        <button 
+          type="button" 
+          class="switch-btn" 
+          [class.active]="activeView() === 'list'" 
+          (click)="setView('list')"
+          title="List View"
+        >
+          ☰ List
+        </button>
+        <button 
+          type="button" 
+          class="switch-btn" 
+          [class.active]="activeView() === 'kanban'" 
+          (click)="setView('kanban')"
+          title="Kanban Board"
+        >
+          ◫ Board
+        </button>
+        <button 
+          type="button" 
+          class="switch-btn" 
+          [class.active]="activeView() === 'matrix'" 
+          (click)="setView('matrix')"
+          title="Eisenhower Matrix"
+        >
+          ⊞ Matrix
+        </button>
+      </div>
+
+      <button type="button" class="btn-primary-action" (click)="openNewTaskModal()">
+        + New Task
+      </button>
+    </div>
+  </div>
+
+  <!-- Domain Filter Bar -->
+  <div class="filter-bar">
+    <div class="domain-tabs">
+      <button 
+        type="button" 
+        class="domain-tab" 
+        [class.active]="selectedDomain() === 'All'" 
+        (click)="setDomain('All')"
+      >
+        All Tasks
+        <span class="tab-count">{{ tasks().length }}</span>
+      </button>
+      <button 
+        type="button" 
+        class="domain-tab domain-tab-work" 
+        [class.active]="selectedDomain() === 'Work'" 
+        (click)="setDomain('Work')"
+      >
+        <span class="dot-badge work"></span> Work
+      </button>
+      <button 
+        type="button" 
+        class="domain-tab domain-tab-side-project" 
+        [class.active]="selectedDomain() === 'Side Project'" 
+        (click)="setDomain('Side Project')"
+      >
+        <span class="dot-badge side-project"></span> Side Project
+      </button>
+      <button 
+        type="button" 
+        class="domain-tab domain-tab-school" 
+        [class.active]="selectedDomain() === 'School'" 
+        (click)="setDomain('School')"
+      >
+        <span class="dot-badge school"></span> School
+      </button>
+      <button 
+        type="button" 
+        class="domain-tab domain-tab-personal" 
+        [class.active]="selectedDomain() === 'Personal'" 
+        (click)="setDomain('Personal')"
+      >
+        <span class="dot-badge personal"></span> Personal
+      </button>
+    </div>
+
+    <!-- Search input -->
+    <div class="task-search-wrap">
+      <span class="search-ico">🔍</span>
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Filter tasks or projects..." 
+        class="search-input"
+      />
+    </div>
+  </div>
+
+  <!-- 1. LIST VIEW -->
+  @if (activeView() === 'list') {
+    <div class="list-container">
+      <div class="list-section">
+        <div class="section-title-row">
+          <span class="section-title">Incomplete Actions</span>
+          <span class="section-badge">{{ todoTasks().length + inProgressTasks().length }}</span>
+        </div>
+
+        <div class="tasks-table">
+          @for (task of todoTasks(); track task.id) {
+            <div class="task-table-row">
+              <label class="checkbox-container">
+                <input type="checkbox" [checked]="task.status === 'done'" (change)="toggleTaskStatus(task)" />
+                <span class="checkmark"></span>
+              </label>
+
+              <div class="task-cell-main">
+                <div class="task-title-text">{{ task.title }}</div>
+                @if (task.description) {
+                  <div class="task-desc-text">{{ task.description }}</div>
+                }
+              </div>
+
+              <div class="task-cell-meta">
+                @if (task.project) {
+                  <span class="project-pill">📁 {{ task.project }}</span>
+                }
+                <span class="domain-pill" [ngClass]="task.domainClass">{{ task.domain }}</span>
+                <span class="priority-pill" [class]="'priority-' + task.priority">{{ task.priority | uppercase }}</span>
+                <span class="due-pill">⏰ {{ task.dueDate }}</span>
+              </div>
+
+              <div class="task-cell-actions">
+                <button type="button" class="action-icon-btn" (click)="setTaskStatus(task, 'in-progress')" title="Move to In Progress">▶</button>
+                <button type="button" class="action-icon-btn delete" (click)="deleteTask(task.id)" title="Delete">✕</button>
+              </div>
+            </div>
+          }
+
+          @for (task of inProgressTasks(); track task.id) {
+            <div class="task-table-row in-progress-row">
+              <label class="checkbox-container">
+                <input type="checkbox" [checked]="task.status === 'done'" (change)="toggleTaskStatus(task)" />
+                <span class="checkmark"></span>
+              </label>
+
+              <div class="task-cell-main">
+                <div class="task-title-text">{{ task.title }}</div>
+                @if (task.description) {
+                  <div class="task-desc-text">{{ task.description }}</div>
+                }
+              </div>
+
+              <div class="task-cell-meta">
+                <span class="in-prog-badge">● IN PROGRESS</span>
+                @if (task.project) {
+                  <span class="project-pill">📁 {{ task.project }}</span>
+                }
+                <span class="domain-pill" [ngClass]="task.domainClass">{{ task.domain }}</span>
+                <span class="priority-pill" [class]="'priority-' + task.priority">{{ task.priority | uppercase }}</span>
+                <span class="due-pill">⏰ {{ task.dueDate }}</span>
+              </div>
+
+              <div class="task-cell-actions">
+                <button type="button" class="action-icon-btn check" (click)="setTaskStatus(task, 'done')" title="Mark Done">✓</button>
+                <button type="button" class="action-icon-btn delete" (click)="deleteTask(task.id)" title="Delete">✕</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Completed Section -->
+      @if (doneTasks().length > 0) {
+        <div class="list-section completed-section">
+          <div class="section-title-row">
+            <span class="section-title">Completed Actions</span>
+            <span class="section-badge">{{ doneTasks().length }}</span>
+          </div>
+
+          <div class="tasks-table">
+            @for (task of doneTasks(); track task.id) {
+              <div class="task-table-row completed-row">
+                <label class="checkbox-container">
+                  <input type="checkbox" checked (change)="toggleTaskStatus(task)" />
+                  <span class="checkmark"></span>
+                </label>
+
+                <div class="task-cell-main">
+                  <div class="task-title-text strikethrough">{{ task.title }}</div>
+                </div>
+
+                <div class="task-cell-meta">
+                  <span class="domain-pill" [ngClass]="task.domainClass">{{ task.domain }}</span>
+                  <span class="done-tag">✓ Done</span>
+                </div>
+
+                <div class="task-cell-actions">
+                  <button type="button" class="action-icon-btn delete" (click)="deleteTask(task.id)" title="Delete">✕</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- 2. KANBAN VIEW -->
+  @if (activeView() === 'kanban') {
+    <div class="kanban-grid">
+      <!-- TO DO Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <div class="col-title-left">
+            <span class="status-indicator todo"></span>
+            <h3 class="col-title">TO DO</h3>
+          </div>
+          <span class="col-count">{{ todoTasks().length }}</span>
+        </div>
+
+        <div class="kanban-cards">
+          @for (task of todoTasks(); track task.id) {
+            <div class="kanban-card">
+              <div class="card-domain-row">
+                <span class="domain-pill" [ngClass]="task.domainClass">{{ task.domain }}</span>
+                <span class="priority-pill" [class]="'priority-' + task.priority">{{ task.priority | uppercase }}</span>
+              </div>
+              <h4 class="card-title">{{ task.title }}</h4>
+              @if (task.description) {
+                <p class="card-desc">{{ task.description }}</p>
+              }
+              <div class="card-footer-row">
+                <span class="card-due">⏰ {{ task.dueDate }}</span>
+                <div class="card-quick-actions">
+                  <button type="button" class="quick-status-btn" (click)="setTaskStatus(task, 'in-progress')">Start →</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- IN PROGRESS Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <div class="col-title-left">
+            <span class="status-indicator in-progress"></span>
+            <h3 class="col-title">IN PROGRESS</h3>
+          </div>
+          <span class="col-count">{{ inProgressTasks().length }}</span>
+        </div>
+
+        <div class="kanban-cards">
+          @for (task of inProgressTasks(); track task.id) {
+            <div class="kanban-card in-progress-card">
+              <div class="card-domain-row">
+                <span class="domain-pill" [ngClass]="task.domainClass">{{ task.domain }}</span>
+                <span class="priority-pill" [class]="'priority-' + task.priority">{{ task.priority | uppercase }}</span>
+              </div>
+              <h4 class="card-title">{{ task.title }}</h4>
+              @if (task.description) {
+                <p class="card-desc">{{ task.description }}</p>
+              }
+              <div class="card-footer-row">
+                <span class="card-due">⏰ {{ task.dueDate }}</span>
+                <div class="card-quick-actions">
+                  <button type="button" class="quick-status-btn done" (click)="setTaskStatus(task, 'done')">Complete ✓</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- DONE Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <div class="col-title-left">
+            <span class="status-indicator done"></span>
+            <h3 class="col-title">DONE</h3>
+          </div>
+          <span class="col-count">{{ doneTasks().length }}</span>
+        </div>
+
+        <div class="kanban-cards">
+          @for (task of doneTasks(); track task.id) {
+            <div class="kanban-card done-card">
+              <div class="card-domain-row">
+                <span class="domain-pill" [ngClass]="task.domainClass">{{ task.domain }}</span>
+              </div>
+              <h4 class="card-title strikethrough">{{ task.title }}</h4>
+              <div class="card-footer-row">
+                <span class="done-label">✓ Completed</span>
+                <button type="button" class="quick-status-btn delete" (click)="deleteTask(task.id)">✕</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- 3. EISENHOWER MATRIX VIEW -->
+  @if (activeView() === 'matrix') {
+    <div class="matrix-grid">
+      <!-- Q1: Urgent & Important -->
+      <div class="matrix-quadrant q1">
+        <div class="quadrant-header">
+          <div class="quadrant-title">
+            <span class="quadrant-icon">🔥</span>
+            <div>
+              <h3>DO FIRST</h3>
+              <p>Urgent & Important</p>
+            </div>
+          </div>
+          <span class="q-badge">{{ matrixQ1().length }}</span>
+        </div>
+        <div class="matrix-tasks">
+          @for (task of matrixQ1(); track task.id) {
+            <div class="matrix-task-item">
+              <span class="domain-dot" [ngClass]="task.domainClass"></span>
+              <span class="matrix-task-title">{{ task.title }}</span>
+              <button type="button" class="matrix-check-btn" (click)="setTaskStatus(task, 'done')">✓</button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Q2: Not Urgent & Important -->
+      <div class="matrix-quadrant q2">
+        <div class="quadrant-header">
+          <div class="quadrant-title">
+            <span class="quadrant-icon">📅</span>
+            <div>
+              <h3>SCHEDULE</h3>
+              <p>Not Urgent, High Leverage</p>
+            </div>
+          </div>
+          <span class="q-badge">{{ matrixQ2().length }}</span>
+        </div>
+        <div class="matrix-tasks">
+          @for (task of matrixQ2(); track task.id) {
+            <div class="matrix-task-item">
+              <span class="domain-dot" [ngClass]="task.domainClass"></span>
+              <span class="matrix-task-title">{{ task.title }}</span>
+              <button type="button" class="matrix-check-btn" (click)="setTaskStatus(task, 'done')">✓</button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Q3: Urgent & Low Priority / Delegate -->
+      <div class="matrix-quadrant q3">
+        <div class="quadrant-header">
+          <div class="quadrant-title">
+            <span class="quadrant-icon">👥</span>
+            <div>
+              <h3>DELEGATE / QUICK</h3>
+              <p>Urgent, Lower Impact</p>
+            </div>
+          </div>
+          <span class="q-badge">{{ matrixQ3().length }}</span>
+        </div>
+        <div class="matrix-tasks">
+          @for (task of matrixQ3(); track task.id) {
+            <div class="matrix-task-item">
+              <span class="domain-dot" [ngClass]="task.domainClass"></span>
+              <span class="matrix-task-title">{{ task.title }}</span>
+              <button type="button" class="matrix-check-btn" (click)="setTaskStatus(task, 'done')">✓</button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Q4: Completed -->
+      <div class="matrix-quadrant q4">
+        <div class="quadrant-header">
+          <div class="quadrant-title">
+            <span class="quadrant-icon">✓</span>
+            <div>
+              <h3>COMPLETED</h3>
+              <p>Archived & Finished</p>
+            </div>
+          </div>
+          <span class="q-badge">{{ matrixQ4().length }}</span>
+        </div>
+        <div class="matrix-tasks">
+          @for (task of matrixQ4(); track task.id) {
+            <div class="matrix-task-item done">
+              <span class="domain-dot" [ngClass]="task.domainClass"></span>
+              <span class="matrix-task-title strikethrough">{{ task.title }}</span>
+              <span class="done-check">✓</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- New Task Modal -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Create New Action Item</h2>
+          <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Task Title *</label>
+            <input type="text" [(ngModel)]="newTaskTitle" placeholder="e.g. Implement user authentication..." class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea [(ngModel)]="newTaskDescription" placeholder="Add context, sub-steps or links..." class="form-textarea"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Domain</label>
+              <select [(ngModel)]="newTaskDomain" class="form-select">
+                <option value="Work">Work</option>
+                <option value="Side Project">Side Project</option>
+                <option value="School">School</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Priority</label>
+              <select [(ngModel)]="newTaskPriority" class="form-select">
+                <option value="urgent">P1 - Urgent</option>
+                <option value="high">P2 - High</option>
+                <option value="medium">P3 - Medium</option>
+                <option value="low">P4 - Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Due Date</label>
+              <input type="text" [(ngModel)]="newTaskDueDate" placeholder="e.g. Today, Tomorrow, Sep 15" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Linked Project (Optional)</label>
+              <input type="text" [(ngModel)]="newTaskProject" placeholder="e.g. FlowBoard" class="form-input" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-submit" (click)="saveTask()">Create Task</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
