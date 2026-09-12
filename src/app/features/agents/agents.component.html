@@ -1,0 +1,76 @@
+<div class="agents-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Agents</span>
+      </div>
+      <h1 class="page-title">Autonomous AI Agents & Workflows</h1>
+      <p class="page-subtitle">Configure intelligent background agents to automate scheduling, task breakdown, and reviews</p>
+    </div>
+  </div>
+
+  <!-- Agents Grid -->
+  <div class="agents-grid">
+    @for (agent of agents(); track agent.id) {
+      <div class="agent-card" [class.running]="agent.status === 'running'" [class.paused]="agent.status === 'paused'">
+        <div class="agent-card-header">
+          <div class="agent-icon-wrap">
+            <span class="agent-icon">{{ agent.icon }}</span>
+          </div>
+
+          <div class="agent-title-info">
+            <h3 class="agent-name">{{ agent.name }}</h3>
+            <span class="agent-role">{{ agent.role }}</span>
+          </div>
+
+          <button 
+            type="button" 
+            class="status-toggle-btn" 
+            [class.active]="agent.status === 'active' || agent.status === 'running'"
+            (click)="toggleAgentStatus(agent)"
+          >
+            {{ agent.status === 'paused' ? 'PAUSED' : 'ACTIVE' }}
+          </button>
+        </div>
+
+        <p class="agent-desc">{{ agent.description }}</p>
+
+        <div class="agent-meta-grid">
+          <div class="meta-cell">
+            <span class="meta-label">TRIGGER</span>
+            <span class="meta-val">⏰ {{ agent.trigger }}</span>
+          </div>
+          <div class="meta-cell">
+            <span class="meta-label">LLM ENGINE</span>
+            <span class="meta-val">🤖 {{ agent.model }}</span>
+          </div>
+          <div class="meta-cell">
+            <span class="meta-label">LAST EXECUTION</span>
+            <span class="meta-val">{{ agent.lastRun }}</span>
+          </div>
+          <div class="meta-cell">
+            <span class="meta-label">SUCCESS RATE</span>
+            <span class="meta-val text-success">{{ agent.successRate }}% ({{ agent.executionsCount }} runs)</span>
+          </div>
+        </div>
+
+        <div class="agent-card-footer">
+          <button 
+            type="button" 
+            class="btn-run-agent" 
+            [disabled]="agent.status === 'running'" 
+            (click)="runAgent(agent)"
+          >
+            @if (agent.status === 'running') {
+              <span class="spinner"></span> Executing Agent...
+            } @else {
+              ⚡ Trigger Run Now
+            }
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,142 @@
+<div class="goals-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Goals & OKRs</span>
+      </div>
+      <h1 class="page-title">Objectives & Key Results</h1>
+      <p class="page-subtitle">Track long-term vision, quarterly outcomes, and leverage milestones</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-primary-action" (click)="openAddModal()">
+        + New Objective
+      </button>
+    </div>
+  </div>
+
+  <!-- Domain Filter Bar -->
+  <div class="domain-filter-bar">
+    <div class="domain-tabs">
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'All'" (click)="setDomain('All')">
+        All Goals
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Work'" (click)="setDomain('Work')">
+        <span class="dot-badge work"></span> Work
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Side Project'" (click)="setDomain('Side Project')">
+        <span class="dot-badge side-project"></span> Side Project
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'School'" (click)="setDomain('School')">
+        <span class="dot-badge school"></span> School
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Personal'" (click)="setDomain('Personal')">
+        <span class="dot-badge personal"></span> Personal
+      </button>
+    </div>
+  </div>
+
+  <!-- Goals List -->
+  <div class="goals-grid">
+    @for (goal of filteredGoals(); track goal.id) {
+      <div class="goal-card">
+        <div class="goal-top-row">
+          <div class="goal-badges">
+            <span class="domain-pill" [ngClass]="goal.domainClass">{{ goal.domain }}</span>
+            <span class="category-pill">{{ goal.category }}</span>
+          </div>
+          <span class="status-badge" [class]="goal.status">
+            {{ goal.status | uppercase }}
+          </span>
+        </div>
+
+        <h3 class="goal-title">{{ goal.title }}</h3>
+
+        <!-- Progress Bar & Target -->
+        <div class="goal-progress-section">
+          <div class="progress-labels">
+            <span class="metric-current">{{ goal.currentValue }}</span>
+            <span class="metric-target">Target: {{ goal.targetValue }}</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="goal.progress" [ngClass]="goal.domainClass"></div>
+          </div>
+          <div class="progress-pct-row">
+            <span class="pct-num">{{ goal.progress }}% completed</span>
+            <span class="deadline-text">🎯 Due {{ goal.deadline }}</span>
+          </div>
+        </div>
+
+        <!-- Key Results -->
+        <div class="key-results-section">
+          <h4 class="kr-heading">Key Results</h4>
+          <div class="kr-list">
+            @for (kr of goal.keyResults; track $index) {
+              <div class="kr-item" [class.kr-done]="kr.done" (click)="toggleKeyResult(goal, $index)">
+                <span class="kr-checkbox">
+                  @if (kr.done) { ✓ } @else { ○ }
+                </span>
+                <span class="kr-text">{{ kr.text }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- New Goal Modal -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Create New Objective</h2>
+          <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Objective Title *</label>
+            <input type="text" [(ngModel)]="newGoalTitle" placeholder="e.g. Launch SaaS product MVP..." class="form-input" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Domain</label>
+              <select [(ngModel)]="newGoalDomain" class="form-select">
+                <option value="Work">Work</option>
+                <option value="Side Project">Side Project</option>
+                <option value="School">School</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Category / Cycle</label>
+              <input type="text" [(ngModel)]="newGoalCategory" placeholder="e.g. Q3 2026" class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Target Value</label>
+              <input type="text" [(ngModel)]="newGoalTarget" placeholder="e.g. $10k MRR" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Target Deadline</label>
+              <input type="text" [(ngModel)]="newGoalDeadline" placeholder="e.g. Dec 31, 2026" class="form-input" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-submit" (click)="saveGoal()">Save Objective</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

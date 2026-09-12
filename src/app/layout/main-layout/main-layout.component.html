@@ -1,23 +1,11 @@
 <div class="app-layout" [class.sidebar-collapsed]="isSidebarCollapsed">
   <!-- Topbar -->
   <header class="topbar">
-
-    <!-- Logo + Sidebar Toggle -->
-
+    <!-- Topbar Left: Toggle + Logo -->
     <div class="topbar-left">
-
-      <!-- Hide / Show Sidebar -->
-
       <button type="button" class="sidebar-toggle" (click)="toggleSidebar()"
-        [attr.aria-label]="isSidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'">
-
-        @if (isSidebarCollapsed) {
-
-        <span>☰</span>
-        } @else {
-        <span>‹</span>
-        }
-
+        [attr.aria-label]="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'" title="Toggle sidebar">
+        <span>{{ isSidebarCollapsed ? '☰' : '◧' }}</span>
       </button>
       <div class="logo">
         <img [src]="isDarkMode()
@@ -27,184 +15,323 @@
 
     </div>
 
-
-
-    <!-- Center Search -->
-    <div class="search-container">
-
-      <span class="search-icon">⌕</span>
-
-      <input type="search" placeholder="Search..." aria-label="Search" />
-
+    <!-- Center Search Bar Trigger (⌘K) -->
+    <div class="search-container" (click)="toggleCommandPalette()" role="button" tabindex="0">
+      <span class="search-icon">🔍</span>
+      <span class="search-placeholder">Search workspace, tasks, projects...</span>
+      <span class="hotkey-badge">⌘K</span>
     </div>
-
 
     <!-- Topbar Actions -->
     <div class="topbar-actions">
-      <!-- Dark / Light Mode -->
-      <!-- Dark / Light Mode -->
+      <!-- Nova AI Assistant Sparkle Button -->
+      <button type="button" class="nova-ai-btn" (click)="toggleAIDrawer()" title="Open Nova AI Assistant">
+        <span class="nova-sparkle">✦</span>
+        <span class="nova-label">Nova AI</span>
+      </button>
+
+      <!-- Dark / Light Theme Toggle -->
       <button type="button" class="icon-button" (click)="toggleTheme()"
-        [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'">
+        [title]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
         @if (isDarkMode()) {
         <span>🌙</span>
         } @else {
         <span>☀️</span>
         }
       </button>
+
       <!-- Notifications -->
       <div class="notification-container">
-
-        <button type="button" class="icon-button notification-button" aria-label="Notifications"
-          (click)="toggleNotificationMenu()">
+        <button type="button" class="icon-button notification-button" (click)="toggleNotificationMenu()"
+          title="Notifications">
           🔔
-
           <span class="notification-badge">3</span>
         </button>
 
         @if (isNotificationMenuOpen) {
         <div class="notification-dropdown">
-
           <div class="notification-header">
             <h3>Notifications</h3>
-
-            <button type="button" class="mark-read-button">
-              Mark all as read
-            </button>
+            <button type="button" class="mark-read-button">Mark all read</button>
           </div>
 
           <div class="notification-list">
-
             <div class="notification-item unread">
               <div class="notification-dot"></div>
-
               <div class="notification-content">
-                <p>Your project has been updated.</p>
-                <span>5 minutes ago</span>
+                <p><strong>FlowBoard Life OS</strong> project updated</p>
+                <span>10 minutes ago</span>
               </div>
             </div>
 
             <div class="notification-item unread">
               <div class="notification-dot"></div>
-
               <div class="notification-content">
-                <p>You have a new task assigned to you.</p>
+                <p><strong>Nova AI Agent</strong> generated morning briefing</p>
                 <span>1 hour ago</span>
               </div>
             </div>
 
             <div class="notification-item">
               <div class="notification-dot"></div>
-
               <div class="notification-content">
-                <p>Welcome to Apex!</p>
+                <p>Habit streak milestone: 18 days! 🔥</p>
                 <span>Yesterday</span>
               </div>
             </div>
-
           </div>
-
-          <div class="notification-footer">
-            <button type="button">
-              View all notifications
-            </button>
-          </div>
-
         </div>
         }
-
       </div>
 
       <!-- User Profile -->
       <div class="profile-container">
-
-        <!-- Profile Button -->
-        <button type="button" class="user-profile" aria-label="Open user profile" (click)="toggleProfileMenu()">
+        <button type="button" class="user-profile-btn" (click)="toggleProfileMenu()" title="User Profile">
           <div class="user-avatar">
             {{ userInitial }}
           </div>
+          <span class="online-indicator"></span>
         </button>
 
-        <!-- Profile Dropdown -->
         @if (isProfileMenuOpen) {
         <div class="profile-dropdown">
-
           <div class="profile-info">
             <span class="profile-label">Signed in as</span>
-
-            <span class="profile-name">
-              {{ authService.user()?.name }}
-            </span>
-
-            <span class="profile-email">
-              {{ authService.user()?.email }}
-            </span>
+            <span class="profile-name">{{ authService.user()?.name || 'Marany Thea' }}</span>
+            <span class="profile-email">{{ authService.user()?.email || 'marany@example.com' }}</span>
           </div>
+
+          <div class="profile-divider"></div>
+
+          <a routerLink="/settings" class="profile-menu-link" (click)="isProfileMenuOpen = false">
+            ⚙️ Workspace Settings
+          </a>
+          <a routerLink="/where-im-at" class="profile-menu-link" (click)="isProfileMenuOpen = false">
+            📍 Life Balance Audit
+          </a>
 
           <div class="profile-divider"></div>
 
           <button type="button" class="sign-out-button" (click)="logout()">
             Sign out
           </button>
-
         </div>
         }
-
       </div>
-
     </div>
-
   </header>
-
 
   <!-- Body -->
   <div class="app-body">
-
-    <!-- Sidebar -->
+    <!-- Left Sidebar (Axis Structure) -->
     <aside class="sidebar">
+      <div class="sidebar-scrollable">
+        <!-- Quick Search Pill in sidebar -->
+        <div class="sidebar-search-btn" (click)="toggleCommandPalette()">
+          <span>🔍</span>
+          <span class="s-text">Quick search...</span>
+          <span class="s-hotkey">⌘K</span>
+        </div>
 
-      <nav class="navigation">
+        <!-- Primary Navigation -->
+        <nav class="navigation">
+          @for (item of navItems; track item.route) {
+          <a [routerLink]="item.route" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }" class="nav-item">
+            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-label">{{ item.label }}</span>
+            @if (item.badge) {
+            <span class="nav-badge">{{ item.badge }}</span>
+            }
+          </a>
+          }
+        </nav>
 
-        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-          class="nav-item">
-          Dashboard
-        </a>
+        <!-- Domains Bottom Section -->
+        <div class="sidebar-domains-section">
+          <div class="domains-header">
+            <span>DOMAINS</span>
+          </div>
 
-        <a routerLink="/projects" routerLinkActive="active" class="nav-item">
-          Projects
-        </a>
+          <div class="domains-list">
+            <div class="domain-side-item" (click)="filterByDomain('Work')">
+              <span class="domain-dot work"></span>
+              <span class="domain-side-name">Work</span>
+              <span class="domain-side-count">1</span>
+            </div>
 
-        <a routerLink="/issues" routerLinkActive="active" class="nav-item">
-          Issues
-        </a>
+            <div class="domain-side-item" (click)="filterByDomain('Side Project')">
+              <span class="domain-dot side-project"></span>
+              <span class="domain-side-name">Side Project</span>
+              <span class="domain-side-count">2</span>
+            </div>
 
-        <a routerLink="/users" routerLinkActive="active" class="nav-item">
-          Users
-        </a>
+            <div class="domain-side-item" (click)="filterByDomain('School')">
+              <span class="domain-dot school"></span>
+              <span class="domain-side-name">School</span>
+              <span class="domain-side-count">1</span>
+            </div>
 
-        <a routerLink="/analytics" routerLinkActive="active" class="nav-item">
-          Analytics
-        </a>
+            <div class="domain-side-item" (click)="filterByDomain('Personal')">
+              <span class="domain-dot personal"></span>
+              <span class="domain-side-name">Personal</span>
+              <span class="domain-side-count">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <a routerLink="/settings" routerLinkActive="active" class="nav-item">
-          Settings
-        </a>
-
-      </nav>
-
+      <!-- Sidebar Bottom Toggle -->
+      <div class="sidebar-footer">
+        <button type="button" class="collapse-footer-btn" (click)="toggleSidebar()">
+          <span>◧</span>
+          <span>Collapse Sidebar</span>
+        </button>
+      </div>
     </aside>
 
-
-    <!-- Main Area -->
+    <!-- Main Content View -->
     <main class="main-content">
-
       <section class="page-content">
-
         <router-outlet></router-outlet>
-
       </section>
-
     </main>
-
   </div>
 
+  <!-- Floating Nova AI Mascot Bubble -->
+  <button type="button" class="floating-ai-mascot" (click)="toggleAIDrawer()" title="Open Nova AI Assistant">
+    <div class="mascot-inner">
+      <span class="mascot-star">✦</span>
+    </div>
+    <span class="mascot-tooltip">Nova AI</span>
+  </button>
+
+  <!-- Floating Quick Add FAB (+) -->
+  <button type="button" class="floating-quick-fab" (click)="openQuickAdd()" title="Quick Add (+)">
+    <span>+</span>
+  </button>
+
+  <!-- Quick Add FAB Modal -->
+  @if (isQuickAddOpen) {
+  <div class="modal-backdrop" (click)="closeQuickAdd()">
+    <div class="quick-add-card" (click)="$event.stopPropagation()">
+      <div class="quick-add-header">
+        <h3>Quick Capture</h3>
+        <button type="button" class="close-btn" (click)="closeQuickAdd()">✕</button>
+      </div>
+
+      <div class="quick-options-grid">
+        <button type="button" class="opt-btn" (click)="quickAddAction('task')">
+          <span class="opt-icon">✓</span>
+          <span class="opt-label">New Task</span>
+        </button>
+        <button type="button" class="opt-btn" (click)="quickAddAction('project')">
+          <span class="opt-icon">📁</span>
+          <span class="opt-label">New Project</span>
+        </button>
+        <button type="button" class="opt-btn" (click)="quickAddAction('habit')">
+          <span class="opt-icon">⚡</span>
+          <span class="opt-label">New Habit</span>
+        </button>
+        <button type="button" class="opt-btn" (click)="quickAddAction('idea')">
+          <span class="opt-icon">💡</span>
+          <span class="opt-label">New Idea Note</span>
+        </button>
+        <button type="button" class="opt-btn" (click)="quickAddAction('journal')">
+          <span class="opt-icon">📖</span>
+          <span class="opt-label">Daily Journal</span>
+        </button>
+        <button type="button" class="opt-btn" (click)="quickAddAction('expense')">
+          <span class="opt-icon">💳</span>
+          <span class="opt-label">Log Expense</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Nova AI Assistant Sliding Drawer -->
+  @if (isAIDrawerOpen) {
+  <div class="drawer-backdrop" (click)="toggleAIDrawer()">
+    <aside class="ai-drawer" (click)="$event.stopPropagation()">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <span class="ai-header-star">✦</span>
+          <div>
+            <h2 class="drawer-title">Nova AI Assistant</h2>
+            <span class="ai-status-tag">Connected • Gemini 2.0 Pro</span>
+          </div>
+        </div>
+        <button type="button" class="drawer-close-btn" (click)="toggleAIDrawer()">✕</button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Suggested Quick Prompts -->
+        <div class="quick-prompts-row">
+          <button type="button" class="prompt-chip"
+            (click)="sendQuickAIPrompt('Help me plan my day and prioritize tasks')">
+            📅 Plan My Day
+          </button>
+          <button type="button" class="prompt-chip"
+            (click)="sendQuickAIPrompt('Break down FlowBoard project into 3 next steps')">
+            📁 Break Down Project
+          </button>
+          <button type="button" class="prompt-chip"
+            (click)="sendQuickAIPrompt('Generate 3 thoughtful evening reflection questions')">
+            📖 Journal Prompt
+          </button>
+        </div>
+
+        <!-- Chat Messages Area -->
+        <div class="chat-messages">
+          @for (msg of aiMessages; track $index) {
+          <div class="chat-msg" [class.ai-msg]="msg.sender === 'ai'" [class.user-msg]="msg.sender === 'user'">
+            <div class="msg-bubble">
+              <p class="msg-text">{{ msg.text }}</p>
+              <span class="msg-time">{{ msg.time }}</span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <div class="chat-input-wrap">
+          <input type="text" [(ngModel)]="aiChatInput" (keydown.enter)="sendAIMessage()"
+            placeholder="Ask Nova AI anything... (Press Enter)" class="chat-input" />
+          <button type="button" class="send-btn" (click)="sendAIMessage()">
+            ➤
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+  }
+
+  <!-- Command Palette Modal (⌘K) -->
+  @if (isCommandPaletteOpen) {
+  <div class="command-palette-backdrop" (click)="toggleCommandPalette()">
+    <div class="command-palette-card" (click)="$event.stopPropagation()">
+      <div class="command-input-row">
+        <span class="cmd-search-ico">🔍</span>
+        <input type="text" [(ngModel)]="commandSearchQuery" placeholder="Type a command or search workspace..."
+          class="command-input" autofocus />
+        <button type="button" class="cmd-esc-tag" (click)="toggleCommandPalette()">ESC</button>
+      </div>
+
+      <div class="command-results-list">
+        @for (cmd of filteredCommands; track cmd.route) {
+        <div class="command-item" (click)="selectCommand(cmd)">
+          <span class="cmd-item-icon">{{ cmd.icon }}</span>
+          <div class="cmd-item-info">
+            <span class="cmd-item-title">{{ cmd.title }}</span>
+            <span class="cmd-item-sub">{{ cmd.subtitle }}</span>
+          </div>
+          <span class="cmd-item-cat">{{ cmd.category }}</span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
 </div>

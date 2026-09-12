@@ -1,0 +1,81 @@
+<div class="library-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Library</span>
+      </div>
+      <h1 class="page-title">Knowledge Vault & Reading Hub</h1>
+      <p class="page-subtitle">Books, literature highlights, notes, and web knowledge archives</p>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="view-tabs">
+      <button type="button" class="tab-btn" [class.active]="activeTab() === 'books'" (click)="activeTab.set('books')">
+        📚 Books ({{ books().length }})
+      </button>
+      <button type="button" class="tab-btn" [class.active]="activeTab() === 'bookmarks'" (click)="activeTab.set('bookmarks')">
+        🔖 Bookmarks ({{ bookmarks().length }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Books Section -->
+  @if (activeTab() === 'books') {
+    <div class="books-grid">
+      @for (book of filteredBooks(); track book.id) {
+        <div class="book-card">
+          <div class="book-cover" [style.background]="book.coverColor">
+            <span class="book-cover-title">{{ book.title }}</span>
+            <span class="book-cover-author">{{ book.author }}</span>
+          </div>
+
+          <div class="book-info">
+            <div class="book-meta-row">
+              <span class="book-category">{{ book.category }}</span>
+              <span class="book-status-pill" [class]="book.status">
+                {{ book.status === 'reading' ? 'CURRENTLY READING' : 'COMPLETED' }}
+              </span>
+            </div>
+
+            <h3 class="book-title">{{ book.title }}</h3>
+            <p class="book-author-text">by {{ book.author }}</p>
+
+            <p class="book-summary">{{ book.summary }}</p>
+
+            <!-- Progress -->
+            <div class="book-progress-wrap">
+              <div class="progress-info">
+                <span>Page {{ book.currentPage }} of {{ book.totalPages }}</span>
+                <span class="pct-text">{{ ((book.currentPage / book.totalPages) * 100) | number:'1.0-0' }}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" [style.width.%]="(book.currentPage / book.totalPages) * 100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Bookmarks Section -->
+  @if (activeTab() === 'bookmarks') {
+    <div class="bookmarks-list">
+      @for (bm of bookmarks(); track bm.id) {
+        <div class="bookmark-card">
+          <div class="bm-icon">🔖</div>
+          <div class="bm-details">
+            <a [href]="bm.url" target="_blank" class="bm-title">{{ bm.title }} ↗</a>
+            <span class="bm-url">{{ bm.url }}</span>
+          </div>
+          <div class="bm-meta">
+            <span class="domain-pill domain-side-project">{{ bm.domainTag }}</span>
+            <span class="bm-date">{{ bm.savedDate }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

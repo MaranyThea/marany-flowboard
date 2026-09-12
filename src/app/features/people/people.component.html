@@ -1,0 +1,152 @@
+<div class="people-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">People</span>
+      </div>
+      <h1 class="page-title">Personal CRM & Relationships</h1>
+      <p class="page-subtitle">Track important connections, mentorship, teammates, and touchpoint cadence</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-primary-action" (click)="openAddModal()">
+        + Add Connection
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter & Search Bar -->
+  <div class="filter-search-bar">
+    <div class="domain-tabs">
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'All'" (click)="setDomain('All')">
+        All Connections ({{ people().length }})
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Work'" (click)="setDomain('Work')">
+        <span class="dot-badge work"></span> Work
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Side Project'" (click)="setDomain('Side Project')">
+        <span class="dot-badge side-project"></span> Side Project
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'School'" (click)="setDomain('School')">
+        <span class="dot-badge school"></span> School
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Personal'" (click)="setDomain('Personal')">
+        <span class="dot-badge personal"></span> Personal
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-ico">🔍</span>
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search by name, role, company..." class="search-input" />
+    </div>
+  </div>
+
+  <!-- People Grid -->
+  <div class="people-grid">
+    @for (person of filteredPeople(); track person.id) {
+      <div class="person-card">
+        <div class="person-header">
+          <div class="person-avatar" [style.background]="person.avatarColor">
+            {{ person.name.charAt(0) }}
+          </div>
+
+          <div class="person-title-info">
+            <h3 class="person-name">{{ person.name }}</h3>
+            <span class="person-role">{{ person.role }}</span>
+            <span class="person-company">{{ person.company }}</span>
+          </div>
+
+          <span class="domain-pill" [ngClass]="person.domainClass">{{ person.domain }}</span>
+        </div>
+
+        @if (person.notes) {
+          <p class="person-notes">{{ person.notes }}</p>
+        }
+
+        <div class="person-meta-row">
+          <div class="meta-item">
+            <span class="meta-label">LAST TOUCH</span>
+            <span class="meta-val">⏰ {{ person.lastContact }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">CADENCE</span>
+            <span class="meta-val">🔁 {{ person.cadence }}</span>
+          </div>
+        </div>
+
+        <div class="person-footer">
+          <button type="button" class="btn-touchpoint" (click)="logTouchpoint(person)">
+            ✓ Log Interaction
+          </button>
+          <button type="button" class="btn-del-person" (click)="deletePerson(person.id)" title="Remove">✕</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Modal -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Add New Connection</h2>
+          <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" [(ngModel)]="newName" placeholder="e.g. Alex Rivera" class="form-input" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Role</label>
+              <input type="text" [(ngModel)]="newRole" placeholder="e.g. Senior Architect" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Company / Affiliation</label>
+              <input type="text" [(ngModel)]="newCompany" placeholder="e.g. Acme Corp" class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Relationship Tag</label>
+              <select [(ngModel)]="newRelationship" class="form-select">
+                <option value="Colleague">Colleague</option>
+                <option value="Mentor">Mentor</option>
+                <option value="Friend">Friend</option>
+                <option value="Client">Client</option>
+                <option value="Investor">Investor</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Domain</label>
+              <select [(ngModel)]="newDomain" class="form-select">
+                <option value="Work">Work</option>
+                <option value="Side Project">Side Project</option>
+                <option value="School">School</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Meeting Notes / Context</label>
+            <textarea [(ngModel)]="newNotes" placeholder="Key topics, shared interests or recent conversations..." class="form-textarea"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-submit" (click)="savePerson()">Save Connection</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

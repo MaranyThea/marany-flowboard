@@ -1,0 +1,208 @@
+<div class="calendar-page">
+  <!-- Calendar Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Calendar</span>
+      </div>
+      <div class="title-with-nav">
+        <h1 class="page-title">{{ currentMonthName() }} {{ currentYear() }}</h1>
+        <div class="month-nav-btns">
+          <button type="button" class="nav-arrow-btn" (click)="prevMonth()" title="Previous Month">‹</button>
+          <button type="button" class="nav-today-btn" (click)="goToToday()">Today</button>
+          <button type="button" class="nav-arrow-btn" (click)="nextMonth()" title="Next Month">›</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- View Switcher -->
+      <div class="view-switcher">
+        <button type="button" class="switch-btn" [class.active]="selectedView() === 'month'" (click)="setView('month')">Month</button>
+        <button type="button" class="switch-btn" [class.active]="selectedView() === 'week'" (click)="setView('week')">Week</button>
+        <button type="button" class="switch-btn" [class.active]="selectedView() === 'agenda'" (click)="setView('agenda')">Agenda</button>
+      </div>
+
+      <button type="button" class="btn-primary-action" (click)="openAddModal()">
+        + Add Event
+      </button>
+    </div>
+  </div>
+
+  <!-- Domain Filter Bar -->
+  <div class="domain-filter-bar">
+    <div class="domain-tabs">
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'All'" (click)="setDomain('All')">
+        All Events
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Work'" (click)="setDomain('Work')">
+        <span class="dot-badge work"></span> Work
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Side Project'" (click)="setDomain('Side Project')">
+        <span class="dot-badge side-project"></span> Side Project
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'School'" (click)="setDomain('School')">
+        <span class="dot-badge school"></span> School
+      </button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Personal'" (click)="setDomain('Personal')">
+        <span class="dot-badge personal"></span> Personal
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Calendar Layout -->
+  <div class="calendar-layout">
+    <!-- Main Month Grid View -->
+    @if (selectedView() === 'month' || selectedView() === 'week') {
+      <div class="month-grid-container">
+        <!-- Weekday Headers -->
+        <div class="weekdays-row">
+          <div class="weekday-cell">SUN</div>
+          <div class="weekday-cell">MON</div>
+          <div class="weekday-cell">TUE</div>
+          <div class="weekday-cell">WED</div>
+          <div class="weekday-cell">THU</div>
+          <div class="weekday-cell">FRI</div>
+          <div class="weekday-cell">SAT</div>
+        </div>
+
+        <!-- Day Cells Grid -->
+        <div class="days-grid">
+          @for (day of daysInMonth(); track $index) {
+            <div 
+              class="day-cell" 
+              [class.empty]="!day.dayNumber" 
+              [class.is-today]="day.isToday"
+              (click)="day.dayNumber ? openAddModal(day.dateStr) : null"
+            >
+              @if (day.dayNumber) {
+                <div class="day-number-row">
+                  <span class="day-num" [class.today-num]="day.isToday">{{ day.dayNumber }}</span>
+                  @if (day.isToday) {
+                    <span class="today-tag">TODAY</span>
+                  }
+                </div>
+
+                <div class="day-events-list">
+                  @for (ev of day.events; track ev.id) {
+                    <div class="event-chip" [ngClass]="ev.domainClass" (click)="$event.stopPropagation()">
+                      <span class="event-time">{{ ev.time }}</span>
+                      <span class="event-title">{{ ev.title }}</span>
+                      <button type="button" class="event-del" (click)="deleteEvent(ev.id)">✕</button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Agenda View -->
+    @if (selectedView() === 'agenda') {
+      <div class="agenda-container">
+        <h2 class="agenda-title">Upcoming Scheduled Events</h2>
+        <div class="agenda-list">
+          @for (ev of upcomingAgenda(); track ev.id) {
+            <div class="agenda-card" [ngClass]="ev.domainClass">
+              <div class="agenda-date-col">
+                <span class="agenda-date">{{ ev.date }}</span>
+                <span class="agenda-time">⏰ {{ ev.time }} ({{ ev.duration }})</span>
+              </div>
+              <div class="agenda-details-col">
+                <span class="agenda-event-title">{{ ev.title }}</span>
+                <span class="domain-pill" [ngClass]="ev.domainClass">{{ ev.domain }}</span>
+              </div>
+              <button type="button" class="agenda-del-btn" (click)="deleteEvent(ev.id)">✕</button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Right Sidebar: Upcoming & Mini Details -->
+    <div class="calendar-sidebar">
+      <div class="sidebar-card">
+        <h3 class="sidebar-card-title">Today's Schedule</h3>
+        <div class="today-events-list">
+          @for (ev of events(); track ev.id) {
+            @if (ev.date === '2026-09-10') {
+              <div class="side-event-item">
+                <div class="side-dot" [ngClass]="ev.domainClass"></div>
+                <div class="side-event-info">
+                  <span class="side-title">{{ ev.title }}</span>
+                  <span class="side-time">{{ ev.time }} • {{ ev.domain }}</span>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <h3 class="sidebar-card-title">Domain Color Key</h3>
+        <div class="domain-keys">
+          <div class="key-item"><span class="dot-badge work"></span> <span>Work</span></div>
+          <div class="key-item"><span class="dot-badge side-project"></span> <span>Side Project</span></div>
+          <div class="key-item"><span class="dot-badge school"></span> <span>School</span></div>
+          <div class="key-item"><span class="dot-badge personal"></span> <span>Personal</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Event Modal -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Schedule Event</h2>
+          <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Event Title *</label>
+            <input type="text" [(ngModel)]="newEventTitle" placeholder="e.g. Design review, Team sync..." class="form-input" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date (YYYY-MM-DD)</label>
+              <input type="text" [(ngModel)]="newEventDate" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Time</label>
+              <input type="text" [(ngModel)]="newEventTime" placeholder="10:00 AM" class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Duration</label>
+              <input type="text" [(ngModel)]="newEventDuration" placeholder="1h" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Domain</label>
+              <select [(ngModel)]="newEventDomain" class="form-select">
+                <option value="Work">Work</option>
+                <option value="Side Project">Side Project</option>
+                <option value="School">School</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-submit" (click)="saveEvent()">Add to Calendar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

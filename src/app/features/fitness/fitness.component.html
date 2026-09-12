@@ -1,0 +1,169 @@
+<div class="fitness-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Fitness & Health</span>
+      </div>
+      <h1 class="page-title">Physical Training & Nutrition</h1>
+      <p class="page-subtitle">Track workout splits, progressive overload, and macronutrient targets</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-primary-action" (click)="openAddExerciseModal()">
+        + Log Exercise
+      </button>
+    </div>
+  </div>
+
+  <!-- Macros Grid -->
+  <section class="nutrition-grid">
+    <div class="macro-card">
+      <span class="macro-label">CALORIES</span>
+      <div class="macro-value">{{ caloriesConsumed() }} <small>/ {{ caloriesTarget() }} kcal</small></div>
+      <div class="macro-track">
+        <div class="macro-bar cal-bar" [style.width.%]="(caloriesConsumed() / caloriesTarget()) * 100"></div>
+      </div>
+      <span class="macro-sub">250 kcal remaining</span>
+    </div>
+
+    <div class="macro-card">
+      <span class="macro-label">PROTEIN</span>
+      <div class="macro-value">{{ proteinConsumed() }}g <small>/ {{ proteinTarget() }}g</small></div>
+      <div class="macro-track">
+        <div class="macro-bar prot-bar" [style.width.%]="(proteinConsumed() / proteinTarget()) * 100"></div>
+      </div>
+      <span class="macro-sub">97% target hit</span>
+    </div>
+
+    <div class="macro-card">
+      <span class="macro-label">CARBS</span>
+      <div class="macro-value">{{ carbsConsumed() }}g <small>/ {{ carbsTarget() }}g</small></div>
+      <div class="macro-track">
+        <div class="macro-bar carb-bar" [style.width.%]="(carbsConsumed() / carbsTarget()) * 100"></div>
+      </div>
+      <span class="macro-sub">84% target hit</span>
+    </div>
+
+    <div class="macro-card">
+      <span class="macro-label">FATS</span>
+      <div class="macro-value">{{ fatConsumed() }}g <small>/ {{ fatTarget() }}g</small></div>
+      <div class="macro-track">
+        <div class="macro-bar fat-bar" [style.width.%]="(fatConsumed() / fatTarget()) * 100"></div>
+      </div>
+      <span class="macro-sub">88% target hit</span>
+    </div>
+  </section>
+
+  <!-- Workout Split Day Selector -->
+  <div class="day-selector-bar">
+    @for (routine of routines(); track routine.dayName) {
+      <button 
+        type="button" 
+        class="day-tab-btn" 
+        [class.active]="selectedDay() === routine.dayName"
+        (click)="selectedDay.set(routine.dayName)"
+      >
+        <span class="tab-day">{{ routine.dayName }}</span>
+        <span class="tab-title">{{ routine.title.split(':')[0] }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Current Workout Routine Details -->
+  @if (currentRoutine) {
+    <div class="routine-card">
+      <div class="routine-header">
+        <div>
+          <h2 class="routine-title">{{ currentRoutine.title }}</h2>
+          <p class="routine-focus">Focus: {{ currentRoutine.targetFocus }} • {{ currentRoutine.duration }}</p>
+        </div>
+        <span class="routine-badge">
+          {{ currentRoutine.exercises.length }} Exercises
+        </span>
+      </div>
+
+      <div class="exercises-table">
+        <div class="ex-header-row">
+          <div class="th-check">STATUS</div>
+          <div class="th-name">EXERCISE</div>
+          <div class="th-sets">SETS x REPS</div>
+          <div class="th-weight">LOAD / WEIGHT</div>
+          <div class="th-pr">RECORD</div>
+        </div>
+
+        <div class="ex-body">
+          @for (ex of currentRoutine.exercises; track ex.id) {
+            <div class="ex-row" [class.completed]="ex.completed">
+              <div class="td-check">
+                <button type="button" class="check-box-btn" (click)="toggleExercise(ex)">
+                  @if (ex.completed) { ✓ } @else { ○ }
+                </button>
+              </div>
+
+              <div class="td-name">
+                <span class="ex-name-text">{{ ex.name }}</span>
+              </div>
+
+              <div class="td-sets">
+                <span class="sets-badge">{{ ex.sets }} sets × {{ ex.reps }}</span>
+              </div>
+
+              <div class="td-weight">
+                <span class="weight-text">🏋️ {{ ex.weight }}</span>
+              </div>
+
+              <div class="td-pr">
+                @if (ex.isPR) {
+                  <span class="pr-badge">★ NEW PR</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Add Exercise Modal -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Log New Exercise</h2>
+          <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Exercise Name *</label>
+            <input type="text" [(ngModel)]="newExerciseName" placeholder="e.g. Incline DB Press" class="form-input" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Sets</label>
+              <input type="number" [(ngModel)]="newExerciseSets" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Reps</label>
+              <input type="text" [(ngModel)]="newExerciseReps" placeholder="8-10" class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Weight / Load</label>
+            <input type="text" [(ngModel)]="newExerciseWeight" placeholder="e.g. 80 kg" class="form-input" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-submit" (click)="saveExercise()">Add Exercise</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

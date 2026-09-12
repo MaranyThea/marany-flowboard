@@ -1,0 +1,70 @@
+<div class="domains-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Domains</span>
+      </div>
+      <h1 class="page-title">Life Domains Portfolio</h1>
+      <p class="page-subtitle">Holistic time allocation, energy calibration, and domain health metrics</p>
+    </div>
+  </div>
+
+  <!-- Domains Grid -->
+  <div class="domains-grid">
+    @for (domain of domains(); track domain.id) {
+      <div class="domain-card" [ngClass]="domain.domainClass">
+        <div class="domain-card-header">
+          <div class="domain-title-group">
+            <span class="domain-dot-large" [style.background]="domain.colorHex"></span>
+            <div>
+              <h2 class="domain-name">{{ domain.name }}</h2>
+              <span class="domain-health-tag">HEALTH: {{ domain.healthScore }}%</span>
+            </div>
+          </div>
+
+          <div class="domain-hours-badge">
+            <span class="hours-num">{{ domain.hoursAllocated }}h</span>
+            <span class="hours-lbl">/ {{ domain.weeklyTargetHours }}h target</span>
+          </div>
+        </div>
+
+        <p class="domain-tagline">{{ domain.tagline }}</p>
+
+        <!-- Stats Grid -->
+        <div class="domain-stats-row">
+          <div class="d-stat-cell">
+            <span class="stat-num">{{ domain.activeProjects }}</span>
+            <span class="stat-lbl">PROJECTS</span>
+          </div>
+          <div class="d-stat-cell">
+            <span class="stat-num">{{ domain.openTasks }}</span>
+            <span class="stat-lbl">OPEN TASKS</span>
+          </div>
+          <div class="d-stat-cell">
+            <span class="stat-num text-success">{{ domain.completedTasks }}</span>
+            <span class="stat-lbl">COMPLETED</span>
+          </div>
+        </div>
+
+        <!-- Top Objectives -->
+        <div class="domain-objectives-section">
+          <span class="obj-header">CORE OBJECTIVES</span>
+          <div class="obj-list">
+            @for (obj of domain.topObjectives; track $index) {
+              <div class="obj-item">
+                <span class="obj-bullet" [style.color]="domain.colorHex">▸</span>
+                <span class="obj-text">{{ obj }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="domain-card-footer">
+          <a routerLink="/tasks" class="domain-action-link">Explore {{ domain.name }} Tasks →</a>
+        </div>
+      </div>
+    }
+  </div>
+</div>

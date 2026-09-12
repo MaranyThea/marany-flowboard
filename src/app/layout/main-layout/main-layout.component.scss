@@ -8,7 +8,6 @@
   height: 100vh;
 }
 
-
 /* =========================================================
    APP LAYOUT
    ========================================================= */
@@ -16,20 +15,13 @@
 .app-layout {
   width: 100%;
   height: 100vh;
-
   display: flex;
   flex-direction: column;
-
   overflow: hidden;
-
   background: var(--app-bg);
   color: var(--ink);
-
-  transition:
-    background 0.3s ease,
-    color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
-
 
 /* =========================================================
    TOPBAR
@@ -37,920 +29,979 @@
 
 .topbar {
   position: relative;
-
-  height: 72px;
+  height: 56px;
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
-
-  padding: 0 32px;
-
+  justify-content: space-between;
+  padding: 0 20px;
   background: var(--card);
-
   border-bottom: 1px solid var(--divider);
-
   box-sizing: border-box;
-
   z-index: 100;
-
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
-
-
-/* =========================================================
-   TOPBAR LEFT
-   ========================================================= */
 
 .topbar-left {
   display: flex;
   align-items: center;
-
-  gap: 8px;
+  gap: 12px;
 }
-
-
-/* =========================================================
-   SIDEBAR TOGGLE
-   ========================================================= */
 
 .sidebar-toggle {
   width: 32px;
   height: 32px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 0;
-  margin: 0;
-
-  border: none;
+  border: 1px solid var(--border-soft);
   border-radius: 8px;
-
-  background: transparent;
-
+  background: var(--well);
   color: var(--muted);
-
-  font-size: 22px;
-  line-height: 1;
-
+  font-size: 16px;
   cursor: pointer;
+  transition: all 0.2s ease;
 
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  &:hover {
+    background: var(--well-2);
+    border-color: var(--border);
+    color: var(--ink);
+  }
 }
-
-.sidebar-toggle:hover {
-  background: var(--well-2);
-  color: var(--ink);
-}
-
-
-/* =========================================================
-   LOGO
-   ========================================================= */
 
 .logo {
   display: flex;
   align-items: center;
-
   flex-shrink: 0;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .logo-image {
   display: block;
-
-  width: 150px;
+  width: 140px;
   height: auto;
-
+  max-height: 36px;
   object-fit: contain;
 }
 
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
+/* Search Bar Trigger */
 .search-container {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: 460px;
-  height: 40px;
-
+  width: 420px;
+  height: 36px;
   display: flex;
   align-items: center;
-
-  box-sizing: border-box;
-
-  padding: 0 14px;
-
+  padding: 0 12px;
   background: var(--well);
   border: 1px solid var(--border-soft);
   border-radius: 8px;
-
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
   &:hover {
     border-color: var(--border);
+    background: var(--well-2);
   }
 
-  &:focus-within {
-    background: var(--card);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--focus-ring);
-  }
-}
-
-.search-icon {
-  flex: 0 0 18px;
-
-  width: 18px;
-  height: 18px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-right: 9px;
-
-  color: var(--muted);
-
-  font-size: 17px;
-  line-height: 1;
-}
-
-.search-container input {
-  flex: 1;
-
-  width: auto;
-  min-width: 0;
-  height: 100%;
-
-  margin: 0;
-  padding: 0;
-
-  border: 0 !important;
-  outline: 0 !important;
-  border-radius: 0 !important;
-
-  background: transparent !important;
-
-  box-shadow: none !important;
-
-  color: var(--ink);
-
-  font-family: inherit;
-  font-size: 13px;
-  line-height: 1;
-
-  appearance: none;
-
-  &::placeholder {
+  .search-icon {
+    font-size: 13px;
     color: var(--muted-soft);
-    opacity: 1;
+    margin-right: 8px;
   }
 
-  &:focus {
-    border: 0 !important;
-    outline: 0 !important;
-    box-shadow: none !important;
+  .search-placeholder {
+    flex: 1;
+    font-size: 12px;
+    color: var(--muted);
+    user-select: none;
+  }
+
+  .hotkey-badge {
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    background: var(--well-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 800px) {
+    display: none;
   }
 }
 
-
-/* =========================================================
-   TOPBAR ACTIONS
-   ========================================================= */
-
+/* Topbar Actions */
 .topbar-actions {
   display: flex;
   align-items: center;
-
   gap: 8px;
-
-  margin-left: auto;
 }
 
+.nova-ai-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s ease;
 
-/* =========================================================
-   ICON BUTTONS
-   ========================================================= */
+  .nova-sparkle { font-size: 14px; }
+
+  &:hover {
+    background: var(--accent);
+    color: #0f1014;
+    box-shadow: 0 0 12px var(--accent-bg);
+  }
+}
 
 .icon-button {
-  width: 40px;
-  height: 40px;
-
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 0;
-
-  border: 1px solid transparent;
+  border: 1px solid var(--border-soft);
   border-radius: 8px;
-
-  background: transparent;
-
+  background: var(--well);
   color: var(--muted);
-
-  font-size: 17px;
-
+  font-size: 15px;
   cursor: pointer;
-
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
     background: var(--well-2);
-
-    border-color: var(--border-soft);
-
+    border-color: var(--border);
     color: var(--ink);
   }
 }
 
+.notification-container {
+  position: relative;
 
-/* =========================================================
-   PROFILE CONTAINER
-   ========================================================= */
+  .notification-button {
+    position: relative;
+
+    .notification-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      min-width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #0f1014;
+      font-size: 9px;
+      font-weight: 700;
+    }
+  }
+
+  .notification-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 300px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    z-index: 200;
+    overflow: hidden;
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--divider);
+
+      h3 { font-size: 13px; font-weight: 700; color: var(--ink); margin: 0; }
+      .mark-read-button { background: transparent; border: none; font-size: 11px; color: var(--accent); cursor: pointer; }
+    }
+
+    .notification-list {
+      display: flex;
+      flex-direction: column;
+
+      .notification-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--divider);
+        font-size: 12px;
+
+        &:hover { background: var(--well); }
+        &.unread { background: var(--well-2); }
+
+        .notification-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--accent);
+          margin-top: 6px;
+        }
+
+        .notification-content {
+          flex: 1;
+          p { margin: 0 0 2px 0; color: var(--ink); line-height: 1.3; }
+          span { font-size: 10px; color: var(--muted-soft); }
+        }
+      }
+    }
+  }
+}
 
 .profile-container {
   position: relative;
 
-  margin-left: 8px;
-}
+  .user-profile-btn {
+    position: relative;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
 
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--well-2);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-/* =========================================================
-   USER PROFILE BUTTON
-   ========================================================= */
+    .online-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      border: 2px solid var(--card);
+    }
+  }
 
-.user-profile {
-  width: 40px;
-  height: 40px;
+  .profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 240px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    padding: 14px;
+    z-index: 200;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
 
-  padding: 0;
+      .profile-label { font-size: 10px; color: var(--muted-soft); }
+      .profile-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+      .profile-email { font-size: 11px; color: var(--muted); }
+    }
 
-  border: none;
+    .profile-divider {
+      height: 1px;
+      background: var(--divider);
+      margin: 10px 0;
+    }
 
-  background: transparent;
+    .profile-menu-link {
+      display: block;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-2);
+      text-decoration: none;
 
-  cursor: pointer;
-}
+      &:hover { background: var(--well); color: var(--ink); }
+    }
 
-.user-avatar {
-  width: 36px;
-  height: 36px;
+    .sign-out-button {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid var(--border-soft);
+      border-radius: 6px;
+      background: var(--well);
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: rgba(0, 180, 216, 0.12);
-
-  color: var(--accent);
-
-  font-size: 15px;
-  font-weight: 600;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-
-/* =========================================================
-   PROFILE DROPDOWN
-   ========================================================= */
-
-.profile-dropdown {
-  position: absolute;
-
-  top: calc(100% + 10px);
-  right: 0;
-
-  width: 260px;
-
-  padding: 16px;
-
-  background: var(--card);
-
-  border: 1px solid var(--border-soft);
-
-  border-radius: 10px;
-
-  box-shadow: var(--card-shadow);
-
-  z-index: 200;
-
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-
-/* =========================================================
-   PROFILE INFORMATION
-   ========================================================= */
-
-.profile-info {
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
-}
-
-.profile-label {
-  font-size: 12px;
-
-  color: var(--muted-soft);
-}
-
-.profile-name {
-  font-size: 14px;
-  font-weight: 600;
-
-  color: var(--ink);
-}
-
-.profile-email {
-  font-size: 13px;
-
-  color: var(--muted);
-
-  word-break: break-word;
-}
-
-
-/* =========================================================
-   PROFILE DIVIDER
-   ========================================================= */
-
-.profile-divider {
-  height: 1px;
-
-  margin: 14px 0;
-
-  background: var(--divider);
-}
-
-
-/* =========================================================
-   SIGN OUT
-   ========================================================= */
-
-.sign-out-button {
-  width: 100%;
-
-  padding: 9px 12px;
-
-  border: 1px solid var(--border-soft);
-
-  border-radius: 7px;
-
-  background: var(--well);
-
-  color: var(--text-2);
-
-  font-family: inherit;
-  font-size: 14px;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
-
-  &:hover {
-    background: var(--well-2);
-
-    border-color: var(--border);
-
-    color: var(--ink);
+      &:hover { background: var(--well-2); }
+    }
   }
 }
 
-
 /* =========================================================
-   APP BODY
+   APP BODY & SIDEBAR
    ========================================================= */
 
 .app-body {
   flex: 1;
-
   min-height: 0;
-
   display: flex;
-
   overflow: hidden;
 }
-
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
 
 .sidebar {
-  width: 288px;
+  width: 240px;
   height: 100%;
-
   flex-shrink: 0;
-
   display: flex;
   flex-direction: column;
-
   background: var(--card);
-
-  border-right: 1px solid var(--rail-border);
-
+  border-right: 1px solid var(--divider);
   overflow: hidden;
-
-  transition:
-    width 0.25s ease,
-    background 0.3s ease,
-    border-color 0.25s ease;
+  transition: width 0.25s ease, background 0.3s ease;
 }
 
+.sidebar-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+.sidebar-search-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--well);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 12px;
+  transition: all 0.15s ease;
+
+  &:hover { background: var(--well-2); color: var(--ink); border-color: var(--border); }
+
+  .s-text { flex: 1; font-size: 11px; }
+  .s-hotkey {
+    font-family: monospace;
+    font-size: 9px;
+    background: var(--well-2);
+    padding: 1px 4px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+}
 
 .navigation {
   display: flex;
   flex-direction: column;
-
-  gap: 4px;
-
-  padding: 24px 18px;
-
-  transition:
-    opacity 0.2s ease;
+  gap: 2px;
 }
-
-
-/* =========================================================
-   NAVIGATION ITEMS
-   ========================================================= */
 
 .nav-item {
   display: flex;
   align-items: center;
-
-  min-height: 48px;
-
-  padding: 0 16px;
-
-  border: 1px solid transparent;
-
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 12px;
   border-radius: 8px;
-
   color: var(--text-2);
-
   text-decoration: none;
-
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
+  transition: all 0.15s ease;
 
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
+  .nav-icon {
+    font-size: 15px;
+    width: 20px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .nav-label {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--well-2);
+    color: var(--muted);
+  }
 
   &:hover {
-    background: var(--well-2);
+    background: var(--well);
+    color: var(--ink);
 
-    color: var(--accent);
+    .nav-icon { color: var(--ink); }
   }
 
   &.active {
-    background: rgba(0, 180, 216, 0.1);
+    background: var(--well-2);
+    color: var(--ink);
+    font-weight: 600;
 
-    border-color: rgba(0, 180, 216, 0.25);
-
-    color: var(--accent);
+    .nav-icon { color: var(--accent); }
+    .nav-badge { background: var(--accent-bg); color: var(--accent); }
   }
 }
 
-
-/* =========================================================
-   SIDEBAR BOTTOM
-   ========================================================= */
-
-.sidebar-bottom {
-  margin-top: auto;
-
-  padding: 20px 18px;
-
+/* Sidebar Domains */
+.sidebar-domains-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
   border-top: 1px solid var(--divider);
 
-  transition:
-    opacity 0.2s ease;
+  .domains-header {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted-soft);
+    letter-spacing: 0.5px;
+    padding: 0 8px;
+  }
 
-  button {
-    width: 100%;
+  .domains-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 
-    padding: 11px 16px;
+    .domain-side-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-2);
+      transition: all 0.15s ease;
 
-    border: 1px solid var(--border-soft);
+      &:hover {
+        background: var(--well);
+        color: var(--ink);
+      }
 
-    border-radius: 8px;
+      .domain-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
 
-    background: var(--well);
+        &.work { background: var(--domain-work); }
+        &.side-project { background: var(--domain-side-project); }
+        &.school { background: var(--domain-school); }
+        &.personal { background: var(--domain-personal); }
+      }
 
-    color: var(--text-2);
-
-    font-family: inherit;
-    font-size: 14px;
-
-    cursor: pointer;
-
-    transition:
-      background-color 0.2s ease,
-      border-color 0.2s ease,
-      color 0.2s ease;
-
-    &:hover {
-      background: var(--well-2);
-
-      border-color: var(--border);
-
-      color: var(--ink);
+      .domain-side-name { flex: 1; font-weight: 500; }
+      .domain-side-count { font-size: 10px; color: var(--muted-soft); }
     }
   }
 }
 
+.sidebar-footer {
+  padding: 10px;
+  border-top: 1px solid var(--divider);
 
-/* =========================================================
-   SIDEBAR COLLAPSED
-   ========================================================= */
+  .collapse-footer-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--well);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 11px;
+    cursor: pointer;
 
-.app-layout.sidebar-collapsed {
-  .sidebar {
-    width: 0;
-
-    border-right: none;
-  }
-
-  .navigation,
-  .sidebar-bottom {
-    opacity: 0;
-
-    pointer-events: none;
+    &:hover { background: var(--well-2); color: var(--ink); }
   }
 }
 
+.app-layout.sidebar-collapsed {
+  .sidebar { width: 0; border-right: none; }
+}
 
 /* =========================================================
-   MAIN
+   MAIN CONTENT
    ========================================================= */
 
 .main-content {
   flex: 1;
-
   min-width: 0;
   min-height: 0;
-
   display: flex;
   flex-direction: column;
-
   background: var(--app-bg);
-
-  transition:
-    background 0.3s ease;
 }
-
-
-/* =========================================================
-   PAGE CONTENT
-   ========================================================= */
 
 .page-content {
   flex: 1;
-
   min-height: 0;
-
   overflow-y: auto;
   overflow-x: hidden;
-
-  background: var(--app-bg);
-
-  transition:
-    background 0.3s ease;
+  padding: 24px;
 }
 
-
 /* =========================================================
-   NOTIFICATION CONTAINER
+   FLOATING BUTTONS (Mascot & Quick Add FAB)
    ========================================================= */
 
-.notification-container {
-  position: relative;
-}
-
-
-/* =========================================================
-   NOTIFICATION BUTTON
-   ========================================================= */
-
-.notification-button {
-  position: relative;
-}
-
-
-/* =========================================================
-   NOTIFICATION BADGE
-   ========================================================= */
-
-.notification-badge {
-  position: absolute;
-
-  top: 3px;
-  right: 3px;
-
-  min-width: 16px;
-  height: 16px;
-
+.floating-ai-mascot {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+  border: none;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  padding: 0 4px;
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 26px rgba(56, 189, 248, 0.6);
 
-  border-radius: 999px;
+    .mascot-tooltip { opacity: 1; transform: translateX(-10px); }
+  }
 
-  background: var(--accent);
+  .mascot-inner {
+    .mascot-star {
+      font-size: 22px;
+      color: #0f1014;
+      font-weight: 800;
+    }
+  }
 
-  color: #ffffff;
-
-  font-size: 10px;
-  font-weight: 600;
-
-  line-height: 1;
+  .mascot-tooltip {
+    position: absolute;
+    right: 56px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+  }
 }
 
-
-/* =========================================================
-   NOTIFICATION DROPDOWN
-   ========================================================= */
-
-.notification-dropdown {
-  position: absolute;
-
-  top: calc(100% + 10px);
-  right: 0;
-
-  width: 360px;
-
+.floating-quick-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 84px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
   background: var(--card);
-
-  border: 1px solid var(--border-soft);
-
-  border-radius: 10px;
-
+  border: 1px solid var(--border);
   box-shadow: var(--card-shadow);
-
-  overflow: hidden;
-
-  z-index: 200;
-
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-
-/* =========================================================
-   NOTIFICATION HEADER
-   ========================================================= */
-
-.notification-header {
+  color: var(--ink);
+  font-size: 22px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  padding: 16px;
-
-  border-bottom: 1px solid var(--divider);
-
-  h3 {
-    margin: 0;
-
-    font-size: 15px;
-    font-weight: 600;
-
-    color: var(--ink);
-  }
-}
-
-.mark-read-button {
-  padding: 0;
-
-  border: none;
-
-  background: transparent;
-
-  color: var(--accent);
-
-  font-family: inherit;
-  font-size: 12px;
-
+  justify-content: center;
   cursor: pointer;
+  z-index: 500;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 
   &:hover {
-    color: var(--accent-strong);
-  }
-}
-
-
-/* =========================================================
-   NOTIFICATION LIST
-   ========================================================= */
-
-.notification-list {
-  display: flex;
-  flex-direction: column;
-}
-
-
-/* =========================================================
-   NOTIFICATION ITEM
-   ========================================================= */
-
-.notification-item {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 10px;
-
-  padding: 14px 16px;
-
-  border-bottom: 1px solid var(--divider);
-
-  transition:
-    background-color 0.2s ease;
-
-  &:hover {
-    background: var(--well);
-  }
-
-  &.unread {
-    background: rgba(0, 180, 216, 0.06);
-  }
-}
-
-
-/* =========================================================
-   NOTIFICATION DOT
-   ========================================================= */
-
-.notification-dot {
-  width: 7px;
-  height: 7px;
-
-  flex-shrink: 0;
-
-  margin-top: 6px;
-
-  border-radius: 50%;
-
-  background: var(--accent);
-
-  opacity: 0;
-}
-
-.notification-item.unread .notification-dot {
-  opacity: 1;
-}
-
-
-/* =========================================================
-   NOTIFICATION CONTENT
-   ========================================================= */
-
-.notification-content {
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
-
-  p {
-    margin: 0;
-
-    font-size: 13px;
-    line-height: 1.4;
-
-    color: var(--text-2);
-  }
-
-  span {
-    font-size: 12px;
-
-    color: var(--muted-soft);
-  }
-}
-
-
-/* =========================================================
-   NOTIFICATION FOOTER
-   ========================================================= */
-
-.notification-footer {
-  padding: 12px 16px;
-
-  text-align: center;
-
-  border-top: 1px solid var(--divider);
-
-  button {
-    padding: 0;
-
-    border: none;
-
-    background: transparent;
-
+    transform: scale(1.1);
+    border-color: var(--accent);
     color: var(--accent);
+  }
+}
 
-    font-family: inherit;
-    font-size: 13px;
+/* Quick Add FAB Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 
-    cursor: pointer;
+  .quick-add-card {
+    width: 90%;
+    max-width: 440px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
 
-    &:hover {
-      color: var(--accent-strong);
+    .quick-add-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+
+      h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; }
+      .close-btn { background: transparent; border: none; color: var(--muted); font-size: 16px; cursor: pointer; }
+    }
+
+    .quick-options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+
+      .opt-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 10px;
+        background: var(--well);
+        border: 1px solid var(--border-soft);
+        border-radius: 10px;
+        cursor: pointer;
+        color: var(--ink);
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: var(--well-2);
+          border-color: var(--accent);
+          transform: translateY(-2px);
+        }
+
+        .opt-icon { font-size: 22px; }
+        .opt-label { font-size: 11px; font-weight: 600; }
+      }
     }
   }
 }
 
-
 /* =========================================================
-   RESPONSIVE
+   NOVA AI DRAWER
    ========================================================= */
 
-@media (max-width: 900px) {
-  .search-container {
-    width: 280px;
-  }
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
 
-  .sidebar {
-    width: 240px;
+  .ai-drawer {
+    width: 420px;
+    max-width: 90vw;
+    height: 100%;
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
+    animation: slideIn 0.25s ease;
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--divider);
+
+      .drawer-title-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .ai-header-star {
+          font-size: 20px;
+          color: var(--accent);
+        }
+
+        .drawer-title { font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; }
+        .ai-status-tag { font-size: 10px; color: var(--muted-soft); }
+      }
+
+      .drawer-close-btn {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-size: 16px;
+        cursor: pointer;
+        &:hover { color: var(--ink); }
+      }
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .quick-prompts-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .prompt-chip {
+          padding: 8px 12px;
+          background: var(--well);
+          border: 1px solid var(--border-soft);
+          border-radius: 8px;
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--text-2);
+          text-align: left;
+          cursor: pointer;
+          transition: all 0.15s ease;
+
+          &:hover {
+            background: var(--well-2);
+            border-color: var(--accent);
+            color: var(--ink);
+          }
+        }
+      }
+
+      .chat-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex: 1;
+
+        .chat-msg {
+          display: flex;
+
+          &.ai-msg {
+            justify-content: flex-start;
+            .msg-bubble {
+              background: var(--well);
+              border: 1px solid var(--border-soft);
+              border-radius: 12px 12px 12px 2px;
+            }
+          }
+
+          &.user-msg {
+            justify-content: flex-end;
+            .msg-bubble {
+              background: var(--accent-bg);
+              border: 1px solid var(--accent-border);
+              border-radius: 12px 12px 2px 12px;
+            }
+          }
+
+          .msg-bubble {
+            max-width: 85%;
+            padding: 12px 14px;
+
+            .msg-text {
+              font-size: 13px;
+              color: var(--ink);
+              margin: 0 0 4px 0;
+              line-height: 1.5;
+              white-space: pre-line;
+            }
+
+            .msg-time {
+              font-size: 9px;
+              color: var(--muted-soft);
+            }
+          }
+        }
+      }
+    }
+
+    .drawer-footer {
+      padding: 14px;
+      border-top: 1px solid var(--divider);
+      background: var(--well-3);
+
+      .chat-input-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--well);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 4px 6px 4px 12px;
+
+        .chat-input {
+          flex: 1;
+          background: transparent;
+          border: none;
+          color: var(--ink);
+          font-size: 13px;
+          outline: none;
+          min-height: 36px;
+        }
+
+        .send-btn {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: var(--accent);
+          color: #0f1014;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          font-weight: 700;
+
+          &:hover { filter: brightness(1.1); }
+        }
+      }
+    }
   }
 }
 
-@media (max-width: 700px) {
-  .topbar {
-    padding: 0 16px;
-  }
+/* =========================================================
+   COMMAND PALETTE (⌘K)
+   ========================================================= */
 
-  .search-container {
-    display: none;
-  }
+.command-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 100px;
+  z-index: 1000;
 
-  .sidebar {
-    width: 220px;
-  }
+  .command-palette-card {
+    width: 90%;
+    max-width: 580px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    animation: fadeIn 0.15s ease;
 
-  .notification-dropdown {
-    width: min(360px, calc(100vw - 32px));
+    .command-input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--divider);
+
+      .cmd-search-ico { font-size: 16px; color: var(--muted-soft); }
+
+      .command-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--ink);
+        font-size: 15px;
+        outline: none;
+      }
+
+      .cmd-esc-tag {
+        font-family: monospace;
+        font-size: 10px;
+        font-weight: 700;
+        background: var(--well);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--muted);
+        padding: 2px 6px;
+        cursor: pointer;
+      }
+    }
+
+    .command-results-list {
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .command-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: var(--well);
+        }
+
+        .cmd-item-icon { font-size: 18px; }
+
+        .cmd-item-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+
+          .cmd-item-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+          .cmd-item-sub { font-size: 11px; color: var(--muted-soft); }
+        }
+
+        .cmd-item-cat {
+          font-size: 10px;
+          color: var(--muted);
+          background: var(--well-2);
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+      }
+    }
   }
 }
 
-@media (max-width: 480px) {
-  .topbar {
-    height: 64px;
-  }
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
 
-  .logo-image {
-    width: 120px;
-  }
-
-  .sidebar {
-    width: 200px;
-  }
-
-  .profile-dropdown {
-    width: 240px;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }

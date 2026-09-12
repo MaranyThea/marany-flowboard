@@ -1,0 +1,49 @@
+<div class="where-im-at-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Where I'm At</span>
+      </div>
+      <h1 class="page-title">Life Balance Audit & Alignment</h1>
+      <p class="page-subtitle">Assess holistic balance across life pillars and identify friction points</p>
+    </div>
+
+    <div class="balance-score-badge">
+      <span class="score-lbl">OVERALL ALIGNMENT</span>
+      <span class="score-num">{{ overallBalanceScore() }}%</span>
+    </div>
+  </div>
+
+  <!-- Areas List & Interactive Sliders -->
+  <div class="areas-grid">
+    @for (area of lifeAreas(); track area.id) {
+      <div class="area-card" [ngClass]="area.domainClass">
+        <div class="area-card-header">
+          <div class="area-title-group">
+            <span class="area-icon">{{ area.icon }}</span>
+            <h3 class="area-name">{{ area.name }}</h3>
+          </div>
+          <span class="area-score-val">{{ area.score }} / 10</span>
+        </div>
+
+        <div class="slider-wrap">
+          <input 
+            type="range" 
+            min="1" 
+            max="10" 
+            [value]="area.score" 
+            (input)="updateScore(area, +$any($event.target).value)" 
+            class="score-slider" 
+          />
+        </div>
+
+        <div class="area-notes-wrap">
+          <span class="notes-lbl">CURRENT STATE & REFLECTION</span>
+          <textarea [(ngModel)]="area.notes" class="area-notes-input" rows="2"></textarea>
+        </div>
+      </div>
+    }
+  </div>
+</div>

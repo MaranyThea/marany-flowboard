@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { UserService } from './services/user.service';
@@ -7,7 +6,7 @@ import { User } from './models/user';
 
 @Component({
   selector: 'app-users',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
 })

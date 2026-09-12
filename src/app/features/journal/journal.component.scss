@@ -1,0 +1,197 @@
+.journal-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* Header */
+.page-header {
+  .breadcrumb-trail {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    .trail-dash { color: var(--muted-soft); }
+    .trail-item.active { color: var(--accent); font-weight: 500; }
+  }
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+}
+
+/* Today's Entry Card */
+.today-entry-card {
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  .entry-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .entry-date-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    .mood-selector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .mood-lbl { font-size: 10px; font-weight: 700; color: var(--muted-soft); margin-right: 4px; }
+      .mood-btn {
+        padding: 4px 8px;
+        background: var(--well);
+        border: 1px solid var(--border-soft);
+        border-radius: 6px;
+        font-size: 11px;
+        color: var(--muted);
+        cursor: pointer;
+
+        &:hover { background: var(--well-2); color: var(--ink); }
+        &.active {
+          background: var(--well-3);
+          border-color: var(--border);
+          color: var(--ink);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .prompts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+
+    .prompt-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .prompt-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted-soft);
+        letter-spacing: 0.5px;
+      }
+
+      .prompt-input {
+        background: var(--well);
+        border: 1px solid var(--border-soft);
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 12px;
+        color: var(--ink);
+        height: 120px;
+        line-height: 1.5;
+        resize: vertical;
+
+        &:focus { border-color: var(--border); }
+      }
+    }
+  }
+
+  .entry-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    .btn-save-entry {
+      padding: 8px 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #0f1014;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+
+      &:hover { filter: brightness(1.1); }
+    }
+  }
+}
+
+/* History Section */
+.history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  .history-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .history-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .history-card {
+      background: var(--card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .history-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .hist-date { font-size: 13px; font-weight: 700; color: var(--ink); }
+        .hist-mood { font-size: 11px; color: var(--muted); }
+      }
+
+      .hist-prompts {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .hist-p {
+          font-size: 12px;
+          color: var(--text-2);
+          line-height: 1.4;
+
+          strong { color: var(--ink); font-weight: 600; }
+        }
+      }
+    }
+  }
+}

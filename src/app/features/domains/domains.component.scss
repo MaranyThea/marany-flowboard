@@ -1,0 +1,183 @@
+.domains-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* Header */
+.page-header {
+  .breadcrumb-trail {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    .trail-dash { color: var(--muted-soft); }
+    .trail-item.active { color: var(--accent); font-weight: 500; }
+  }
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+}
+
+/* Domains Grid */
+.domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 20px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-card {
+    background: var(--card);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: var(--border);
+    }
+
+    &.domain-work { border-top: 3px solid var(--domain-work); }
+    &.domain-side-project { border-top: 3px solid var(--domain-side-project); }
+    &.domain-school { border-top: 3px solid var(--domain-school); }
+    &.domain-personal { border-top: 3px solid var(--domain-personal); }
+
+    .domain-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .domain-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .domain-dot-large {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          box-shadow: 0 0 10px currentColor;
+        }
+
+        .domain-name {
+          font-size: 18px;
+          font-weight: 700;
+          color: var(--ink);
+          margin: 0;
+        }
+
+        .domain-health-tag {
+          font-size: 10px;
+          font-weight: 700;
+          color: var(--muted-soft);
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .domain-hours-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .hours-num { font-size: 16px; font-weight: 700; color: var(--ink); }
+        .hours-lbl { font-size: 10px; color: var(--muted-soft); }
+      }
+    }
+
+    .domain-tagline {
+      font-size: 12px;
+      color: var(--text-2);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .domain-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 12px 0;
+      border-top: 1px solid var(--divider);
+      border-bottom: 1px solid var(--divider);
+
+      .d-stat-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+
+        .stat-num { font-size: 18px; font-weight: 700; color: var(--ink); }
+        .stat-lbl { font-size: 9px; font-weight: 700; color: var(--muted-soft); letter-spacing: 0.5px; }
+      }
+    }
+
+    .domain-objectives-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .obj-header {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted-soft);
+        letter-spacing: 0.5px;
+      }
+
+      .obj-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .obj-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          color: var(--ink-2);
+
+          .obj-bullet { font-weight: 700; font-size: 11px; }
+        }
+      }
+    }
+
+    .domain-card-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: auto;
+      padding-top: 8px;
+
+      .domain-action-link {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+
+        &:hover { text-decoration: underline; }
+      }
+    }
+  }
+}

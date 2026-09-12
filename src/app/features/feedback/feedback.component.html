@@ -1,0 +1,73 @@
+<div class="feedback-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Feedback</span>
+      </div>
+      <h1 class="page-title">Community Roadmap & Feedback</h1>
+      <p class="page-subtitle">Submit feature requests, vote on upcoming developments, and shape FlowBoard</p>
+    </div>
+  </div>
+
+  <div class="feedback-layout">
+    <!-- Feedback List -->
+    <div class="feedback-main">
+      <div class="feedback-list">
+        @for (item of feedbacks(); track item.id) {
+          <div class="feedback-card">
+            <button 
+              type="button" 
+              class="vote-btn" 
+              [class.voted]="item.hasVoted"
+              (click)="upvote(item)"
+            >
+              <span class="vote-arrow">▲</span>
+              <span class="vote-num">{{ item.votes }}</span>
+            </button>
+
+            <div class="feedback-details">
+              <div class="fb-meta-row">
+                <span class="fb-cat">{{ item.category }}</span>
+                <span class="fb-status" [class]="item.status.toLowerCase().replace(' ', '-')">{{ item.status }}</span>
+              </div>
+              <h3 class="fb-title">{{ item.title }}</h3>
+              <p class="fb-desc">{{ item.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Submit Sidebar -->
+    <div class="feedback-side">
+      <div class="submit-card">
+        <h3 class="submit-title">Request a Feature</h3>
+        <p class="submit-sub">Share ideas to make FlowBoard faster and more seamless.</p>
+
+        <div class="form-group">
+          <label>Title *</label>
+          <input type="text" [(ngModel)]="newTitle" placeholder="Short, descriptive title..." class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select [(ngModel)]="newCategory" class="form-select">
+            <option value="Feature">Feature Request</option>
+            <option value="UI/UX">UI & Design</option>
+            <option value="Performance">Performance</option>
+            <option value="Bug">Bug Report</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="newDesc" placeholder="Explain your use case or workflow problem..." class="form-textarea"></textarea>
+        </div>
+
+        <button type="button" class="btn-submit-fb" (click)="submitFeedback()">Submit Request</button>
+      </div>
+    </div>
+  </div>
+</div>

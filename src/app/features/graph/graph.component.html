@@ -1,0 +1,99 @@
+<div class="graph-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Graph</span>
+      </div>
+      <h1 class="page-title">Interactive Knowledge Graph</h1>
+      <p class="page-subtitle">Visual network connections linking Domains, Projects, Goals, Habits, and Knowledge</p>
+    </div>
+
+    <!-- Domain filter -->
+    <div class="domain-tabs">
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'All'" (click)="selectedDomain.set('All')">All Nodes</button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Work'" (click)="selectedDomain.set('Work')">Work</button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Side Project'" (click)="selectedDomain.set('Side Project')">Side Project</button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'School'" (click)="selectedDomain.set('School')">School</button>
+      <button type="button" class="domain-tab" [class.active]="selectedDomain() === 'Personal'" (click)="selectedDomain.set('Personal')">Personal</button>
+    </div>
+  </div>
+
+  <!-- Interactive SVG Graph Canvas -->
+  <div class="canvas-container">
+    <svg class="graph-svg" viewBox="0 0 900 620">
+      <!-- Background grid lines -->
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)" />
+
+      <!-- Connecting Lines -->
+      @for (line of getLines(); track $index) {
+        <line 
+          [attr.x1]="line.x1" 
+          [attr.y1]="line.y1" 
+          [attr.x2]="line.x2" 
+          [attr.y2]="line.y2" 
+          [attr.stroke]="line.color"
+          stroke-opacity="0.3"
+          stroke-width="1.5"
+          stroke-dasharray="3 3"
+        />
+      }
+
+      <!-- Nodes -->
+      @for (node of filteredNodes(); track node.id) {
+        <g 
+          class="node-group" 
+          [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
+          (mouseenter)="onHoverNode(node)"
+          (mouseleave)="onHoverNode(null)"
+        >
+          <!-- Outer glow circle -->
+          <circle 
+            [attr.r]="node.size" 
+            [attr.fill]="node.colorHex" 
+            fill-opacity="0.15" 
+            [attr.stroke]="node.colorHex" 
+            stroke-width="2"
+            class="pulse-ring"
+          />
+
+          <!-- Inner core circle -->
+          <circle 
+            [attr.r]="node.size * 0.45" 
+            [attr.fill]="node.colorHex" 
+          />
+
+          <!-- Node Label -->
+          <text 
+            y="22" 
+            text-anchor="middle" 
+            fill="#e2e8f0" 
+            font-size="11" 
+            font-weight="600"
+            class="node-label-text"
+          >
+            {{ node.name }}
+          </text>
+        </g>
+      }
+    </svg>
+
+    <!-- Node Hover Details Overlay -->
+    @if (hoveredNode()) {
+      <div class="node-hover-card" [style.border-color]="hoveredNode()!.colorHex">
+        <div class="hover-type-row">
+          <span class="hover-type" [style.color]="hoveredNode()!.colorHex">{{ hoveredNode()!.type | uppercase }}</span>
+          <span class="domain-pill" [ngClass]="hoveredNode()!.domainClass">{{ hoveredNode()!.domain }}</span>
+        </div>
+        <h4 class="hover-name">{{ hoveredNode()!.name }}</h4>
+        <span class="hover-connections">🔗 {{ hoveredNode()!.connections.length }} Linked Connections</span>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="dates-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Dates</span>
+      </div>
+      <h1 class="page-title">Milestones & Countdown Timers</h1>
+      <p class="page-subtitle">Track important deadlines, upcoming product drops, and life events</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-primary-action" (click)="openAddModal()">
+        + New Date
+      </button>
+    </div>
+  </div>
+
+  <!-- Dates Grid -->
+  <div class="dates-grid">
+    @for (m of milestones(); track m.id) {
+      <div class="date-card" [ngClass]="m.domainClass">
+        <div class="countdown-badge">
+          <span class="countdown-days">{{ m.daysLeft }}</span>
+          <span class="countdown-unit">DAYS LEFT</span>
+        </div>
+
+        <div class="date-details">
+          <div class="date-tags-row">
+            <span class="domain-pill" [ngClass]="m.domainClass">{{ m.domain }}</span>
+            <span class="category-tag">{{ m.category }}</span>
+          </div>
+
+          <h3 class="date-title">{{ m.title }}</h3>
+          <span class="target-date-text">📅 Target: {{ m.targetDate }}</span>
+          @if (m.notes) {
+            <p class="date-notes">{{ m.notes }}</p>
+          }
+        </div>
+
+        <button type="button" class="del-btn" (click)="deleteDate(m.id)" title="Remove">✕</button>
+      </div>
+    }
+  </div>
+
+  <!-- Modal -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Track Important Date</h2>
+          <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Event / Milestone Name *</label>
+            <input type="text" [(ngModel)]="newDateTitle" placeholder="e.g. Product Launch..." class="form-input" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Target Date</label>
+              <input type="text" [(ngModel)]="newDateTarget" placeholder="YYYY-MM-DD" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Category</label>
+              <select [(ngModel)]="newDateCategory" class="form-select">
+                <option value="Milestone">Milestone</option>
+                <option value="Deadline">Deadline</option>
+                <option value="Event">Event</option>
+                <option value="Anniversary">Anniversary</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Domain</label>
+            <select [(ngModel)]="newDateDomain" class="form-select">
+              <option value="Work">Work</option>
+              <option value="Side Project">Side Project</option>
+              <option value="School">School</option>
+              <option value="Personal">Personal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-submit" (click)="saveDate()">Save Milestone</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

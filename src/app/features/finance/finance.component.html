@@ -1,0 +1,157 @@
+<div class="finance-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Finance</span>
+      </div>
+      <h1 class="page-title">Financial Operating System</h1>
+      <p class="page-subtitle">Cashflow overview, SaaS subscriptions, budgets, and savings velocity</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-primary-action" (click)="openAddModal()">
+        + Log Transaction
+      </button>
+    </div>
+  </div>
+
+  <!-- Cashflow Metrics -->
+  <div class="finance-metrics-grid">
+    <div class="f-metric-card">
+      <span class="f-label">MONTHLY INCOME</span>
+      <div class="f-val text-success">+${{ monthlyIncome() | number }}</div>
+      <span class="f-sub">Primary + Side Projects</span>
+    </div>
+
+    <div class="f-metric-card">
+      <span class="f-label">MONTHLY EXPENSES</span>
+      <div class="f-val text-danger">-${{ monthlyExpenses() | number }}</div>
+      <span class="f-sub">Living + SaaS + Cloud</span>
+    </div>
+
+    <div class="f-metric-card">
+      <span class="f-label">NET CASHFLOW</span>
+      <div class="f-val text-accent">+${{ netSavings() | number }}</div>
+      <span class="f-sub">{{ savingsRate() }}% Savings Rate</span>
+    </div>
+
+    <div class="f-metric-card">
+      <span class="f-label">SAVINGS RUNWAY / TARGET</span>
+      <div class="f-val">${{ currentSavings() | number }} <small>/ ${{ savingsGoalTarget() | number }}</small></div>
+      <div class="f-track">
+        <div class="f-bar" [style.width.%]="(currentSavings() / savingsGoalTarget()) * 100"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finance Layout (2 Columns) -->
+  <div class="finance-grid-layout">
+    <!-- Transactions List -->
+    <div class="f-card transactions-card">
+      <div class="f-card-header">
+        <h2 class="f-card-title">Recent Transactions</h2>
+        <span class="badge-count">{{ transactions().length }}</span>
+      </div>
+
+      <div class="transactions-list">
+        @for (t of transactions(); track t.id) {
+          <div class="trans-item">
+            <div class="trans-icon" [class.inc]="t.type === 'income'" [class.exp]="t.type === 'expense'">
+              {{ t.type === 'income' ? '↓' : '↑' }}
+            </div>
+
+            <div class="trans-info">
+              <span class="trans-title">{{ t.title }}</span>
+              <span class="trans-meta">{{ t.category }} • {{ t.domain }} • {{ t.date }}</span>
+            </div>
+
+            <div class="trans-amount" [class.inc]="t.type === 'income'" [class.exp]="t.type === 'expense'">
+              {{ t.type === 'income' ? '+' : '-' }}${{ t.amount | number }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Subscriptions & SaaS Costs -->
+    <div class="f-card subscriptions-card">
+      <div class="f-card-header">
+        <div>
+          <h2 class="f-card-title">Recurring Subscriptions</h2>
+          <p class="f-card-sub">${{ totalSubCost() }}/month Total</p>
+        </div>
+      </div>
+
+      <div class="subs-list">
+        @for (sub of subscriptions(); track sub.id) {
+          <div class="sub-item">
+            <span class="sub-icon">{{ sub.icon }}</span>
+            <div class="sub-info">
+              <span class="sub-name">{{ sub.name }}</span>
+              <span class="sub-date">Next: {{ sub.nextBilling }}</span>
+            </div>
+            <span class="sub-cost">${{ sub.cost }} <small>/mo</small></span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Log Transaction</h2>
+          <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Description / Title *</label>
+            <input type="text" [(ngModel)]="newTransTitle" placeholder="e.g. AWS Cloud Hosting..." class="form-input" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Amount ($)</label>
+              <input type="number" [(ngModel)]="newTransAmount" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Type</label>
+              <select [(ngModel)]="newTransType" class="form-select">
+                <option value="expense">Expense (Out)</option>
+                <option value="income">Income (In)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Category</label>
+              <input type="text" [(ngModel)]="newTransCategory" placeholder="Software, Hardware..." class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label>Domain</label>
+              <select [(ngModel)]="newTransDomain" class="form-select">
+                <option value="Side Project">Side Project</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="School">School</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-submit" (click)="saveTransaction()">Save Transaction</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,81 @@
+<div class="journal-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Journal</span>
+      </div>
+      <h1 class="page-title">Daily Reflection & Gratitude Log</h1>
+      <p class="page-subtitle">Morning intentions, evening wins, mood calibration, and mindful awareness</p>
+    </div>
+  </div>
+
+  <!-- Today's Prompt Editor -->
+  <div class="today-entry-card">
+    <div class="entry-card-header">
+      <div class="entry-date-badge">
+        <span>📖 TODAY'S ENTRY • September 10, 2026</span>
+      </div>
+
+      <div class="mood-selector">
+        <span class="mood-lbl">MOOD:</span>
+        <button type="button" class="mood-btn" [class.active]="selectedMood === '⚡ Energized'" (click)="selectedMood = '⚡ Energized'">⚡ Energized</button>
+        <button type="button" class="mood-btn" [class.active]="selectedMood === '😊 Happy'" (click)="selectedMood = '😊 Happy'">😊 Happy</button>
+        <button type="button" class="mood-btn" [class.active]="selectedMood === '🧘 Centered'" (click)="selectedMood = '🧘 Centered'">🧘 Centered</button>
+        <button type="button" class="mood-btn" [class.active]="selectedMood === '🌧️ Tired'" (click)="selectedMood = '🌧️ Tired'">🌧️ Tired</button>
+      </div>
+    </div>
+
+    <div class="prompts-grid">
+      <div class="prompt-box">
+        <label class="prompt-label">☀️ MORNING INTENTION</label>
+        <textarea [(ngModel)]="todayIntentions" placeholder="What is the single most high-leverage outcome today?" class="prompt-input"></textarea>
+      </div>
+
+      <div class="prompt-box">
+        <label class="prompt-label">🏆 DAILY WINS & EXECUTION</label>
+        <textarea [(ngModel)]="todayWins" placeholder="What went exceptionally well today?" class="prompt-input"></textarea>
+      </div>
+
+      <div class="prompt-box">
+        <label class="prompt-label">🙏 GRATITUDE & APPRECIATION</label>
+        <textarea [(ngModel)]="todayGratitude" placeholder="3 things or moments I am deeply grateful for..." class="prompt-input"></textarea>
+      </div>
+    </div>
+
+    <div class="entry-footer">
+      <button type="button" class="btn-save-entry" (click)="saveTodayEntry()">
+        ✓ Save Daily Reflection
+      </button>
+    </div>
+  </div>
+
+  <!-- History Timeline -->
+  <div class="history-section">
+    <h2 class="history-title">Past Journal History</h2>
+
+    <div class="history-timeline">
+      @for (entry of entries(); track entry.id) {
+        <div class="history-card">
+          <div class="history-card-header">
+            <span class="hist-date">{{ entry.date }}</span>
+            <span class="hist-mood">{{ entry.mood }}</span>
+          </div>
+
+          <div class="hist-prompts">
+            <div class="hist-p">
+              <strong>Intention:</strong> {{ entry.intentions }}
+            </div>
+            <div class="hist-p">
+              <strong>Wins:</strong> {{ entry.wins }}
+            </div>
+            <div class="hist-p">
+              <strong>Gratitude:</strong> {{ entry.gratitude }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

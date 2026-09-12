@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -11,7 +10,7 @@ import { Issue } from './models/issue';
 
 @Component({
   selector: 'app-issues',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './issues.component.html',
   styleUrl: './issues.component.scss'
 })

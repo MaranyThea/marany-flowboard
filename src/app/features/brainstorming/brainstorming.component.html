@@ -1,0 +1,70 @@
+<div class="brainstorming-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb-trail">
+        <span class="trail-dash">—</span>
+        <span class="trail-item active">Brainstorming</span>
+      </div>
+      <h1 class="page-title">Idea Canvas & Scratchpad</h1>
+      <p class="page-subtitle">Freeform thought capture, concepts, and architectural brainstorms</p>
+    </div>
+  </div>
+
+  <!-- Quick Note Creator -->
+  <div class="create-idea-card">
+    <div class="create-header">
+      <span class="sparkle-ico">💡</span>
+      <span class="create-title">Quick Capture Idea</span>
+    </div>
+
+    <div class="create-body">
+      <input type="text" [(ngModel)]="newTitle" placeholder="Idea headline or concept name..." class="idea-title-input" />
+      <textarea [(ngModel)]="newContent" placeholder="Flesh out details, notes, rationale or next actions..." class="idea-content-input"></textarea>
+    </div>
+
+    <div class="create-footer">
+      <div class="color-picker-row">
+        <span class="picker-lbl">Theme:</span>
+        <button type="button" class="color-dot cyan" [class.selected]="newColor === 'cyan'" (click)="newColor = 'cyan'"></button>
+        <button type="button" class="color-dot purple" [class.selected]="newColor === 'purple'" (click)="newColor = 'purple'"></button>
+        <button type="button" class="color-dot green" [class.selected]="newColor === 'green'" (click)="newColor = 'green'"></button>
+        <button type="button" class="color-dot yellow" [class.selected]="newColor === 'yellow'" (click)="newColor = 'yellow'"></button>
+        <button type="button" class="color-dot coral" [class.selected]="newColor === 'coral'" (click)="newColor = 'coral'"></button>
+      </div>
+
+      <div class="footer-right">
+        <select [(ngModel)]="newTag" class="tag-select">
+          <option value="Feature Idea">Feature Idea</option>
+          <option value="UI/UX">UI/UX</option>
+          <option value="Performance">Performance</option>
+          <option value="Architecture">Architecture</option>
+          <option value="Productivity">Productivity</option>
+        </select>
+        <button type="button" class="btn-post-idea" (click)="addIdea()">+ Pin Note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ideas Masonry Grid -->
+  <div class="ideas-grid">
+    @for (idea of ideas(); track idea.id) {
+      <div class="sticky-note" [class]="idea.color">
+        <div class="sticky-header">
+          <span class="sticky-tag">{{ idea.tag }}</span>
+          <button type="button" class="del-sticky-btn" (click)="deleteIdea(idea.id)">✕</button>
+        </div>
+
+        <h3 class="sticky-title">{{ idea.title }}</h3>
+        <p class="sticky-content">{{ idea.content }}</p>
+
+        <div class="sticky-footer">
+          <span class="sticky-date">{{ idea.createdDate }}</span>
+          <button type="button" class="like-btn" (click)="likeIdea(idea)">
+            ▲ {{ idea.likes }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
