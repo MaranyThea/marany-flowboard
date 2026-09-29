@@ -8,6 +8,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
+import { CreateProjectDto } from '../dto/create-project.dto';
+import { UpdateProjectDto } from '../dto/update-project.dto';
 
 @Controller('api/projects')
 export class ProjectsController {
@@ -26,16 +28,14 @@ export class ProjectsController {
   }
 
   @Post()
-  createProject(
-    @Body() project: Parameters<ProjectsService['createProject']>[0],
-  ): ReturnType<ProjectsService['createProject']> {
+  createProject(@Body() project: CreateProjectDto) {
     return this.projectsService.createProject(project);
   }
 
   @Patch(':id')
   updateProject(
     @Param('id') id: string,
-    @Body() project: Parameters<ProjectsService['updateProject']>[1],
+    @Body() project: UpdateProjectDto,
   ): ReturnType<ProjectsService['updateProject']> {
     return this.projectsService.updateProject(Number(id), project);
   }
