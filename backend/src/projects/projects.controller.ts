@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -19,22 +20,27 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Get()
-  getProjects(): ReturnType<ProjectsService['getProjects']> {
+  getProjects() {
     return this.projectsService.getProjects();
   }
 
   @Get(':id')
-  getProjectById(
-    @Param('id') id: string,
-  ): ReturnType<ProjectsService['getProjectById']> {
-    return this.projectsService.getProjectById(Number(id));
+  async getProjectById(@Param('id') id: string) {
+    const project = await this.projectsService.getProjectById(Number(id));
+
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    return project;
   }
 
   @Post()
-  createProject(@Body() project: CreateProjectDto) {
+  createProject(
+    @Body() project: CreateProjectDto,
+  ): ReturnType<ProjectsService['createProject']> {
     return this.projectsService.createProject(project);
   }
-
   @Patch(':id')
   updateProject(
     @Param('id') id: string,
