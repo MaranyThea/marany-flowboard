@@ -3,6 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -18,7 +19,10 @@ const bcryptLib = bcrypt as unknown as BcryptModule;
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(data: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
@@ -71,10 +75,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    return {
-      id: user.id,
-      name: user.name,
+    const payload = {
+      sub: user.id,
       email: user.email,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      accessToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
     };
   }
 }
