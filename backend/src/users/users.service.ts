@@ -23,15 +23,7 @@ export class UsersService {
       delete: (...args: any[]) => Promise<unknown>;
     };
   } {
-    return this.prisma as PrismaService & {
-      user: {
-        findMany: (...args: any[]) => Promise<unknown[]>;
-        findUnique: (...args: any[]) => Promise<Record<string, any> | null>;
-        create: (...args: any[]) => Promise<unknown>;
-        update: (...args: any[]) => Promise<unknown>;
-        delete: (...args: any[]) => Promise<unknown>;
-      };
-    };
+    return this.prisma;
   }
 
   getUsers() {
@@ -90,9 +82,16 @@ export class UsersService {
   async updateUser(id: number, user: UpdateUserDto) {
     await this.getUserById(id);
 
-    return this.prismaClient.user.update({
+    const data = {
+      ...user,
+      ...(user.password
+        ? { password: await bcryptHash(user.password, 10) }
+        : {}),
+    };
+
+    return this.prisma.user.update({
       where: { id },
-      data: user,
+      data,
       select: {
         id: true,
         name: true,
