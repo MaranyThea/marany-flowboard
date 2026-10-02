@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
@@ -20,13 +21,19 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Get()
-  getProjects() {
-    return this.projectsService.getProjects();
+  getProjects(@Query('tenantId') tenantId: string) {
+    return this.projectsService.getProjects(Number(tenantId));
   }
 
   @Get(':id')
-  async getProjectById(@Param('id') id: string) {
-    const project = await this.projectsService.getProjectById(Number(id));
+  async getProjectById(
+    @Param('id') id: string,
+    @Query('tenantId') tenantId: string,
+  ) {
+    const project = await this.projectsService.getProjectById(
+      Number(tenantId),
+      Number(id),
+    );
 
     if (!project) {
       throw new NotFoundException('Project not found');
@@ -38,21 +45,29 @@ export class ProjectsController {
   @Post()
   createProject(
     @Body() project: CreateProjectDto,
+    @Query('tenantId') tenantId: string,
   ): ReturnType<ProjectsService['createProject']> {
-    return this.projectsService.createProject(project);
+    return this.projectsService.createProject(project, Number(tenantId));
   }
+
   @Patch(':id')
   updateProject(
     @Param('id') id: string,
+    @Query('tenantId') tenantId: string,
     @Body() project: UpdateProjectDto,
   ): ReturnType<ProjectsService['updateProject']> {
-    return this.projectsService.updateProject(Number(id), project);
+    return this.projectsService.updateProject(
+      Number(tenantId),
+      project,
+      Number(id),
+    );
   }
 
   @Delete(':id')
   deleteProject(
     @Param('id') id: string,
+    @Query('tenantId') tenantId: string,
   ): ReturnType<ProjectsService['deleteProject']> {
-    return this.projectsService.deleteProject(Number(id));
+    return this.projectsService.deleteProject(Number(tenantId), Number(id));
   }
 }
