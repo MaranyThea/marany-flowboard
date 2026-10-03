@@ -1,121 +1,170 @@
-<div class="min-h-screen flex items-center justify-center px-6">
-  <div class="w-full max-w-md">
+<div class="login-page">
 
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-semibold text-white">
-        Create your account
-      </h1>
+  <!-- Theme Toggle -->
+  <button type="button" class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="
+      isDarkMode()
+        ? 'Switch to light mode'
+        : 'Switch to dark mode'
+    ">
+    @if (isDarkMode()) {
+    <span>🌙</span>
+    } @else {
+    <span>☀️</span>
+    }
+  </button>
 
-      <p class="mt-2 text-sm text-white/50">
-        Start building your workspace with Apex.
+
+  <!-- Register Card -->
+  <div class="login-card">
+
+    <!-- Brand -->
+    <div class="login-brand">
+
+      <img src="assets/images/flowboard-icon-01.PNG" alt="Flowboard icon" class="login-logo" />
+
+      <img [src]="isDarkMode()
+          ? 'assets/images/flowboard-word-light.PNG'
+          : 'assets/images/flowboard-word-dark.PNG'" alt="Flowboard" class="login-word" />
+
+      <p>
+        Build the work. Track the board. Get the bag.
       </p>
+
     </div>
 
+
     <!-- Register Form -->
-    <form
-      [formGroup]="registerForm"
-      (ngSubmit)="onSubmit()"
-      class="space-y-5"
-    >
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
       <!-- Name -->
-      <div>
-        <label class="block text-sm text-white/70 mb-2">
+      <div class="form-group">
+
+        <label for="name">
           Name
         </label>
 
-        <input
-          type="text"
-          formControlName="name"
-          placeholder="Your name"
-          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
-        />
+        <input id="name" type="text" formControlName="name" placeholder="Enter your name" />
+
+        @if (
+        registerForm.controls.name.touched &&
+        registerForm.controls.name.hasError('required')
+        ) {
+        <small class="error">
+          Name is required.
+        </small>
+        }
+
+        @if (
+        registerForm.controls.name.touched &&
+        registerForm.controls.name.hasError('minlength')
+        ) {
+        <small class="error">
+          Name must be at least 2 characters.
+        </small>
+        }
+
       </div>
 
+
       <!-- Email -->
-      <div>
-        <label class="block text-sm text-white/70 mb-2">
+      <div class="form-group">
+
+        <label for="email">
           Email
         </label>
 
-        <input
-          type="email"
-          formControlName="email"
-          placeholder="you@example.com"
-          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
-        />
+        <input id="email" type="email" formControlName="email" placeholder="Enter your email" />
+
+        @if (
+        registerForm.controls.email.touched &&
+        registerForm.controls.email.hasError('required')
+        ) {
+        <small class="error">
+          Email is required.
+        </small>
+        }
+
+        @if (
+        registerForm.controls.email.touched &&
+        registerForm.controls.email.hasError('email')
+        ) {
+        <small class="error">
+          Please enter a valid email.
+        </small>
+        }
+
       </div>
 
+
       <!-- Password -->
-      <div>
-        <label class="block text-sm text-white/70 mb-2">
+      <div class="form-group">
+
+        <label for="password">
           Password
         </label>
 
-        <input
-          type="password"
-          formControlName="password"
-          placeholder="At least 8 characters"
-          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
-        />
+        <input id="password" type="password" formControlName="password" placeholder="Create a password" />
+
+        @if (
+        registerForm.controls.password.touched &&
+        registerForm.controls.password.hasError('required')
+        ) {
+        <small class="error">
+          Password is required.
+        </small>
+        }
+
+        @if (
+        registerForm.controls.password.touched &&
+        registerForm.controls.password.hasError('minlength')
+        ) {
+        <small class="error">
+          Password must be at least 8 characters.
+        </small>
+        }
+
       </div>
 
+
       <!-- Confirm Password -->
-      <div>
-        <label class="block text-sm text-white/70 mb-2">
+      <div class="form-group">
+
+        <label for="confirmPassword">
           Confirm Password
         </label>
 
-        <input
-          type="password"
-          formControlName="confirmPassword"
-          placeholder="Confirm your password"
-          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
-        />
+        <input id="confirmPassword" type="password" formControlName="confirmPassword"
+          placeholder="Confirm your password" />
+
+        @if (
+        registerForm.controls.confirmPassword.touched &&
+        registerForm.controls.confirmPassword.hasError('required')
+        ) {
+        <small class="error">
+          Please confirm your password.
+        </small>
+        }
+
       </div>
 
-      <!-- Create account -->
-      <button
-        type="submit"
-        class="w-full rounded-xl bg-cyan-400 py-3 font-medium text-black transition hover:bg-cyan-300"
-      >
+
+      <!-- Login Link -->
+      <p class="mt-6 text-center text-sm text-white/50">
+        Already have an account?
+
+        <a routerLink="/login" class="ml-1 text-cyan-400 hover:text-cyan-300">
+          Sign in
+        </a>
+      </p>
+
+
+      <!-- Submit -->
+      <button type="submit" [disabled]="registerForm.invalid">
         Create Account
       </button>
 
     </form>
 
-    <!-- Divider -->
-    <div class="my-6 flex items-center gap-4">
-      <div class="h-px flex-1 bg-white/10"></div>
-
-      <span class="text-xs text-white/30">
-        OR
-      </span>
-
-      <div class="h-px flex-1 bg-white/10"></div>
-    </div>
-
-    <!-- Google -->
-    <button
-      type="button"
-      class="w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-white transition hover:bg-white/10"
-    >
-      Continue with Google
-    </button>
-
-    <!-- Login -->
-    <p class="mt-6 text-center text-sm text-white/50">
-      Already have an account?
-
-      <button
-        type="button"
-        (click)="goToLogin()"
-        class="ml-1 text-cyan-400 hover:text-cyan-300"
-      >
-        Sign in
-      </button>
-    </p>
-
   </div>
+
 </div>

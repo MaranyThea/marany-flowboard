@@ -34,6 +34,13 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/auth/register/register.component').then(
+        (m) => m.RegisterComponent,
+      ),
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
@@ -60,17 +67,11 @@ export const routes: Routes = [
       { path: 'settings', component: SettingsComponent },
       { path: 'issues', component: IssuesComponent },
       { path: 'users', component: UsersComponent },
+
       {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',
-      },
-      {
-        path: 'register',
-        loadComponent: () =>
-          import('./features/auth/register/register.component').then(
-            (m) => m.RegisterComponent,
-          ),
       },
     ],
   },
