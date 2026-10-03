@@ -1,0 +1,121 @@
+<div class="min-h-screen flex items-center justify-center px-6">
+  <div class="w-full max-w-md">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-semibold text-white">
+        Create your account
+      </h1>
+
+      <p class="mt-2 text-sm text-white/50">
+        Start building your workspace with Apex.
+      </p>
+    </div>
+
+    <!-- Register Form -->
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+      class="space-y-5"
+    >
+
+      <!-- Name -->
+      <div>
+        <label class="block text-sm text-white/70 mb-2">
+          Name
+        </label>
+
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="Your name"
+          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm text-white/70 mb-2">
+          Email
+        </label>
+
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
+        />
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm text-white/70 mb-2">
+          Password
+        </label>
+
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="At least 8 characters"
+          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
+        />
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <label class="block text-sm text-white/70 mb-2">
+          Confirm Password
+        </label>
+
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          placeholder="Confirm your password"
+          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-400/50"
+        />
+      </div>
+
+      <!-- Create account -->
+      <button
+        type="submit"
+        class="w-full rounded-xl bg-cyan-400 py-3 font-medium text-black transition hover:bg-cyan-300"
+      >
+        Create Account
+      </button>
+
+    </form>
+
+    <!-- Divider -->
+    <div class="my-6 flex items-center gap-4">
+      <div class="h-px flex-1 bg-white/10"></div>
+
+      <span class="text-xs text-white/30">
+        OR
+      </span>
+
+      <div class="h-px flex-1 bg-white/10"></div>
+    </div>
+
+    <!-- Google -->
+    <button
+      type="button"
+      class="w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-white transition hover:bg-white/10"
+    >
+      Continue with Google
+    </button>
+
+    <!-- Login -->
+    <p class="mt-6 text-center text-sm text-white/50">
+      Already have an account?
+
+      <button
+        type="button"
+        (click)="goToLogin()"
+        class="ml-1 text-cyan-400 hover:text-cyan-300"
+      >
+        Sign in
+      </button>
+    </p>
+
+  </div>
+</div>
