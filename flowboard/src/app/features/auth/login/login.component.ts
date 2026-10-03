@@ -3,7 +3,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -14,10 +14,9 @@ import { ThemeService } from '../../../core/services/theme.service';
   selector: 'app-login',
   imports: [ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly themeService = inject(ThemeService);
@@ -25,14 +24,11 @@ export class LoginComponent {
   readonly isDarkMode = this.themeService.isDarkMode;
 
   loginForm = new FormGroup({
-    email: new FormControl('', [
-      Validators.required,
-      Validators.email
-    ]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
-      Validators.minLength(6)
-    ])
+      Validators.minLength(6),
+    ]),
   });
 
   toggleTheme(): void {
@@ -47,12 +43,13 @@ export class LoginComponent {
 
     const { email, password } = this.loginForm.getRawValue();
 
-    const success = this.authService.login(email!, password!);
-
-    if (success) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      console.log('Invalid email or password');
-    }
+    this.authService.login(email!, password!).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Login failed:', error);
+      },
+    });
   }
 }

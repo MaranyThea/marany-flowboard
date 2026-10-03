@@ -1,14 +1,24 @@
 import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
 interface User {
+  id: number;
   name: string;
   email: string;
+}
+
+interface LoginResponse {
+  accessToken: string;
+  user: User;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  private readonly apiUrl = 'http://localhost:3000/api/auth';
 
   private readonly authenticated = signal(false);
 
@@ -18,26 +28,28 @@ export class AuthService {
 
   readonly user = this.currentUser.asReadonly();
 
-  login(email: string, password: string): boolean {
-    const isValid =
-      email === 'demo@flowboard.com' &&
-      password === '123123';
+  constructor(private readonly http: HttpClient) {}
 
-    if (isValid) {
-      this.authenticated.set(true);
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/login`, {
+        email,
+        password
+      })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('accessToken', response.accessToken);
 
-      this.currentUser.set({
-        name: 'Nyx',
-        email: email
-      });
+          this.authenticated.set(true);
 
-      return true;
-    }
-
-    return false;
+          this.currentUser.set(response.user);
+        })
+      );
   }
 
   logout(): void {
+    localStorage.removeItem('accessToken');
+
     this.authenticated.set(false);
     this.currentUser.set(null);
   }
