@@ -14,10 +14,9 @@ interface LoginResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private readonly apiUrl = 'http://localhost:3000/api/auth';
 
   private readonly authenticated = signal(false);
@@ -34,7 +33,7 @@ export class AuthService {
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/login`, {
         email,
-        password
+        password,
       })
       .pipe(
         tap((response) => {
@@ -43,8 +42,16 @@ export class AuthService {
           this.authenticated.set(true);
 
           this.currentUser.set(response.user);
-        })
+        }),
       );
+  }
+
+  register(name: string, email: string, password: string): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}/register`, {
+      name,
+      email,
+      password,
+    });
   }
 
   logout(): void {

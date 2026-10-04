@@ -51,21 +51,12 @@ export class RegisterComponent {
       return;
     }
 
-    const registerFn =
-      (this.authService as any).register ??
-      (this.authService as any).signUp ??
-      (this.authService as any).createUser;
-
-    if (typeof registerFn !== 'function') {
-      console.error('Registration is not available on AuthService');
-      return;
-    }
-
-    registerFn.call(this.authService, name, email, password).subscribe({
+    this.authService.register(name!, email!, password!).subscribe({
       next: () => {
+        console.log('Registration successful');
         this.router.navigate(['/login']);
       },
-      error: (error: unknown) => {
+      error: (error) => {
         console.error('Registration failed:', error);
       },
     });
