@@ -348,6 +348,27 @@ button:disabled {
     0 6px 16px rgba(15, 23, 42, 0.08);
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+#google-button {
+  display: flex;
+  justify-content: center;
+}
 
 /* =========================================================
    VALIDATION

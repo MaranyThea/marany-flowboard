@@ -60,4 +60,17 @@ export class AuthService {
     this.authenticated.set(false);
     this.currentUser.set(null);
   }
+  googleLogin(credential: string): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/google`, { credential })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('accessToken', response.accessToken);
+
+          this.authenticated.set(true);
+
+          this.currentUser.set(response.user);
+        }),
+      );
+  }
 }
