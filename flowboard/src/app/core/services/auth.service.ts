@@ -13,6 +13,12 @@ interface LoginResponse {
   user: User;
 }
 
+interface GoogleProfile {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +34,10 @@ export class AuthService {
   readonly user = this.currentUser.asReadonly();
 
   constructor(private readonly http: HttpClient) {}
+
+  // =========================================================
+  // EMAIL / PASSWORD LOGIN
+  // =========================================================
 
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http
@@ -46,23 +56,23 @@ export class AuthService {
       );
   }
 
-  register(name: string, email: string, password: string): Observable<unknown> {
-    return this.http.post(`${this.apiUrl}/register`, {
-      name,
-      email,
-      password,
-    });
-  }
+  // =========================================================
+  // EMAIL / PASSWORD REGISTER
+  // =========================================================
 
-  logout(): void {
-    localStorage.removeItem('accessToken');
-
-    this.authenticated.set(false);
-    this.currentUser.set(null);
-  }
-  googleLogin(credential: string): Observable<LoginResponse> {
+  register(
+    name: string,
+    email: string,
+    password: string,
+    googleCredential?: string,
+  ): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>(`${this.apiUrl}/google`, { credential })
+      .post<LoginResponse>(`${this.apiUrl}/register`, {
+        name,
+        email,
+        password,
+        googleCredential,
+      })
       .pipe(
         tap((response) => {
           localStorage.setItem('accessToken', response.accessToken);
@@ -72,5 +82,47 @@ export class AuthService {
           this.currentUser.set(response.user);
         }),
       );
+  }
+
+  // =========================================================
+  // GET VERIFIED GOOGLE PROFILE
+  // =========================================================
+
+  getGoogleProfile(credential: string): Observable<GoogleProfile> {
+    return this.http.post<GoogleProfile>(`${this.apiUrl}/google/profile`, {
+      credential,
+    });
+  }
+
+  // =========================================================
+  // GOOGLE LOGIN
+  // =========================================================
+
+  googleLogin(credential: string): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/google/login`, {
+        credential,
+      })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('accessToken', response.accessToken);
+
+          this.authenticated.set(true);
+
+          this.currentUser.set(response.user);
+        }),
+      );
+  }
+
+  // =========================================================
+  // LOGOUT
+  // =========================================================
+
+  logout(): void {
+    localStorage.removeItem('accessToken');
+
+    this.authenticated.set(false);
+
+    this.currentUser.set(null);
   }
 }
