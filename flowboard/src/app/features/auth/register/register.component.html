@@ -36,35 +36,64 @@
     <!-- Register Form -->
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-      <!-- Name -->
+      <!-- First Name -->
       <div class="form-group">
 
-        <label for="name">
-          Name
+        <label for="firstName">
+          First Name
         </label>
 
-        <input id="name" type="text" formControlName="name" placeholder="Enter your name" />
+        <input id="firstName" type="text" formControlName="firstName" placeholder="Enter your first name" />
 
         @if (
-        registerForm.controls.name.touched &&
-        registerForm.controls.name.hasError('required')
+        registerForm.controls.firstName.touched &&
+        registerForm.controls.firstName.hasError('required')
         ) {
         <small class="error">
-          Name is required.
+          First name is required.
         </small>
         }
 
         @if (
-        registerForm.controls.name.touched &&
-        registerForm.controls.name.hasError('minlength')
+        registerForm.controls.firstName.touched &&
+        registerForm.controls.firstName.hasError('minlength')
         ) {
         <small class="error">
-          Name must be at least 2 characters.
+          First name must be at least 2 characters.
         </small>
         }
 
       </div>
 
+
+      <!-- Last Name -->
+      <div class="form-group">
+
+        <label for="lastName">
+          Last Name
+        </label>
+
+        <input id="lastName" type="text" formControlName="lastName" placeholder="Enter your last name" />
+
+        @if (
+        registerForm.controls.lastName.touched &&
+        registerForm.controls.lastName.hasError('required')
+        ) {
+        <small class="error">
+          Last name is required.
+        </small>
+        }
+
+        @if (
+        registerForm.controls.lastName.touched &&
+        registerForm.controls.lastName.hasError('minlength')
+        ) {
+        <small class="error">
+          Last name must be at least 2 characters.
+        </small>
+        }
+
+      </div>
 
       <!-- Email -->
       <div class="form-group">
