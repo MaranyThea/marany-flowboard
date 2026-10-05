@@ -19,8 +19,18 @@ export class AuthController {
     return this.authService.login(data);
   }
 
-  @Post('google')
+  @Post('google/register')
+  googleRegister(@Body() data: GoogleLoginDto) {
+    return this.authService.googleRegister(data);
+  }
+
+  @Post('google/login')
   googleLogin(@Body() data: GoogleLoginDto) {
     return this.authService.googleLogin(data);
+  }
+
+  @Post('google/profile')
+  getGoogleProfile(@Body() data: GoogleLoginDto) {
+    return this.authService.getGoogleProfile(data);
   }
 }
