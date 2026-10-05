@@ -14,6 +14,7 @@ import { RegisterDto } from './dto/register.dto';
 
 const bcryptService = bcrypt as unknown as {
   hash: (value: string, saltRounds: number) => Promise<string>;
+
   compare: (value: string, encrypted: string) => Promise<boolean>;
 };
 
@@ -27,6 +28,10 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
+
+  // =========================================================
+  // EMAIL / PASSWORD REGISTER
+  // =========================================================
 
   async register(data: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
@@ -45,6 +50,7 @@ export class AuthService {
         email: data.email,
         password: hashedPassword,
       },
+
       select: {
         id: true,
         name: true,
@@ -54,6 +60,10 @@ export class AuthService {
       },
     });
   }
+
+  // =========================================================
+  // EMAIL / PASSWORD LOGIN
+  // =========================================================
 
   async login(data: LoginDto) {
     const user = await this.prisma.user.findUnique({
@@ -76,7 +86,11 @@ export class AuthService {
     return this.createLoginResponse(user.id, user.name, user.email);
   }
 
-  async googleLogin(data: GoogleLoginDto) {
+  // =========================================================
+  // GOOGLE REGISTER
+  // =========================================================
+
+  async googleRegister(data: GoogleLoginDto) {
     try {
       const ticket = await this.googleClient.verifyIdToken({
         idToken: data.credential,
@@ -98,24 +112,23 @@ export class AuthService {
         );
       }
 
+      // Check whether an Apex account already exists.
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingUser) {
+        throw new ConflictException(
+          'An account with this Google email already exists. Please sign in instead.',
+        );
+      }
+
       const name =
         (payload.name ??
           [payload.given_name, payload.family_name]
             .filter(Boolean)
             .join(' ')) ||
         email.split('@')[0];
-
-      const existingUser = await this.prisma.user.findUnique({
-        where: { email },
-      });
-
-      if (existingUser) {
-        return this.createLoginResponse(
-          existingUser.id,
-          existingUser.name,
-          existingUser.email,
-        );
-      }
 
       const user = await this.prisma.user.create({
         data: {
@@ -127,13 +140,100 @@ export class AuthService {
 
       return this.createLoginResponse(user.id, user.name, user.email);
     } catch (error) {
+      if (
+        error instanceof UnauthorizedException ||
+        error instanceof ConflictException
+      ) {
+        throw error;
+      }
+
+      console.error('Google registration failed:', error);
+
+      throw new UnauthorizedException('Google registration failed');
+    }
+  }
+
+  // =========================================================
+  // GOOGLE LOGIN
+  // =========================================================
+
+  async googleLogin(data: GoogleLoginDto) {
+    try {
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken: data.credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+
+      if (!payload) {
+        throw new UnauthorizedException('Invalid Google account');
+      }
+
+      const email = payload.email;
+
+      if (!email) {
+        throw new UnauthorizedException('Google account email is missing');
+      }
+
+      // Google account must already be registered
+      // with Apex.
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException(
+          'No Apex account exists with this Google account. Please register first.',
+        );
+      }
+
+      return this.createLoginResponse(user.id, user.name, user.email);
+    } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw error;
       }
 
-      console.error('Google authentication failed:', error);
+      console.error('Google login failed:', error);
 
-      throw new UnauthorizedException('Google authentication failed');
+      throw new UnauthorizedException('Google login failed');
+    }
+  }
+
+  // =========================================================
+  // CREATE APEX JWT
+  // =========================================================
+
+  async getGoogleProfile(data: GoogleLoginDto) {
+    try {
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken: data.credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+
+      if (!payload) {
+        throw new UnauthorizedException('Invalid Google account');
+      }
+
+      if (!payload.email) {
+        throw new UnauthorizedException('Google account email is missing');
+      }
+
+      return {
+        firstName: payload.given_name ?? '',
+        lastName: payload.family_name ?? '',
+        email: payload.email,
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      console.error('Google profile verification failed:', error);
+
+      throw new UnauthorizedException('Unable to verify Google account');
     }
   }
 
@@ -151,6 +251,7 @@ export class AuthService {
 
     return {
       accessToken,
+
       user: {
         id: userId,
         name,
