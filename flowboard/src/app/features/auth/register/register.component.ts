@@ -17,6 +17,7 @@ declare const google: {
         client_id: string;
         callback: (response: { credential: string }) => void;
       }) => void;
+
       renderButton: (
         element: HTMLElement,
         options: {
@@ -45,11 +46,20 @@ export class RegisterComponent implements AfterViewInit {
 
   readonly isDarkMode = this.themeService.isDarkMode;
 
-  private readonly googleClientId =
-    '583062011127-4uad5tcgiutk2ncq3p9etg3vh8f2jlrf.apps.googleusercontent.com';
+  private readonly googleClientId = '583062011127-4uad5tcgiutk2ncq3p9etg3vh8f2jlrf.apps.googleusercontent.com';
+
+  private googleCredential: string | null = null;
 
   registerForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    firstName: new FormControl('', [
+      Validators.required,
+      Validators.minLength(2),
+    ]),
+
+    lastName: new FormControl('', [
+      Validators.required,
+      Validators.minLength(2),
+    ]),
 
     email: new FormControl('', [Validators.required, Validators.email]),
 
@@ -86,7 +96,7 @@ export class RegisterComponent implements AfterViewInit {
       client_id: this.googleClientId,
 
       callback: (response) => {
-        this.handleGoogleSignIn(response.credential);
+        this.handleGoogleAccount(response.credential);
       },
     });
 
@@ -100,16 +110,44 @@ export class RegisterComponent implements AfterViewInit {
     });
   }
 
-  private handleGoogleSignIn(credential: string): void {
-    this.authService.googleLogin(credential).subscribe({
-      next: (response) => {
-        console.log('Google login successful:', response.user);
+  private handleGoogleAccount(credential: string): void {
+    this.googleCredential = credential;
 
-        this.router.navigate(['/dashboard']);
+    const googleAuthService = this.authService as AuthService & {
+      getGoogleProfile?: (token: string) => {
+        subscribe: (handlers: {
+          next?: (profile: {
+            firstName: string;
+            lastName: string;
+            email: string;
+          }) => void;
+          error?: (error: unknown) => void;
+        }) => void;
+      };
+    };
+
+    const googleProfileRequest = googleAuthService.getGoogleProfile?.(credential);
+
+    if (!googleProfileRequest) {
+      console.warn('Google profile lookup is not supported by the current AuthService.');
+      return;
+    }
+
+    googleProfileRequest.subscribe({
+      next: (profile) => {
+        this.registerForm.patchValue({
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          email: profile.email,
+        });
+
+        console.log('Google profile loaded:', profile);
       },
 
       error: (error) => {
-        console.error('Google login failed:', error);
+        console.error('Unable to load Google account:', error);
+
+        this.googleCredential = null;
       },
     });
   }
@@ -120,7 +158,7 @@ export class RegisterComponent implements AfterViewInit {
       return;
     }
 
-    const { name, email, password, confirmPassword } =
+    const { firstName, lastName, email, password, confirmPassword } =
       this.registerForm.getRawValue();
 
     if (password !== confirmPassword) {
@@ -128,17 +166,19 @@ export class RegisterComponent implements AfterViewInit {
       return;
     }
 
-    this.authService.register(name!, email!, password!).subscribe({
-      next: () => {
-        console.log('Registration successful');
+    this.authService
+      .register(`${firstName} ${lastName}`, email!, password!)
+      .subscribe({
+        next: () => {
+          console.log('Registration successful');
 
-        this.router.navigate(['/login']);
-      },
+          this.router.navigate(['/dashboard']);
+        },
 
-      error: (error) => {
-        console.error('Registration failed:', error);
-      },
-    });
+        error: (error) => {
+          console.error('Registration failed:', error);
+        },
+      });
   }
 
   goToLogin(): void {
