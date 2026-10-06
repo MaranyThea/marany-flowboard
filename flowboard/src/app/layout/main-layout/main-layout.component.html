@@ -97,8 +97,13 @@
         <div class="profile-dropdown">
           <div class="profile-info">
             <span class="profile-label">Signed in as</span>
-            <span class="profile-name">{{ authService.user()?.name || 'Marany Thea' }}</span>
-            <span class="profile-email">{{ authService.user()?.email || 'marany@example.com' }}</span>
+            <span class="profile-name">
+              {{ authService.user()?.name }}
+            </span>
+
+            <span class="profile-email">
+              {{ authService.user()?.email }}
+            </span>
           </div>
 
           <div class="profile-divider"></div>
