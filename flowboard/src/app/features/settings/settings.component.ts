@@ -2,40 +2,56 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ThemeService } from '../../core/services/theme.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-settings',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss'
+  styleUrl: './settings.component.scss',
 })
 export class SettingsComponent {
   private readonly fb = new FormBuilder();
   readonly themeService = inject(ThemeService);
+  readonly authService = inject(AuthService);
 
   profileForm = this.fb.nonNullable.group({
-    name: ['Marany Thea', [Validators.required]],
-    email: ['marany@example.com', [Validators.required, Validators.email]],
+    name: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
     role: ['Staff Software Architect'],
-    bio: ['Building FlowBoard Life OS and distributed systems.']
+    bio: ['Building FlowBoard Life OS and distributed systems.'],
   });
+
+  constructor() {
+    const user = this.authService.user();
+
+    if (user) {
+      this.profileForm.patchValue({
+        name: user.name,
+        email: user.email,
+      });
+    }
+  }
 
   preferencesForm = this.fb.nonNullable.group({
     aiModel: ['Gemini 2.0 Pro'],
     focusTimerMinutes: [25],
     emailNotifications: [true],
     dailyBriefingPush: [true],
-    soundEffects: [true]
+    soundEffects: [true],
   });
 
   savedMessage = false;
 
   shortcuts = [
-    { key: '⌘ K / Ctrl + K', description: 'Open Global Command Palette & Search' },
+    {
+      key: '⌘ K / Ctrl + K',
+      description: 'Open Global Command Palette & Search',
+    },
     { key: 'G then P', description: 'Jump to Projects module' },
     { key: 'G then T', description: 'Jump to Tasks module' },
     { key: 'C', description: 'Quick capture new action item' },
-    { key: 'Esc', description: 'Close modals or AI Drawer' }
+    { key: 'Esc', description: 'Close modals or AI Drawer' },
   ];
 
   saveProfile(): void {
